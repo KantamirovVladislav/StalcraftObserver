@@ -16,14 +16,16 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    onPrimary = White
+    onPrimary = White,
+    background = Black
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-    onPrimary = Black
+    onPrimary = Black,
+    background = White
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -40,7 +42,7 @@ private val LightColorScheme = lightColorScheme(
 fun StalcraftObserverTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
