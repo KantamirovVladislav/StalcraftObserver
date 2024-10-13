@@ -6,5 +6,9 @@ interface LocalUserManager {
 
     suspend fun saveAppEntry()
 
+    suspend fun saveUserRegion(region: String)
+
     fun readAppEntry(): Flow<Boolean>
+
+    fun readUserRegion(): Flow<String>
 }
