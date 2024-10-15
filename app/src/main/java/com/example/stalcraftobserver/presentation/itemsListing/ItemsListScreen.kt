@@ -3,8 +3,11 @@ package com.example.stalcraftobserver.presentation.itemsListing
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -45,12 +48,12 @@ fun ItemsListScreen() {
     Text(text = "Loaded items count: ${itemsState.value.size}", modifier = Modifier.fillMaxSize())
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(8.dp),
         modifier = Modifier.fillMaxSize()
     ) {
         items(itemsState.value) { item ->
-            ItemCell(Modifier.padding(20.dp),item, "ru")
+            ItemCell(modifier = Modifier.padding(4.dp),item = item, region =  "ru")
         }
     }
 }

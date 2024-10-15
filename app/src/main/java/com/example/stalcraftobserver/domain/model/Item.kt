@@ -13,7 +13,5 @@ data class Item(
     @ColumnInfo("category") val category: String,
     @ColumnInfo("rarity") val rarity: String,
 ){
-    suspend fun createImagePath(region: String): String{
-        return "https://github.com/EXBO-Studio/stalcraft-database/raw/main/$region/icons/$category/$id.png"
-    }
+    fun createImagePath(region: String) = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/$region/icons/$category/$id.png"
 }

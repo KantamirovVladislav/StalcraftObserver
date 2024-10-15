@@ -31,7 +31,7 @@ fun PagesIndicator(
 
     Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.Bottom) {
         repeat(pageSize) { page ->
-            Box(modifier = Modifier.height(height = animateDpAsState(30.dp))//if (page == selectedPage) 40.dp else 30.dp)
+            Box(modifier = Modifier.height(10.dp)//if (page == selectedPage) 40.dp else 30.dp)
                 .width(10.dp)
                 .clip(shape = RoundedCornerShape(size = 5.dp))
                 .background(color = if (page == selectedPage) selectedColor else unselectedColor)) {
