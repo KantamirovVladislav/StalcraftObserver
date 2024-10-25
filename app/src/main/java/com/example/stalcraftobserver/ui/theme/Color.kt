@@ -14,7 +14,8 @@ val Black = Color.Black
 
 val RarityNoneColor = Color(0xFFCECBCB)
 val RarityCommonColor = Color(0xFF808080)
-val RarityPicklockColor = Color(0x803EB23F)
+val RarityPicklockColor = Color(0x80FFFFFF)
+val RarityNewbieColor = Color(0x807FF36E)
 val RarityStalkerColor = Color(0x803677A2)
 val RarityVeteranColor = Color(0x80682583)
 val RarityMasterColor = Color(0x80C43232)

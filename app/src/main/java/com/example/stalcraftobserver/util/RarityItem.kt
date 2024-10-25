@@ -1,9 +1,12 @@
 package com.example.stalcraftobserver.util
 
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import com.example.stalcraftobserver.ui.theme.Black
 import com.example.stalcraftobserver.ui.theme.RarityCommonColor
 import com.example.stalcraftobserver.ui.theme.RarityLegendColor
 import com.example.stalcraftobserver.ui.theme.RarityMasterColor
+import com.example.stalcraftobserver.ui.theme.RarityNewbieColor
 import com.example.stalcraftobserver.ui.theme.RarityNoneColor
 import com.example.stalcraftobserver.ui.theme.RarityPicklockColor
 import com.example.stalcraftobserver.ui.theme.RarityStalkerColor
@@ -20,13 +23,14 @@ enum class RarityItem {
     Legend
 }
 
-fun getRarityColorFromString(rarity: String) = when(rarity){
-    RarityItem.None.toString() -> RarityNoneColor
-    RarityItem.Common.toString() -> RarityCommonColor
-    RarityItem.Picklock.toString() -> RarityPicklockColor
-    RarityItem.Stalker.toString() -> RarityStalkerColor
-    RarityItem.Veteran.toString() -> RarityVeteranColor
-    RarityItem.Master.toString() -> RarityMasterColor
-    RarityItem.Legend.toString() -> RarityLegendColor
+fun getRarityColorFromString(rarity: String) = when(rarity.toLowerCase(Locale.current)){
+    RarityItem.None.toString().toLowerCase(Locale.current) -> RarityNoneColor
+    RarityItem.Common.toString().toLowerCase(Locale.current) -> RarityCommonColor
+    RarityItem.Newbie.toString().toLowerCase(Locale.current) -> RarityNewbieColor
+    RarityItem.Picklock.toString().toLowerCase(Locale.current) -> RarityPicklockColor
+    RarityItem.Stalker.toString().toLowerCase(Locale.current) -> RarityStalkerColor
+    RarityItem.Veteran.toString().toLowerCase(Locale.current) -> RarityVeteranColor
+    RarityItem.Master.toString().toLowerCase(Locale.current) -> RarityMasterColor
+    RarityItem.Legend.toString().toLowerCase(Locale.current) -> RarityLegendColor
     else -> Black
 }
