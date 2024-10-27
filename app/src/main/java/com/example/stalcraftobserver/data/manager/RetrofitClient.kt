@@ -40,4 +40,8 @@ data class Price(
     val price: Int,
     val time: String,
     val additional: Map<String, Any>
-)
+){
+    override fun toString(): String {
+        return "Кол-во $amount\nЦена $price\nВремя $time "
+    }
+}

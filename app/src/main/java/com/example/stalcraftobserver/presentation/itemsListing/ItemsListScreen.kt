@@ -1,6 +1,7 @@
 package com.example.stalcraftobserver.presentation.itemsListing
 
 import android.util.Log
+import android.view.View
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.data.manager.ItemsService
 import com.example.stalcraftobserver.domain.model.Item

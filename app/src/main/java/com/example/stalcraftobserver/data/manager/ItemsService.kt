@@ -48,6 +48,20 @@ class ItemsService(
         }
     }
 
+    suspend fun getItemWithId(id: String): FunctionResult<Item> {
+        return try {
+            val items = db.ItemDao().getItemWithId(id)
+            Log.i(Constants.SUCCES_DATABASE_TAG, "Successfully read data from database")
+            FunctionResult.Success(items)
+        } catch (e: SQLiteException) {
+            Log.e(Constants.ERROR_DATABASE_TAG, "Database error: ${e.message}")
+            FunctionResult.Error("Database error")
+        } catch (e: Exception) {
+            Log.e(Constants.ERROR_DATABASE_TAG, "Unexpected error: ${e.message}")
+            FunctionResult.Error("Unexpected error in database")
+        }
+    }
+
     fun closeDatabase() {
         instance?.close()
         instance = null
