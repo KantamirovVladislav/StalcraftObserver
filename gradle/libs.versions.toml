@@ -18,6 +18,7 @@ ksp = "1.9.0-1.0.13"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose" }
 androidx-room-guava = { module = "androidx.room:room-guava", version.ref = "roomGuava" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomGuava" }
 androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomGuava" }

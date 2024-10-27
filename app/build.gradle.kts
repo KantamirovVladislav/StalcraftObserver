@@ -76,7 +76,6 @@ dependencies {
     ksp(libs.androidx.room.room.compiler)
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.room.compiler)
-
     // To use Kotlin Symbol Processing (KSP)
     ksp(libs.androidx.room.room.compiler)
 
@@ -98,4 +97,6 @@ dependencies {
     // Coil for async images
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation(libs.androidx.navigation.compose)
 }

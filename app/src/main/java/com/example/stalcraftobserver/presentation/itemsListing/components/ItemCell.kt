@@ -40,12 +40,10 @@ fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
 
     var isLoading by remember { mutableStateOf(true) }
 
-    val minHeight = (LocalConfiguration.current.screenHeightDp / 3) + 10
     LaunchedEffect(item.id, region) {
         imagePath = item.createImagePath(region)
         Log.d("ItemCell", "Generated image path: $imagePath")
     }
-
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -56,7 +54,6 @@ fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
                 .shadow(1.dp, RoundedCornerShape(12.dp), spotColor = getRarityColorFromString(item.rarity), clip = true)
                 .padding(10.dp)
                 .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
-                .height(minHeight.dp)
 
         )
 

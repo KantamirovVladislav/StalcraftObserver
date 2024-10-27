@@ -21,15 +21,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.stalcraftobserver.presentation.common.ContinueButton
 import com.example.stalcraftobserver.presentation.common.ContinueTextButton
 import com.example.stalcraftobserver.presentation.onBoarding.components.OnBoardingPage
 import com.example.stalcraftobserver.presentation.onBoarding.components.PagesIndicator
+import com.example.stalcraftobserver.util.NavigationItem
+import com.example.stalcraftobserver.util.Screen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OnBoardingScreen() {
+fun OnBoardingScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -84,8 +90,8 @@ fun OnBoardingScreen() {
 
                 ContinueButton(text = buttonState.value[1], onClick = {
                     scope.launch {
-                        if (pageState.currentPage == 4) {
-                            //TODO Go to main page
+                        if (pageState.currentPage == buttonState.value.size + 1) {
+                            navController.navigate(NavigationItem.ListItems.route)
                         } else {
                             pageState.animateScrollToPage(page = pageState.currentPage + 1)
                         }
