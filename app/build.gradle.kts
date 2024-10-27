@@ -99,4 +99,6 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation("androidx.navigation:navigation-compose:2.8.3")
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }

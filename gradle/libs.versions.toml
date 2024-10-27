@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.0"
 coilCompose = "3.0.0-rc01"
+converterGson = "2.9.0"
 datastorePreferences = "1.1.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -10,6 +11,7 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
 composeBom = "2024.06.00"
+retrofit = "2.9.0"
 roomGuava = "2.6.1"
 roomRuntime = "2.6.1"
 runtimeLivedata = "1.6.8"
@@ -25,6 +27,7 @@ androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomGuava" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -43,6 +46,7 @@ androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -21,6 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.stalcraftobserver.data.manager.ItemsService
+import com.example.stalcraftobserver.data.manager.PriceHistoryResponse
+import com.example.stalcraftobserver.data.manager.RetrofitClient
 import com.example.stalcraftobserver.domain.model.ItemViewModel
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
@@ -28,11 +31,22 @@ import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
 import com.example.stalcraftobserver.util.Screen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            getInfo()
+        }
+
         setContent {
             val navController = rememberNavController()
             val viewModel = ItemViewModel(ItemsService(LocalContext.current))
@@ -62,6 +76,27 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    fun getInfo(){
+        RetrofitClient.instance.getAuctionHistory("ru", "y4y33", "275", "icwACm0QlFeURwORsflrjYiUHDPHedDHTHZiceGg").enqueue(object :
+            Callback<PriceHistoryResponse> {
+            override fun onResponse(call: Call<PriceHistoryResponse>, response: Response<PriceHistoryResponse>) {
+                if (response.isSuccessful) {
+                    val historyResponse = response.body()
+                    if (historyResponse != null) {
+                        Log.d("RetrofitRequest", historyResponse.total.toString())
+                    }
+                    // Обработка успешного ответа
+                } else {
+                    Log.e("RetrofitRequest", "Error in retrofitClient")
+                }
+            }
+
+            override fun onFailure(call: Call<PriceHistoryResponse>, t: Throwable) {
+                Log.e("RetrofitRequest", "Error in retrofitClient")
+            }
+        })
     }
 }
 
