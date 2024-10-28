@@ -6,14 +6,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
@@ -23,14 +16,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.stalcraftobserver.data.manager.ItemsService
 import com.example.stalcraftobserver.data.manager.PriceHistoryResponse
-import com.example.stalcraftobserver.data.manager.RetrofitClient
+import com.example.stalcraftobserver.data.manager.RetrofitClientItem
+import com.example.stalcraftobserver.data.manager.RetrofitClientItemInfo
+import com.example.stalcraftobserver.domain.model.ItemInfoViewModel
 import com.example.stalcraftobserver.domain.model.ItemViewModel
+import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
-import com.example.stalcraftobserver.util.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -70,7 +65,8 @@ class MainActivity : ComponentActivity() {
                         val idItem = backStackEntry.arguments?.getString("idItem")
                         Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ItemInfo("$idItem").route}")
                         idItem?.let {
-                            //ItemInfoScreen(itemId = it)
+                            val viewModel2 = ItemInfoViewModel(id = it, itemsService = ItemsService(LocalContext.current), gitHubApi = RetrofitClientItemInfo)
+                            ItemInfoScreen(viewModel = viewModel2)
                         }
                     }
                 }
@@ -79,7 +75,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun getInfo(){
-        RetrofitClient.instance.getAuctionHistory("ru", "y4y33", "275", "icwACm0QlFeURwORsflrjYiUHDPHedDHTHZiceGg").enqueue(object :
+        RetrofitClientItem.instance.getAuctionHistory("ru", "y4y33", "275", "icwACm0QlFeURwORsflrjYiUHDPHedDHTHZiceGg").enqueue(object :
             Callback<PriceHistoryResponse> {
             override fun onResponse(call: Call<PriceHistoryResponse>, response: Response<PriceHistoryResponse>) {
                 if (response.isSuccessful) {
@@ -94,7 +90,7 @@ class MainActivity : ComponentActivity() {
             }
 
             override fun onFailure(call: Call<PriceHistoryResponse>, t: Throwable) {
-                Log.e("RetrofitRequest", "Error in retrofitClient")
+                Log.e("RetrofitRequest", "Error in retrofitClient" + t.message.toString())
             }
         })
     }

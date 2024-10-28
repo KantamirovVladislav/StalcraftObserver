@@ -2,6 +2,8 @@ package com.example.stalcraftobserver.presentation.itemsListing
 
 import android.util.Log
 import android.view.View
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -27,6 +29,8 @@ import com.example.stalcraftobserver.domain.model.Item
 import com.example.stalcraftobserver.domain.model.ItemViewModel
 import com.example.stalcraftobserver.presentation.itemsListing.components.ItemCell
 import com.example.stalcraftobserver.util.Constants
+import com.example.stalcraftobserver.util.NavigationItem
+import com.example.stalcraftobserver.util.Screen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -39,7 +43,7 @@ fun ItemsListScreen(
     val itemsState by viewModel.itemsList.collectAsState()
 
     LaunchedEffect(Unit) {
-        Log.d(Constants.SUCCES_DATABASE_TAG, "ReadData in LaunchedEffect ...")
+        Log.d(Constants.SUCCES_DATABASE_TAG, "ReadData in LaunchedEffect ItemsListScreen")
         viewModel.getItems()
     }
     Text(text = "Loaded items count: ${itemsState.size}", modifier = Modifier.padding(8.dp))
@@ -49,11 +53,18 @@ fun ItemsListScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         items(itemsState) { item ->
-            Log.d(Constants.SUCCES_DATABASE_TAG,"Loaded item ${itemsState.size}")
             ItemCell(
                 modifier = Modifier
                     .padding(4.dp)
-                    .height(((LocalConfiguration.current.screenHeightDp / 3) + 10).dp),
+                    .height(((LocalConfiguration.current.screenHeightDp / 3) + 10).dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        enabled = true,
+                        indication = null
+                    ){
+                        Log.d("Controller", NavigationItem.ItemInfo(item.id).route)
+                        navController.navigate(NavigationItem.ItemInfo(item.id).route)
+                    },
                 item = item,
                 region = "ru"
             )

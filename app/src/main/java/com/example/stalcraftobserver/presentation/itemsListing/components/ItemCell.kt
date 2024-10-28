@@ -42,7 +42,6 @@ fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
 
     LaunchedEffect(item.id, region) {
         imagePath = item.createImagePath(region)
-        Log.d("ItemCell", "Generated image path: $imagePath")
     }
 
     Column(

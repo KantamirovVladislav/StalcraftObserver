@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    id("kotlinx-serialization")
 }
 
 android {
@@ -101,4 +103,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    implementation(libs.kotlinx.serialization.json.v163)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
 }
