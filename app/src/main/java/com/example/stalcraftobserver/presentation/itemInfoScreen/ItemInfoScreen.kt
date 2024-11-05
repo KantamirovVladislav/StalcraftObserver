@@ -21,8 +21,7 @@ fun ItemInfoScreen(
     val info by viewModel.info.collectAsState()
 
     LaunchedEffect(Unit) {
-        Log.d(Constants.SUCCES_DATABASE_TAG, "ReadData in LaunchedEffect ...")
-
+        viewModel.getItemWithId()
     }
 
     Column {

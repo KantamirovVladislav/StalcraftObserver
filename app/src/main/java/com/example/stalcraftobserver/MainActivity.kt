@@ -83,7 +83,6 @@ class MainActivity : ComponentActivity() {
                     if (historyResponse != null) {
                         Log.d("RetrofitRequest", historyResponse.total.toString())
                     }
-                    // Обработка успешного ответа
                 } else {
                     Log.e("RetrofitRequest", "Error in retrofitClient")
                 }

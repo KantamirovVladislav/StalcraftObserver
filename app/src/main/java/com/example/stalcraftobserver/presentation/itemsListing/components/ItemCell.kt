@@ -36,6 +36,8 @@ import com.example.stalcraftobserver.util.getRarityColorFromString
 
 @Composable
 fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
+
+
     var imagePath by remember { mutableStateOf<String?>(null) }
 
     var isLoading by remember { mutableStateOf(true) }

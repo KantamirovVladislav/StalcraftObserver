@@ -25,7 +25,7 @@ class ItemViewModel(private val itemsService: ItemsService) : ViewModel() {
         when (val itemsResult = itemsService.getAllItems()) {
             is FunctionResult.Success -> {
                 Log.d("Items", "Fetched items count: ${itemsResult.data.size}")
-                _itemsList.value = itemsResult.data // No need for withContext(Dispatchers.Main)
+                _itemsList.value = itemsResult.data
                 Log.d("Items", "ItemsList updated with ${_itemsList.value.size} items")
             }
             is FunctionResult.Error -> {

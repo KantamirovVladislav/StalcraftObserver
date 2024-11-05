@@ -26,18 +26,13 @@ class ItemInfoViewModel(
 
     private lateinit var _item: Item
 
-
     var info = MutableStateFlow<String>(" ")
 
-    init {
-        getItemWithId()
-    }
-
-    private fun getItemWithId() = viewModelScope.launch(Dispatchers.IO) {
+    public fun getItemWithId() = viewModelScope.launch(Dispatchers.IO) {
         when (val itemsResult = itemsService.getItemWithId(id = id)) {
             is FunctionResult.Success -> {
                 _item = itemsResult.data
-                Log.i(Constants.SUCCES_DATABASE_TAG, "Data is successfully read: ${_item.id}")
+                //Log.i(Constants.SUCCES_DATABASE_TAG, "Data is successfully read: ${_item.id}")
                 getItemData()
             }
 
@@ -48,7 +43,17 @@ class ItemInfoViewModel(
     }
 
     private fun getItemData() = viewModelScope.launch {
-        Log.d(Constants.RETROFIT_CLIENT_GIT_DEBUG, "Current item: Category - ${_item.category}  Id - ${_item.id}")
+        if (!::_item.isInitialized) {
+            Log.d(
+                Constants.ERROR_DATABASE_TAG,
+                "Item is not initialize"
+            )
+            return@launch
+        }
+        Log.d(
+            Constants.RETROFIT_CLIENT_GIT_DEBUG,
+            "Current item: Category - ${_item.category}  Id - ${_item.id}"
+        )
         val call = gitHubApi.instance.getItemData("ru", category = _item.category, id = _item.id)
         call.enqueue(object : Callback<ItemInfo> {
             override fun onResponse(call: Call<ItemInfo>, response: Response<ItemInfo>) {
@@ -61,12 +66,17 @@ class ItemInfoViewModel(
                             "Response success with: $itemData"
                         )
                     } else Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, "Data response is null")
-                }
-                else Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, "Response is error ${this@ItemInfoViewModel}")
+                } else Log.e(
+                    Constants.RETROFIT_CLIENT_GIT_ERROR,
+                    "Response is error ${this@ItemInfoViewModel}"
+                )
             }
 
             override fun onFailure(call: Call<ItemInfo>, t: Throwable) {
-                Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, "Error message ${this@ItemInfoViewModel}: " + t.message.toString())
+                Log.e(
+                    Constants.RETROFIT_CLIENT_GIT_ERROR,
+                    "Error message ${this@ItemInfoViewModel}: " + t.message.toString()
+                )
             }
         })
     }
