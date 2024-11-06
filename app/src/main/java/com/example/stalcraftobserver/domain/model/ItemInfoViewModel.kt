@@ -19,7 +19,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ItemInfoViewModel(
-    val id: String,
     private val itemsService: ItemsService,
     private val gitHubApi: RetrofitClientItemInfo
 ) : ViewModel() {
@@ -28,11 +27,11 @@ class ItemInfoViewModel(
 
     var info = MutableStateFlow<String>(" ")
 
-    public fun getItemWithId() = viewModelScope.launch(Dispatchers.IO) {
+    public fun getItemWithId(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val itemsResult = itemsService.getItemWithId(id = id)) {
             is FunctionResult.Success -> {
                 _item = itemsResult.data
-                //Log.i(Constants.SUCCES_DATABASE_TAG, "Data is successfully read: ${_item.id}")
+                Log.i(Constants.SUCCES_DATABASE_TAG, "Data is successfully read: ${_item.id} ${this@ItemInfoViewModel}")
                 getItemData()
             }
 
@@ -46,13 +45,13 @@ class ItemInfoViewModel(
         if (!::_item.isInitialized) {
             Log.d(
                 Constants.ERROR_DATABASE_TAG,
-                "Item is not initialize"
+                "Item is not initialize ${this@ItemInfoViewModel}"
             )
             return@launch
         }
         Log.d(
             Constants.RETROFIT_CLIENT_GIT_DEBUG,
-            "Current item: Category - ${_item.category}  Id - ${_item.id}"
+            "Current item: Category - ${_item.category}  Id - ${_item.id} ${this@ItemInfoViewModel}"
         )
         val call = gitHubApi.instance.getItemData("ru", category = _item.category, id = _item.id)
         call.enqueue(object : Callback<ItemInfo> {
@@ -65,7 +64,7 @@ class ItemInfoViewModel(
                             Constants.RETROFIT_CLIENT_GIT_SUCCES,
                             "Response success with: $itemData"
                         )
-                    } else Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, "Data response is null")
+                    } else Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, "Data response is null ${this@ItemInfoViewModel}")
                 } else Log.e(
                     Constants.RETROFIT_CLIENT_GIT_ERROR,
                     "Response is error ${this@ItemInfoViewModel}"

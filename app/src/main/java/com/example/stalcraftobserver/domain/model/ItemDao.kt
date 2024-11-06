@@ -8,6 +8,6 @@ interface ItemDao{
     @Query("select * from Map_Name_Id")
     fun getAll(): List<Item>
 
-    @Query("select * from Map_Name_Id where :id")
+    @Query("select * from Map_Name_Id where id = :id")
     fun getItemWithId(id: String): Item
 }

@@ -1,7 +1,6 @@
 package com.example.stalcraftobserver.data.manager
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabaseLockedException
 import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.room.Room
@@ -14,12 +13,12 @@ class ItemsService(
     context: Context
 ) {
 
-    companion object{
+    companion object {
         @Volatile
         private var instance: RoomModel? = null
 
-        fun getDataBase(context: Context): RoomModel{
-            return instance ?: synchronized(this){
+        fun getDataBase(context: Context): RoomModel {
+            return instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
                     RoomModel::class.java, "Map_Name_Id"
@@ -31,34 +30,52 @@ class ItemsService(
             }
         }
     }
-    
+
     private val db = getDataBase(context)
 
     suspend fun getAllItems(): FunctionResult<List<Item>> {
         return try {
             val items = db.ItemDao().getAll()
-            Log.i(Constants.SUCCES_DATABASE_TAG, "Successfully read data from database")
+            Log.i(
+                Constants.SUCCES_DATABASE_TAG,
+                "Successfully read data from database (${this@ItemsService})"
+            )
             FunctionResult.Success(items)
         } catch (e: SQLiteException) {
-            Log.e(Constants.ERROR_DATABASE_TAG, "Database error: ${e.message}")
-            FunctionResult.Error("Database error")
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsService})")
         } catch (e: Exception) {
-            Log.e(Constants.ERROR_DATABASE_TAG, "Unexpected error: ${e.message}")
-            FunctionResult.Error("Unexpected error in database")
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsService})")
         }
     }
 
     suspend fun getItemWithId(id: String): FunctionResult<Item> {
         return try {
-            val items = db.ItemDao().getItemWithId(id)
-            Log.i(Constants.SUCCES_DATABASE_TAG, "Successfully read data from database")
-            FunctionResult.Success(items)
+            val item = db.ItemDao().getItemWithId(id)
+            Log.i(
+                Constants.SUCCES_DATABASE_TAG,
+                "Successfully read data from database $item with id $id (${this@ItemsService})"
+            )
+            FunctionResult.Success(item)
         } catch (e: SQLiteException) {
-            Log.e(Constants.ERROR_DATABASE_TAG, "Database error: ${e.message}")
-            FunctionResult.Error("Database error")
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsService})")
         } catch (e: Exception) {
-            Log.e(Constants.ERROR_DATABASE_TAG, "Unexpected error: ${e.message}")
-            FunctionResult.Error("Unexpected error in database")
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsService})")
         }
     }
 

@@ -44,18 +44,21 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val viewModel = ItemViewModel(ItemsService(LocalContext.current))
+            val itemsService = ItemsService(LocalContext.current)
+            val retrofitGit = RetrofitClientItemInfo
+            val viewModel = ItemViewModel(itemsService)
+            val viewModel2 = ItemInfoViewModel(itemsService = itemsService, gitHubApi = retrofitGit)
             StalcraftObserverTheme {
                 NavHost(
                     navController = navController,
                     startDestination = NavigationItem.OnBoarding.route
                 ) {
                     composable(NavigationItem.OnBoarding.route) {
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.OnBoarding.route}")
+                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.OnBoarding.route} $this")
                         OnBoardingScreen(navController = navController)
                     }
                     composable(NavigationItem.ListItems.route){
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ListItems.route}")
+                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ListItems.route} $this")
                         ItemsListScreen(navController = navController,viewModel = viewModel)
                     }
                     composable(
@@ -63,10 +66,9 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("idItem") { type = NavType.StringType })
                     ) { backStackEntry ->
                         val idItem = backStackEntry.arguments?.getString("idItem")
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ItemInfo("$idItem").route}")
                         idItem?.let {
-                            val viewModel2 = ItemInfoViewModel(id = it, itemsService = ItemsService(LocalContext.current), gitHubApi = RetrofitClientItemInfo)
-                            ItemInfoScreen(viewModel = viewModel2)
+                            Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ItemInfo("$idItem").route} $this")
+                            ItemInfoScreen(id = it,viewModel = viewModel2)
                         }
                     }
                 }

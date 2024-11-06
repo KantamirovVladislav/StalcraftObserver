@@ -3,6 +3,7 @@ package com.example.stalcraftobserver.presentation.itemInfoScreen
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,19 +16,22 @@ import com.example.stalcraftobserver.util.Constants
 
 @Composable
 fun ItemInfoScreen(
+    id: String,
     modifier: Modifier = Modifier,
     viewModel: ItemInfoViewModel
 ){
     val info by viewModel.info.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getItemWithId()
+        viewModel.getItemWithId(id)
     }
 
-    Column {
-        Text(
-            text = info
-        )
-    }
+    LazyColumn() {
+        item {
+            Text(
+                text = info
+            )
+        }
 
+    }
 }

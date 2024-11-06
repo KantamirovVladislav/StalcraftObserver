@@ -43,7 +43,7 @@ fun ItemsListScreen(
     val itemsState by viewModel.itemsList.collectAsState()
 
     LaunchedEffect(Unit) {
-        Log.d(Constants.SUCCES_DATABASE_TAG, "ReadData in LaunchedEffect ItemsListScreen")
+        Log.d("KEKE", "function get KEKW")
         viewModel.getItems()
     }
     Text(text = "Loaded items count: ${itemsState.size}", modifier = Modifier.padding(8.dp))
