@@ -16,21 +16,43 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ItemViewModel(private val itemsService: ItemsService) : ViewModel() {
-
     private val _itemsList = MutableStateFlow(emptyList<Item>())
+    val itemsList: StateFlow<List<Item>> = _itemsList
 
-    val itemsList = _itemsList.asStateFlow()
+    private var currentPage = 0
+    private val itemsPerPage = 20
+    private var isLoading = false
 
-    fun getItems() = viewModelScope.launch(Dispatchers.IO) {
-        when (val itemsResult = itemsService.getAllItems()) {
+    init {
+        loadMoreItems()
+    }
+
+    fun shouldLoadMore(): Boolean {
+        return !isLoading && _itemsList.value.size % itemsPerPage == 0
+    }
+
+    fun loadMoreItems() {
+        if (isLoading) return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            isLoading = true
+            val offset = currentPage * itemsPerPage
+
+
+            when (val newItems = itemsService.getItemsPaged(itemsPerPage, offset)) {
             is FunctionResult.Success -> {
-                Log.d("Items", "Fetched items count: ${itemsResult.data.size}")
-                _itemsList.value = itemsResult.data
-                Log.d("Items", "ItemsList updated with ${_itemsList.value.size} items")
+                if (newItems.data.isNotEmpty()) {
+                    _itemsList.value += newItems.data
+                    currentPage++
+                }
+
             }
             is FunctionResult.Error -> {
-                Log.e(Constants.ERROR_DATABASE_TAG, itemsResult.message)
+                Log.e(Constants.ERROR_DATABASE_TAG, "itemsResult.message")
             }
+        }
+
+            isLoading = false
         }
     }
 }

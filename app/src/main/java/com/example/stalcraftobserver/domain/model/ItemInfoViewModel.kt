@@ -25,9 +25,9 @@ class ItemInfoViewModel(
 
     private lateinit var _item: Item
 
-    var info = MutableStateFlow<String>(" ")
+    var info = MutableStateFlow(" ")
 
-    public fun getItemWithId(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun getItemWithId(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val itemsResult = itemsService.getItemWithId(id = id)) {
             is FunctionResult.Success -> {
                 _item = itemsResult.data

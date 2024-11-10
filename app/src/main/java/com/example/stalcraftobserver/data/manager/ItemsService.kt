@@ -79,6 +79,29 @@ class ItemsService(
         }
     }
 
+    fun getItemsPaged(limit: Int, offset: Int): FunctionResult<List<Item>>{
+        return try {
+            val item = db.ItemDao().getItemsPaged(limit = limit, offset = offset)
+            Log.i(
+                Constants.SUCCES_DATABASE_TAG,
+                "Successfully read data from database with id (${this@ItemsService})"
+            )
+            FunctionResult.Success(item)
+        } catch (e: SQLiteException) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsService})")
+        } catch (e: Exception) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsService})")
+        }
+    }
+
     fun closeDatabase() {
         instance?.close()
         instance = null

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.example.stalcraftobserver.domain.model.ItemInfoViewModel
 import com.example.stalcraftobserver.util.Constants
+import com.example.stalcraftobserver.util.NavigationItem
 
 @Composable
 fun ItemInfoScreen(

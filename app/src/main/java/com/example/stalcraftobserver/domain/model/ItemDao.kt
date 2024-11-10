@@ -10,4 +10,7 @@ interface ItemDao{
 
     @Query("select * from Map_Name_Id where id = :id")
     fun getItemWithId(id: String): Item
+
+    @Query("SELECT * FROM Map_Name_Id LIMIT :limit OFFSET :offset")
+    fun getItemsPaged(limit: Int, offset: Int): List<Item>
 }

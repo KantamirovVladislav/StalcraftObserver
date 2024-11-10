@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 
     id("kotlinx-serialization")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -95,7 +96,7 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation(libs.androidx.room.paging)
-
+    ksp(libs.hilt.android.compiler)
     // Coil for async images
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -103,7 +104,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
     implementation(libs.kotlinx.serialization.json.v163)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.hilt.android)
 }

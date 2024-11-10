@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.presentation.onBoarding
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,11 +27,11 @@ import com.example.stalcraftobserver.presentation.common.ContinueButton
 import com.example.stalcraftobserver.presentation.common.ContinueTextButton
 import com.example.stalcraftobserver.presentation.onBoarding.components.OnBoardingPage
 import com.example.stalcraftobserver.presentation.onBoarding.components.PagesIndicator
+import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
 import com.example.stalcraftobserver.util.Screen
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(
     modifier: Modifier = Modifier,
