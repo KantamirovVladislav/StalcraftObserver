@@ -9,6 +9,7 @@ import com.example.stalcraftobserver.data.manager.ItemsService
 import com.example.stalcraftobserver.data.manager.RetrofitClientItemInfo
 import com.example.stalcraftobserver.data.manager.StalcraftApi
 import com.example.stalcraftobserver.util.Constants
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +18,13 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
+import javax.inject.Named
 
-class ItemInfoViewModel(
-    private val itemsService: ItemsService,
-    private val gitHubApi: RetrofitClientItemInfo
+@HiltViewModel
+class ItemInfoViewModel @Inject constructor(
+    @Named("RoomDataService") private val itemsService: ItemsService,
+    @Named("GitHubService") private val gitHubApi: RetrofitClientItemInfo
 ) : ViewModel() {
 
     private lateinit var _item: Item

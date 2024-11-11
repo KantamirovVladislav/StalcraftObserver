@@ -12,8 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-object RetrofitClientItemInfo {
-    private const val BASE_URL =
+class RetrofitClientItemInfo {
+    private val BASE_URL =
         "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/"
 
     val gson = GsonBuilder()

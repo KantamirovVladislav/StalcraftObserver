@@ -6,17 +6,15 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.stalcraftobserver.data.manager.ItemsService
-import com.example.stalcraftobserver.data.manager.RetrofitClientItemInfo
 import com.example.stalcraftobserver.domain.model.ItemInfoViewModel
 import com.example.stalcraftobserver.domain.model.ItemViewModel
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
@@ -25,8 +23,14 @@ import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val itemViewModel: ItemViewModel by viewModels()
+    private val itemInfoViewModel: ItemInfoViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,13 +41,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val itemsService = ItemsService(LocalContext.current)
-            val retrofitGit = RetrofitClientItemInfo
-            val viewModel = ItemViewModel(itemsService)
+
             LaunchedEffect(Unit) {
-                viewModel.loadMoreItems()
+                itemViewModel.loadMoreItems()
             }
-            val viewModel2 = ItemInfoViewModel(itemsService = itemsService, gitHubApi = retrofitGit)
+
             StalcraftObserverTheme {
                 NavHost(
                     navController = navController,
@@ -55,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(NavigationItem.ListItems.route){
                         Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ListItems.route} $this")
-                        ItemsListScreen(navController = navController,viewModel = viewModel)
+                        ItemsListScreen(navController = navController,viewModel = itemViewModel)
                     }
                     composable(
                         route = NavigationItem.ItemInfo("{idItem}").route,
@@ -64,7 +66,7 @@ class MainActivity : ComponentActivity() {
                         val idItem = backStackEntry.arguments?.getString("idItem")
                         idItem?.let {
                             Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ItemInfo("$idItem").route} $this")
-                            ItemInfoScreen(id = it,viewModel = viewModel2)
+                            ItemInfoScreen(id = it,viewModel = itemInfoViewModel)
                         }
                     }
                 }

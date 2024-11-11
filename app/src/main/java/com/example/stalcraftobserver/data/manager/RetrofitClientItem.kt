@@ -7,8 +7,8 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 
-object RetrofitClientItem {
-    private const val BASE_URL = "https://eapi.stalcraft.net/"
+class RetrofitClientItem {
+    private val BASE_URL = "https://eapi.stalcraft.net/"
 
     val instance: StalcraftApi by lazy {
         val retrofit = Retrofit.Builder()
