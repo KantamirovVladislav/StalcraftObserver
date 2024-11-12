@@ -1,7 +1,6 @@
 package com.example.stalcraftobserver.domain.model
 
 import android.content.Context
-import androidx.navigation.Navigator
 import com.example.stalcraftobserver.data.manager.ItemsService
 import com.example.stalcraftobserver.data.manager.RetrofitClientItem
 import com.example.stalcraftobserver.data.manager.RetrofitClientItemInfo

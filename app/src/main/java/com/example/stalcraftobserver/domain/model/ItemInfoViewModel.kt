@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.domain.model
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,6 +24,7 @@ import javax.inject.Named
 
 @HiltViewModel
 class ItemInfoViewModel @Inject constructor(
+    application: Application,
     @Named("RoomDataService") private val itemsService: ItemsService,
     @Named("GitHubService") private val gitHubApi: RetrofitClientItemInfo
 ) : ViewModel() {
@@ -30,6 +32,8 @@ class ItemInfoViewModel @Inject constructor(
     private lateinit var _item: Item
 
     var info = MutableStateFlow(" ")
+
+    private val app = application as StalcraftApplication
 
     fun getItemWithId(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val itemsResult = itemsService.getItemWithId(id = id)) {
@@ -55,9 +59,9 @@ class ItemInfoViewModel @Inject constructor(
         }
         Log.d(
             Constants.RETROFIT_CLIENT_GIT_DEBUG,
-            "Current item: Category - ${_item.category}  Id - ${_item.id} ${this@ItemInfoViewModel}"
+            "Current item: Category - ${_item.category}  Id - ${_item.id} Region - ${app.localRegion.value} ${this@ItemInfoViewModel}"
         )
-        val call = gitHubApi.instance.getItemData("ru", category = _item.category, id = _item.id)
+        val call = gitHubApi.instance.getItemData(app.globalRegion.value, category = _item.category, id = _item.id)
         call.enqueue(object : Callback<ItemInfo> {
             override fun onResponse(call: Call<ItemInfo>, response: Response<ItemInfo>) {
                 if (response.isSuccessful) {
@@ -66,12 +70,12 @@ class ItemInfoViewModel @Inject constructor(
                         info.value = itemData.toString()
                         Log.d(
                             Constants.RETROFIT_CLIENT_GIT_SUCCES,
-                            "Response success with: $itemData"
+                            "Response success $response with: $itemData"
                         )
                     } else Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, "Data response is null ${this@ItemInfoViewModel}")
                 } else Log.e(
                     Constants.RETROFIT_CLIENT_GIT_ERROR,
-                    "Response is error ${this@ItemInfoViewModel}"
+                    "Response is error ${this@ItemInfoViewModel} $response"
                 )
             }
 

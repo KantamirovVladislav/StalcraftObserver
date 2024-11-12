@@ -100,7 +100,7 @@ dependencies {
     // Coil for async images
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation(libs.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
