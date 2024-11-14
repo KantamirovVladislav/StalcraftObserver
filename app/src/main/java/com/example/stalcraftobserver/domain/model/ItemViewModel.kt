@@ -1,26 +1,21 @@
 package com.example.stalcraftobserver.domain.model
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.stalcraftobserver.data.manager.ItemsService
+import com.example.stalcraftobserver.data.manager.ItemsRoomService
 import com.example.stalcraftobserver.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 @HiltViewModel
 class ItemViewModel @Inject constructor(
-    @Named("RoomDataService") private val itemsService: ItemsService
+    @Named("RoomDataService") private val itemsRoomService: ItemsRoomService
 ) : ViewModel() {
     private val _itemsList = MutableStateFlow(emptyList<Item>())
     val itemsList: StateFlow<List<Item>> = _itemsList
@@ -44,9 +39,9 @@ class ItemViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
             val offset = currentPage * itemsPerPage
+            Log.i("$this", "CurrentPage - $currentPage | offset - $offset | Items in list - ${_itemsList.value.size}")
 
-
-            when (val newItems = itemsService.getItemsPaged(itemsPerPage, offset)) {
+            when (val newItems = itemsRoomService.getItemsPaged(itemsPerPage, offset)) {
                 is FunctionResult.Success -> {
                     if (newItems.data.isNotEmpty()) {
                         _itemsList.value += newItems.data

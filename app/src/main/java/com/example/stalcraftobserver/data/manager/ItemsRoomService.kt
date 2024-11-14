@@ -9,7 +9,7 @@ import com.example.stalcraftobserver.domain.model.Item
 import com.example.stalcraftobserver.domain.model.RoomModel
 import com.example.stalcraftobserver.util.Constants
 
-class ItemsService(
+class ItemsRoomService(
     context: Context
 ) {
 
@@ -38,21 +38,21 @@ class ItemsService(
             val items = db.ItemDao().getAll()
             Log.i(
                 Constants.SUCCES_DATABASE_TAG,
-                "Successfully read data from database (${this@ItemsService})"
+                "Successfully read data from database (${this@ItemsRoomService})"
             )
             FunctionResult.Success(items)
         } catch (e: SQLiteException) {
             Log.e(
                 Constants.ERROR_DATABASE_TAG,
-                "Database error: ${e.message} (${this@ItemsService})"
+                "Database error: ${e.message} (${this@ItemsRoomService})"
             )
-            FunctionResult.Error("Database error (${this@ItemsService})")
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
         } catch (e: Exception) {
             Log.e(
                 Constants.ERROR_DATABASE_TAG,
-                "Unexpected error: ${e.message} (${this@ItemsService})"
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
             )
-            FunctionResult.Error("Unexpected error in database (${this@ItemsService})")
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
         }
     }
 
@@ -61,21 +61,21 @@ class ItemsService(
             val item = db.ItemDao().getItemWithId(id)
             Log.i(
                 Constants.SUCCES_DATABASE_TAG,
-                "Successfully read data from database $item with id $id (${this@ItemsService})"
+                "Successfully read data from database $item with id $id (${this@ItemsRoomService})"
             )
             FunctionResult.Success(item)
         } catch (e: SQLiteException) {
             Log.e(
                 Constants.ERROR_DATABASE_TAG,
-                "Database error: ${e.message} (${this@ItemsService})"
+                "Database error: ${e.message} (${this@ItemsRoomService})"
             )
-            FunctionResult.Error("Database error (${this@ItemsService})")
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
         } catch (e: Exception) {
             Log.e(
                 Constants.ERROR_DATABASE_TAG,
-                "Unexpected error: ${e.message} (${this@ItemsService})"
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
             )
-            FunctionResult.Error("Unexpected error in database (${this@ItemsService})")
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
         }
     }
 
@@ -84,21 +84,21 @@ class ItemsService(
             val item = db.ItemDao().getItemsPaged(limit = limit, offset = offset)
             Log.i(
                 Constants.SUCCES_DATABASE_TAG,
-                "Successfully read data from database with id (${this@ItemsService})"
+                "Successfully read data from database with id (${this@ItemsRoomService})"
             )
             FunctionResult.Success(item)
         } catch (e: SQLiteException) {
             Log.e(
                 Constants.ERROR_DATABASE_TAG,
-                "Database error: ${e.message} (${this@ItemsService})"
+                "Database error: ${e.message} (${this@ItemsRoomService})"
             )
-            FunctionResult.Error("Database error (${this@ItemsService})")
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
         } catch (e: Exception) {
             Log.e(
                 Constants.ERROR_DATABASE_TAG,
-                "Unexpected error: ${e.message} (${this@ItemsService})"
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
             )
-            FunctionResult.Error("Unexpected error in database (${this@ItemsService})")
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
         }
     }
 

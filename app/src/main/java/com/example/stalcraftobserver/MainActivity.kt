@@ -10,7 +10,9 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.NavType
+import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,6 +26,8 @@ import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,13 +35,10 @@ class MainActivity : ComponentActivity() {
     private val itemViewModel: ItemViewModel by viewModels()
     private val itemInfoViewModel: ItemInfoViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-//        CoroutineScope(Dispatchers.IO).launch {
-//            getInfo()
-//        }
 
         setContent {
             val navController = rememberNavController()
@@ -73,26 +74,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-//    fun getInfo(){
-//        RetrofitClientItem.instance.getAuctionHistory("ru", "y4y33", "275", "icwACm0QlFeURwORsflrjYiUHDPHedDHTHZiceGg").enqueue(object :
-//            Callback<PriceHistoryResponse> {
-//            override fun onResponse(call: Call<PriceHistoryResponse>, response: Response<PriceHistoryResponse>) {
-//                if (response.isSuccessful) {
-//                    val historyResponse = response.body()
-//                    if (historyResponse != null) {
-//                        Log.d("RetrofitRequest", historyResponse.total.toString())
-//                    }
-//                } else {
-//                    Log.e("RetrofitRequest", "Error in retrofitClient")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<PriceHistoryResponse>, t: Throwable) {
-//                Log.e("RetrofitRequest", "Error in retrofitClient" + t.message.toString())
-//            }
-//        })
-//    }
 }
 
 @Preview(showBackground = true)

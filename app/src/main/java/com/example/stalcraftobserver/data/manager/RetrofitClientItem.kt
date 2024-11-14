@@ -22,12 +22,20 @@ class RetrofitClientItem {
 
 interface StalcraftApi {
     @GET("{region}/auction/{item}/history")
-    fun getAuctionHistory(
+    fun getItemPriceHistory(
         @Path("region") region: String,
         @Path("item") itemId: String,
         @Header("Client-ID") clientId: String,
         @Header("Client-Secret") clientSecret: String
     ): Call<PriceHistoryResponse>
+
+    @GET("{region}/auction/{item}/lots")
+    fun getItemActiveLots(
+        @Path("region") region: String,
+        @Path("item") itemId: String,
+        @Header("Client-ID") clientId: String,
+        @Header("Client-Secret") clientSecret: String
+    ): Call<AuctionResponse>
 }
 
 data class PriceHistoryResponse(
@@ -45,3 +53,18 @@ data class Price(
         return "Кол-во $amount\nЦена $price\nВремя $time "
     }
 }
+data class AuctionResponse(
+    val total: Long,
+    val lots: List<Lot>
+)
+
+data class Lot(
+    val itemId: String,
+    val amount: Int,
+    val startPrice: Int,
+    val currentPrice: Int,
+    val buyoutPrice: Int,
+    val startTime: String,
+    val endTime: String,
+    val additional: Map<String, Any>
+)
