@@ -31,9 +31,7 @@ import com.example.stalcraftobserver.R
 import com.example.stalcraftobserver.data.manager.Element
 import com.example.stalcraftobserver.data.manager.InfoBlock
 import com.example.stalcraftobserver.domain.model.ItemInfoViewModel
-import com.example.stalcraftobserver.presentation.common.KeyValueElementCell
-import com.example.stalcraftobserver.presentation.common.NumericElementCell
-import com.example.stalcraftobserver.presentation.common.TextElementCell
+import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArmorInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
 @Composable
@@ -69,45 +67,11 @@ fun ItemInfoScreen(
         viewModel.getItemWithId(id)
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val image = painterResource(id = R.drawable.aboba)
-                KeyValueElementCell()
-                Image(
-                    painter = image,
-                    contentDescription = " ",
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(5.dp)
-                        .align(Alignment.CenterVertically),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.Start
-            ) {
-
-//                if (numericValues != null) {
-//                    NumericElementCell(numericValues)
-//                }
-                NumericElementCell()
-//                if (textValues != null){
-//                    TextElementCell(textValues)
-//                }
-                TextElementCell()
-            }
-            Column {
-                Text(text = "${textValue}")
-            }
-        }
-
+    info?.let {
+        ArmorInfoScreen(
+        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/armor/combat/1rpl6.png",
+        item = it
+    )
     }
 }
 

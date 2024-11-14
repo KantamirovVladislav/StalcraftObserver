@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.presentation.itemsListing
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.model.ItemViewModel
@@ -40,6 +42,9 @@ fun ItemsListScreen(
     val selectedFilters = remember { mutableStateListOf<String>() }
     val searchQuery = remember { mutableStateOf("") }
 
+    var currentHeightCell: Dp = ((LocalConfiguration.current.screenHeightDp / 5) + 10).dp
+    var currentCellCount: Int = LocalConfiguration.current.screenWidthDp / 130
+
     Column(modifier = modifier.fillMaxSize()) {
         SearchView(
             query = searchQuery.value,
@@ -52,7 +57,7 @@ fun ItemsListScreen(
             Modifier.padding(horizontal = 4.dp)
         )
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(currentCellCount),
             contentPadding = PaddingValues(8.dp),
             modifier = Modifier
                 .fillMaxSize()
@@ -62,7 +67,7 @@ fun ItemsListScreen(
                 ItemCell(
                     modifier = Modifier
                         .padding(4.dp)
-                        .height(((LocalConfiguration.current.screenHeightDp / 5) + 10).dp)
+                        .height(currentHeightCell)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
