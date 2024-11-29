@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -29,6 +32,7 @@ import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.internal.Provider
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -50,39 +54,41 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val appEntry by localUserManager.readAppEntry().collectAsState(initial = false)
 
+            var isAppInitialized by remember { mutableStateOf(false) }
+            var appEntry by remember { mutableStateOf(false) }
+
+            LaunchedEffect(Unit) {
+                appEntry = localUserManager.readAppEntry().first()
+                isAppInitialized = true
+            }
             LaunchedEffect(Unit) {
                 itemViewModel.loadMoreItems()
             }
 
-            LaunchedEffect(appEntry) {
-                if (appEntry) {
-                    navController.navigate(NavigationItem.ListItems.route)
-                }
-            }
-
             StalcraftObserverTheme {
-                NavHost(
-                    navController = navController,
-                    startDestination = NavigationItem.OnBoarding.route
-                ) {
-                    composable(NavigationItem.OnBoarding.route) {
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.OnBoarding.route} $this")
-                        OnBoardingScreen(navController = navController, viewModel = onBoardingViewModel)
-                    }
-                    composable(NavigationItem.ListItems.route){
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ListItems.route} $this")
-                        ItemsListScreen(navController = navController,viewModel = itemViewModel)
-                    }
-                    composable(
-                        route = NavigationItem.ItemInfo("{idItem}").route,
-                        arguments = listOf(navArgument("idItem") { type = NavType.StringType })
-                    ) { backStackEntry ->
-                        val idItem = backStackEntry.arguments?.getString("idItem")
-                        idItem?.let {
-                            Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ItemInfo("$idItem").route} $this")
-                            ItemInfoScreen(id = it,viewModel = itemInfoViewModel)
+                if (isAppInitialized) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = if (appEntry) NavigationItem.ListItems.route else NavigationItem.OnBoarding.route
+                    ) {
+                        composable(NavigationItem.OnBoarding.route) {
+                            OnBoardingScreen(
+                                navController = navController,
+                                viewModel = onBoardingViewModel
+                            )
+                        }
+                        composable(NavigationItem.ListItems.route) {
+                            ItemsListScreen(navController = navController, viewModel = itemViewModel)
+                        }
+                        composable(
+                            route = NavigationItem.ItemInfo("{idItem}").route,
+                            arguments = listOf(navArgument("idItem") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val idItem = backStackEntry.arguments?.getString("idItem")
+                            idItem?.let {
+                                ItemInfoScreen(id = it, viewModel = itemInfoViewModel)
+                            }
                         }
                     }
                 }

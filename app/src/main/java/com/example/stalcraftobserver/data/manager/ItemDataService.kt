@@ -2,10 +2,10 @@ package com.example.stalcraftobserver.data.manager
 
 import android.app.Application
 import android.util.Log
-import com.example.stalcraftobserver.ClientSecret
 import com.example.stalcraftobserver.domain.model.FunctionResult
 import com.example.stalcraftobserver.domain.model.Item
 import com.example.stalcraftobserver.domain.model.StalcraftApplication
+import com.example.stalcraftobserver.util.ClientSecret
 import com.example.stalcraftobserver.util.Constants
 import retrofit2.awaitResponse
 import javax.inject.Inject

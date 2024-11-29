@@ -72,9 +72,10 @@ fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
             ){
                 Text(
                     textAlign = TextAlign.Center,
-                    text = item.titleRus,
+                    text = item.titleRus.trim(),
                     modifier = Modifier
-                        .align(Alignment.Center),
+                        .align(Alignment.Center)
+                        .padding(4.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

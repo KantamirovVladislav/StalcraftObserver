@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.presentation.onBoarding
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +32,7 @@ import com.example.stalcraftobserver.presentation.onBoarding.components.PagesInd
 import com.example.stalcraftobserver.util.NavigationItem
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun OnBoardingScreen(
     modifier: Modifier = Modifier,
@@ -48,58 +51,59 @@ fun OnBoardingScreen(
     LaunchedEffect(pageState.currentPage) {
         viewModel.onPageChanged(pageState.currentPage)
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        HorizontalPager(state = pageState) { index ->
-            OnBoardingPage(page = viewModel.pages[index])
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Row(
+    Scaffold {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .navigationBarsPadding(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            PagesIndicator(
-                modifier = Modifier.width(70.dp),
-                pageSize = viewModel.pages.size,
-                selectedPage = currentPage
-            )
+            HorizontalPager(state = pageState) { index ->
+                OnBoardingPage(page = viewModel.pages[index])
+            }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (buttonState[0].isNotEmpty()) {
-                    ContinueTextButton(
-                        text = buttonState[0],
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .navigationBarsPadding(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PagesIndicator(
+                    modifier = Modifier.width(70.dp),
+                    pageSize = viewModel.pages.size,
+                    selectedPage = currentPage
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (buttonState[0].isNotEmpty()) {
+                        ContinueTextButton(
+                            text = buttonState[0],
+                            onClick = {
+                                if (currentPage > 0) {
+                                    scope.launch {
+                                        pageState.animateScrollToPage(page = currentPage - 1)
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    ContinueButton(
+                        text = buttonState[1],
                         onClick = {
-                            if (currentPage > 0) {
+                            if (currentPage == viewModel.pages.size - 1) {
+                                navController.navigate(NavigationItem.ListItems.route)
+                            } else {
                                 scope.launch {
-                                    pageState.animateScrollToPage(page = currentPage - 1)
+                                    pageState.animateScrollToPage(page = currentPage + 1)
                                 }
                             }
                         }
                     )
                 }
-
-                ContinueButton(
-                    text = buttonState[1],
-                    onClick = {
-                        if (currentPage == viewModel.pages.size - 1) {
-                            navController.navigate(NavigationItem.ListItems.route)
-                        } else {
-                            scope.launch {
-                                pageState.animateScrollToPage(page = currentPage + 1)
-                            }
-                        }
-                    }
-                )
             }
         }
     }
