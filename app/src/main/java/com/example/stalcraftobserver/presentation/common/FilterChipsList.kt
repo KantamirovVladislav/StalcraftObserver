@@ -7,10 +7,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.stalcraftobserver.domain.model.FilterItem
 
 @Composable
 fun FilterChipsList(
-    filterList: List<String>,
+    filterList: List<FilterItem>,
     callback: (choosedFilter: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -20,7 +21,7 @@ fun FilterChipsList(
     ) {
         items(filterList) { filter ->
             FilterChipCommon(
-                filter = filter,
+                filter = filter.name,
                 callback = callback,
                 modifier = Modifier.padding(horizontal = 2.dp)
             )

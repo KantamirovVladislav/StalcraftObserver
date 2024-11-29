@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.stalcraftobserver.data.manager.GitHubApi
 import com.example.stalcraftobserver.data.manager.ItemDataService
 import com.example.stalcraftobserver.data.manager.ItemsRoomService
+import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
 import com.example.stalcraftobserver.data.manager.RetrofitClientItem
 import com.example.stalcraftobserver.data.manager.RetrofitClientItemInfo
 import com.example.stalcraftobserver.data.manager.StalcraftApi
@@ -54,4 +55,10 @@ object ViewModelModule {
         @Named("GitHubService") gitHubService: GitHubApi,
     ) = ItemDataService(application, gitHubApi = gitHubService, stalcraftApi = stalcraftApiService)
 
+    @Singleton
+    @Provides
+    @Named("LocalUserManager")
+    fun provideLocalUserManager(
+        @ApplicationContext context: Context
+    ) = LocalUserManagerRel(context = context)
 }

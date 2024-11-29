@@ -9,16 +9,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import androidx.navigation.NavType
-import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.stalcraftobserver.domain.model.ItemInfoViewModel
-import com.example.stalcraftobserver.domain.model.ItemViewModel
+import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
+import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.domain.model.viewModel.ItemViewModel
+import com.example.stalcraftobserver.domain.model.viewModel.OnBoardingViewModel
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
@@ -26,6 +28,7 @@ import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.internal.Provider
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -34,6 +37,11 @@ class MainActivity : ComponentActivity() {
 
     private val itemViewModel: ItemViewModel by viewModels()
     private val itemInfoViewModel: ItemInfoViewModel by viewModels()
+    private val onBoardingViewModel: OnBoardingViewModel by viewModels()
+
+    @Inject
+    @Named("LocalUserManager")
+    lateinit var localUserManager: LocalUserManagerRel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +50,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+            val appEntry by localUserManager.readAppEntry().collectAsState(initial = false)
 
             LaunchedEffect(Unit) {
                 itemViewModel.loadMoreItems()
+            }
+
+            LaunchedEffect(appEntry) {
+                if (appEntry) {
+                    navController.navigate(NavigationItem.ListItems.route)
+                }
             }
 
             StalcraftObserverTheme {
@@ -54,7 +69,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable(NavigationItem.OnBoarding.route) {
                         Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.OnBoarding.route} $this")
-                        OnBoardingScreen(navController = navController)
+                        OnBoardingScreen(navController = navController, viewModel = onBoardingViewModel)
                     }
                     composable(NavigationItem.ListItems.route){
                         Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ListItems.route} $this")

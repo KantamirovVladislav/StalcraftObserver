@@ -1,4 +1,4 @@
-package com.example.stalcraftobserver.domain.model
+package com.example.stalcraftobserver.domain.model.viewModel
 
 import android.app.Application
 import android.util.Log
@@ -7,16 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.stalcraftobserver.data.manager.ItemDataService
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.ItemsRoomService
-import com.example.stalcraftobserver.data.manager.RetrofitClientItemInfo
+import com.example.stalcraftobserver.domain.model.FunctionResult
+import com.example.stalcraftobserver.domain.model.Item
+import com.example.stalcraftobserver.domain.model.StalcraftApplication
 import com.example.stalcraftobserver.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Named
 
