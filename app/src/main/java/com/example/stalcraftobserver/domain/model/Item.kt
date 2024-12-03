@@ -14,4 +14,7 @@ data class Item(
 ) {
     fun createImagePath(region: String) =
         "https://github.com/EXBO-Studio/stalcraft-database/raw/main/$region/icons/$category/$id.png"
+
+    fun createDataPath(region: String) =
+        "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/$region/items/$category/$id.json"
 }

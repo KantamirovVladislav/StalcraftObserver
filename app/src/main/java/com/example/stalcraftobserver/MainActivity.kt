@@ -6,57 +6,89 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.stalcraftobserver.data.manager.ItemsService
-import com.example.stalcraftobserver.domain.model.ItemViewModel
+import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
+import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.domain.model.viewModel.ItemViewModel
+import com.example.stalcraftobserver.domain.model.viewModel.OnBoardingViewModel
+import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
-import com.example.stalcraftobserver.util.Screen
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.internal.Provider
+import kotlinx.coroutines.flow.first
+import javax.inject.Inject
+import javax.inject.Named
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val itemViewModel: ItemViewModel by viewModels()
+    private val itemInfoViewModel: ItemInfoViewModel by viewModels()
+    private val onBoardingViewModel: OnBoardingViewModel by viewModels()
+
+    @Inject
+    @Named("LocalUserManager")
+    lateinit var localUserManager: LocalUserManagerRel
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             val navController = rememberNavController()
-            val viewModel = ItemViewModel(ItemsService(LocalContext.current))
+
+            var isAppInitialized by remember { mutableStateOf(false) }
+            var appEntry by remember { mutableStateOf(false) }
+
+            LaunchedEffect(Unit) {
+                appEntry = localUserManager.readAppEntry().first()
+                isAppInitialized = true
+            }
+            LaunchedEffect(Unit) {
+                itemViewModel.loadMoreItems()
+            }
+
             StalcraftObserverTheme {
-                NavHost(
-                    navController = navController,
-                    startDestination = NavigationItem.OnBoarding.route
-                ) {
-                    composable(NavigationItem.OnBoarding.route) {
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.OnBoarding.route}")
-                        OnBoardingScreen(navController = navController)
-                    }
-                    composable(NavigationItem.ListItems.route){
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ListItems.route}")
-                        ItemsListScreen(navController = navController,viewModel = viewModel)
-                    }
-                    composable(
-                        route = NavigationItem.ItemInfo("{idItem}").route,
-                        arguments = listOf(navArgument("idItem") { type = NavType.StringType })
-                    ) { backStackEntry ->
-                        val idItem = backStackEntry.arguments?.getString("idItem")
-                        Log.i(Constants.SWITCH_SCREEN, "Go to ${NavigationItem.ItemInfo("$idItem").route}")
-                        idItem?.let {
-                            //ItemInfoScreen(itemId = it)
+                if (isAppInitialized) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = if (appEntry) NavigationItem.ListItems.route else NavigationItem.OnBoarding.route
+                    ) {
+                        composable(NavigationItem.OnBoarding.route) {
+                            OnBoardingScreen(
+                                navController = navController,
+                                viewModel = onBoardingViewModel
+                            )
+                        }
+                        composable(NavigationItem.ListItems.route) {
+                            ItemsListScreen(navController = navController, viewModel = itemViewModel)
+                        }
+                        composable(
+                            route = NavigationItem.ItemInfo("{idItem}").route,
+                            arguments = listOf(navArgument("idItem") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val idItem = backStackEntry.arguments?.getString("idItem")
+                            idItem?.let {
+                                ItemInfoScreen(id = it, viewModel = itemInfoViewModel)
+                            }
                         }
                     }
                 }
