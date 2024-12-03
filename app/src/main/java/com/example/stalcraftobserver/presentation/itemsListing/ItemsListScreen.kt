@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.stalcraftobserver.domain.model.FilterItem
 import com.example.stalcraftobserver.domain.model.viewModel.ItemViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithSearchAndFilter
 import com.example.stalcraftobserver.presentation.itemsListing.components.ItemCell
@@ -49,9 +50,15 @@ fun ItemsListScreen(
 
     TopAppBarWithSearchAndFilter(
         query = searchQuery.value,
-        filters = listOf("kekw","kekw","kekw","kekw","kekw")
-    ) {
-        modifierFromTopBar ->
+        filters = listOf(
+            FilterItem(name = "kekw", group = "kekw"),
+            FilterItem(name = "kekw", group = "kekw"),
+            FilterItem(name = "kekw", group = "kekw"),
+            FilterItem(name = "kekw", group = "kekw"),
+            FilterItem(name = "kekw", group = "kekw"),
+            FilterItem(name = "kekw", group = "kekw")
+        )
+    ) { modifierFromTopBar ->
         Column(
             modifier = modifierFromTopBar
                 .fillMaxSize()

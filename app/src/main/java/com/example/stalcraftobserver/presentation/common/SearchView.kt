@@ -31,7 +31,7 @@ fun SearchView(
         value = query,
         onValueChange = onQueryChanged,
         label = { Text("Search") },
-        modifier = modifier.padding(12.dp).clip(RoundedCornerShape(14.dp)),
+        modifier = modifier.padding(6.dp).clip(RoundedCornerShape(14.dp)),
         singleLine = true,
         leadingIcon = {
             Icon(Icons.Default.Search, contentDescription = "Search Icon")

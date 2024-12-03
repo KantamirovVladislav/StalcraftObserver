@@ -1,33 +1,45 @@
 package com.example.stalcraftobserver.presentation.common
 
 import android.content.res.Configuration
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.stalcraftobserver.domain.model.FilterItem
+import com.example.stalcraftobserver.domain.model.StalcraftApplication
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,13 +48,26 @@ fun TopAppBarWithSearchAndFilter(
     modifier: Modifier = Modifier,
     query: String = "",
     onQueryChanged: (String) -> Unit = {},
-    filters: List<String> = emptyList(),
+    filters: List<FilterItem> = emptyList(),
     onFilterSelected: (String) -> Unit = {},
-    content: @Composable (modifier: Modifier) -> Unit
+    content: @Composable (modifier: Modifier) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+
+    // Получаем collapsedFraction для управления видимостью фильтров
+    val collapsedFraction = scrollBehavior.state.collapsedFraction
+
+    var isSettingsVisible by remember { mutableStateOf(false) }
+
+    val sheetState = rememberModalBottomSheetState()
+
+    val application = StalcraftApplication()
+
     Scaffold(
-        modifier = modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -50,11 +75,14 @@ fun TopAppBarWithSearchAndFilter(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    SearchView(
-                        query = query,
-                        onQueryChanged = onQueryChanged,
-                        modifier = Modifier.padding(12.dp)
-                    )
+                    Column(
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    ) {
+                        SearchView(
+                            query = query,
+                            onQueryChanged = onQueryChanged
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = { /* Navigation back logic */ }) {
@@ -65,7 +93,15 @@ fun TopAppBarWithSearchAndFilter(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Navigation back logic */ }) {
+                    IconButton(onClick = { /* More options logic */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "More Options"
+                        )
+                    }
+                    IconButton(onClick = {
+                        isSettingsVisible = !isSettingsVisible
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "Settings"
@@ -76,9 +112,41 @@ fun TopAppBarWithSearchAndFilter(
             )
         }
     ) { innerPadding ->
-        content(Modifier.padding(innerPadding))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            AnimatedVisibility(
+                visible = collapsedFraction == 0f,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                FilterChipsList(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    filterList = filters,
+                    callback = { }
+                )
+            }
+
+            content(Modifier.fillMaxSize())
+
+        }
+
+        if (isSettingsVisible){
+            SettingsPanel(
+                sheetState = sheetState,
+                onCloseSheet = { isSettingsVisible = false },
+                application = application
+            )
+        }
     }
 }
+
+
+
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -95,6 +163,11 @@ fun TopAppBarWithSearchAndFilter(
 @Composable
 fun GreetingPreview() {
     StalcraftObserverTheme {
-        //TopAppBarForList()
+        TopAppBarWithSearchAndFilter(
+            filters = listOf(
+                FilterItem(name = "kekw", group = "kekw"),
+                FilterItem(name = "kekw", group = "kekw")
+            )
+        )
     }
 }
