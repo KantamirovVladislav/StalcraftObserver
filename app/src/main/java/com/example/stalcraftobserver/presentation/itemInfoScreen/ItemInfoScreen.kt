@@ -1,6 +1,8 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,36 +24,18 @@ fun ItemInfoScreen(
 ) {
     val info by viewModel.info.collectAsState()
 
-    val elementValue = remember(info){
-        info?.infoBlocks?.filterIsInstance<InfoBlock.List>()
-    }
-
-    val textValue = remember(info) {
-        info?.infoBlocks?.filterIsInstance<InfoBlock.Text>()
-    }
-
-    val keyValueValues = remember(info) {
-        elementValue?.flatMap { it.elements!! }?.filterIsInstance<Element.KeyValueElement>()
-    }
-
-    val numericValues = remember(info) {
-        elementValue?.flatMap { it.elements!! }?.filterIsInstance<Element.NumericElement>()
-    }
-
-    val textValues = remember(info) {
-        elementValue?.flatMap { it.elements!! }?.filterIsInstance<Element.TextElement>()
-    }
 
 
     LaunchedEffect(Unit) {
         viewModel.getItemWithId(id)
     }
 
+
     info?.let {
         ArmorInfoScreen(
-        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/armor/combat/1rpl6.png",
-        item = it
-    )
+            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+            item = it
+        )
     }
 }
 

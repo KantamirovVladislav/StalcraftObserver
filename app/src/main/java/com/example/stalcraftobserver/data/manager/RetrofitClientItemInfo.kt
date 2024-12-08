@@ -74,7 +74,7 @@ data class Status(
 sealed class InfoBlock {
     data class Text(
         val type: String?,
-        val title: TextItem?,
+        val title: TranslationItem?,
         val text: TranslationItem?
     ) : InfoBlock()
 
@@ -116,6 +116,7 @@ sealed class Element {
 
     data class TextElement(
         val type: String?,
+        val title: TranslationItem?,
         val text: TranslationItem?
     ) : Element()
 
@@ -162,7 +163,7 @@ class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
         return when (type) {
             "text" -> {
                 val title = jsonObject.get("title")?.let {
-                    context.deserialize<TextItem>(it, TextItem::class.java)
+                    context.deserialize<TranslationItem>(it, TranslationItem::class.java)
                 }
                 val text = jsonObject.get("text")?.let {
                     context.deserialize<TranslationItem>(it, TranslationItem::class.java)

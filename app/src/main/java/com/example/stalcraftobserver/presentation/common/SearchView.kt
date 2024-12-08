@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -29,6 +30,7 @@ fun SearchView(
 ) {
     TextField(
         value = query,
+        textStyle = MaterialTheme.typography.bodySmall,
         onValueChange = onQueryChanged,
         label = { Text("Search") },
         modifier = modifier.padding(6.dp).clip(RoundedCornerShape(14.dp)),

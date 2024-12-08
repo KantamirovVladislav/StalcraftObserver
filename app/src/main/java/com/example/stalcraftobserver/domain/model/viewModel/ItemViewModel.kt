@@ -19,13 +19,19 @@ import javax.inject.Named
 class ItemViewModel @Inject constructor(
     @Named("RoomDataService") private val itemsRoomService: ItemsRoomService
 ) : ViewModel() {
+
     private val _itemsList = mutableStateListOf<Item>()
+    private val currentSortFilters = mutableListOf("nameEng ASC")
+    private val selectedCategoryFilters = mutableListOf<String>()
+    private val selectedRarityFilters = mutableListOf<String>()
+
     val itemsList: List<Item> get() = _itemsList
 
     private var currentPage = 0
     private val itemsPerPage = 20
     private var isLoading = false
 
+    private var searchQuery: String = ""
 
     init {
         loadMoreItems()
@@ -35,6 +41,33 @@ class ItemViewModel @Inject constructor(
         return !isLoading && _itemsList.size % itemsPerPage == 0
     }
 
+    fun updateSortFilters(filters: List<String>) {
+        currentSortFilters.clear()
+        currentSortFilters.addAll(filters)
+
+        reloadItems()
+    }
+
+    fun updateCategoryFilters(categories: List<String>) {
+        selectedCategoryFilters.clear()
+        selectedCategoryFilters.addAll(categories)
+
+        reloadItems()
+    }
+
+    fun updateRarityFilters(rarities: List<String>) {
+        selectedRarityFilters.clear()
+        selectedRarityFilters.addAll(rarities)
+
+        reloadItems()
+    }
+
+    private fun reloadItems() {
+        _itemsList.clear()
+        currentPage = 0
+        loadMoreItems()
+    }
+
     fun loadMoreItems() {
         if (isLoading) return
 
@@ -42,20 +75,31 @@ class ItemViewModel @Inject constructor(
             isLoading = true
             val offset = currentPage * itemsPerPage
 
-            val newItemsResult = async { itemsRoomService.getItemsPaged(itemsPerPage, offset) }
-            when (val newItems = newItemsResult.await()) {
+            when (val result = itemsRoomService.getItemsWithDynamicSort(
+                query = searchQuery,
+                sortColumns = currentSortFilters,
+                limit = itemsPerPage,
+                offset = offset,
+                categoryFilters = selectedCategoryFilters,
+                rarityFilters = selectedRarityFilters
+            )) {
                 is FunctionResult.Success -> {
-                    if (newItems.data.isNotEmpty()) {
-                        _itemsList.addAll(newItems.data)
+                    if (result.data.isNotEmpty()) {
+                        _itemsList.addAll(result.data)
                         currentPage++
                     }
                 }
                 is FunctionResult.Error -> {
-                    Log.e(Constants.ERROR_DATABASE_TAG, "itemsResult.message")
+                    Log.e(Constants.ERROR_DATABASE_TAG, result.message ?: "Unknown error")
                 }
             }
 
             isLoading = false
         }
+    }
+
+    fun searchItems(newQuery: String) {
+        searchQuery = newQuery
+        reloadItems()
     }
 }

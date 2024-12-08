@@ -5,6 +5,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.stalcraftobserver.domain.model.FilterItem
@@ -12,7 +16,8 @@ import com.example.stalcraftobserver.domain.model.FilterItem
 @Composable
 fun FilterChipsList(
     filterList: List<FilterItem>,
-    callback: (choosedFilter: String) -> Unit,
+    selectedFilters: MutableList<FilterItem>,
+    onFilterSelected: (List<FilterItem>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -20,11 +25,26 @@ fun FilterChipsList(
         contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp)
     ) {
         items(filterList) { filter ->
+            val isSelected = filter in selectedFilters
             FilterChipCommon(
-                filter = filter.name,
-                callback = callback,
+                filter = filter,
+                isSelected = isSelected,
+                onSelected = { selectedFilter ->
+                    if (isSelected) {
+                        // Если фильтр выбран, убираем его
+                        selectedFilters.remove(filter)
+                    } else {
+                        // Если фильтр не выбран, добавляем его
+                        // Сначала убираем фильтры из той же группы
+                        selectedFilters.removeAll { it.group == filter.group }
+                        selectedFilters.add(filter)
+                    }
+                    // Вызываем обновление фильтров
+                    onFilterSelected(selectedFilters.toList())
+                },
                 modifier = Modifier.padding(horizontal = 2.dp)
             )
         }
     }
 }
+

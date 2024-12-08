@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import com.example.stalcraftobserver.domain.model.FilterItem
 import com.example.stalcraftobserver.domain.model.StalcraftApplication
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
+import com.example.stalcraftobserver.util.CategoryItem
+import com.example.stalcraftobserver.util.RarityItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +51,10 @@ fun TopAppBarWithSearchAndFilter(
     query: String = "",
     onQueryChanged: (String) -> Unit = {},
     filters: List<FilterItem> = emptyList(),
-    onFilterSelected: (String) -> Unit = {},
+    selectedFilters: MutableList<FilterItem>,
+    onFilterSelected: (List<FilterItem>) -> Unit = {},
+    onCategorySelected: (List<String>) -> Unit = {}, // Новый параметр
+    onRaritySelected: (List<String>) -> Unit = {}, // Новый параметр
     content: @Composable (modifier: Modifier) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -61,6 +66,7 @@ fun TopAppBarWithSearchAndFilter(
     var isSettingsVisible by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
+
 
     val application = StalcraftApplication()
 
@@ -76,7 +82,7 @@ fun TopAppBarWithSearchAndFilter(
                 ),
                 title = {
                     Column(
-                        modifier = Modifier.padding(vertical = 6.dp)
+                        modifier = Modifier
                     ) {
                         SearchView(
                             query = query,
@@ -127,7 +133,9 @@ fun TopAppBarWithSearchAndFilter(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
                     filterList = filters,
-                    callback = { }
+                    selectedFilters = selectedFilters,
+                    onFilterSelected =
+                    onFilterSelected
                 )
             }
 
@@ -135,7 +143,7 @@ fun TopAppBarWithSearchAndFilter(
 
         }
 
-        if (isSettingsVisible){
+        if (isSettingsVisible) {
             SettingsPanel(
                 sheetState = sheetState,
                 onCloseSheet = { isSettingsVisible = false },
@@ -144,8 +152,6 @@ fun TopAppBarWithSearchAndFilter(
         }
     }
 }
-
-
 
 
 @Preview(showBackground = true)
@@ -163,11 +169,6 @@ fun TopAppBarWithSearchAndFilter(
 @Composable
 fun GreetingPreview() {
     StalcraftObserverTheme {
-        TopAppBarWithSearchAndFilter(
-            filters = listOf(
-                FilterItem(name = "kekw", group = "kekw"),
-                FilterItem(name = "kekw", group = "kekw")
-            )
-        )
+
     }
 }

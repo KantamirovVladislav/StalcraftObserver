@@ -15,6 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +36,9 @@ import com.example.stalcraftobserver.util.Constants
 import com.example.stalcraftobserver.util.NavigationItem
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.internal.Provider
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -40,7 +46,6 @@ import javax.inject.Named
 class MainActivity : ComponentActivity() {
 
     private val itemViewModel: ItemViewModel by viewModels()
-    private val itemInfoViewModel: ItemInfoViewModel by viewModels()
     private val onBoardingViewModel: OnBoardingViewModel by viewModels()
 
     @Inject
@@ -50,6 +55,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val splashscreen = installSplashScreen()
+        var keepSplashScreen = true
+        splashscreen.setKeepOnScreenCondition { keepSplashScreen }
+        lifecycleScope.launch {
+            delay(3000)
+            keepSplashScreen = false
+        }
         enableEdgeToEdge()
 
         setContent {
@@ -73,13 +85,18 @@ class MainActivity : ComponentActivity() {
                         startDestination = if (appEntry) NavigationItem.ListItems.route else NavigationItem.OnBoarding.route
                     ) {
                         composable(NavigationItem.OnBoarding.route) {
+                            Log.d("ScreenSwitch", "Go to OnBoarding")
                             OnBoardingScreen(
                                 navController = navController,
                                 viewModel = onBoardingViewModel
                             )
                         }
                         composable(NavigationItem.ListItems.route) {
-                            ItemsListScreen(navController = navController, viewModel = itemViewModel)
+                            Log.d("ScreenSwitch", "Go to ListItems")
+                            ItemsListScreen(
+                                navController = navController,
+                                viewModel = itemViewModel
+                            )
                         }
                         composable(
                             route = NavigationItem.ItemInfo("{idItem}").route,
@@ -87,6 +104,9 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val idItem = backStackEntry.arguments?.getString("idItem")
                             idItem?.let {
+                                val itemInfoViewModel: ItemInfoViewModel =
+                                    hiltViewModel(backStackEntry)
+                                Log.d("ScreenSwitch", "Go to ItemInfo $it")
                                 ItemInfoScreen(id = it, viewModel = itemInfoViewModel)
                             }
                         }

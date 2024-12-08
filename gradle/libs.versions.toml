@@ -2,9 +2,11 @@
 agp = "8.7.0"
 coilCompose = "3.0.0-rc01"
 converterGson = "2.9.0"
+coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.1"
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
+hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -14,8 +16,8 @@ kotlinxSerializationJson = "1.6.0"
 kotlinxSerializationJsonVersion = "1.6.3"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
-composeBom = "2024.06.00"
-navigationCompose = "2.8.3"
+composeBom = "2024.11.00"
+navigationCompose = "2.8.4"
 retrofit = "2.9.0"
 retrofit2KotlinxSerializationConverter = "0.8.0"
 roomGuava = "2.6.1"
@@ -25,7 +27,9 @@ ksp = "1.9.0-1.0.13"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose" }
 androidx-room-guava = { module = "androidx.room:room-guava", version.ref = "roomGuava" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomGuava" }

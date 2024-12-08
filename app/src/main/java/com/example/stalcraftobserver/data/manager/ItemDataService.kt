@@ -90,8 +90,4 @@ class ItemDataService @Inject constructor(
             FunctionResult.Error("Error message: ${e.message}")
         }
     }
-
-//    fun getAllElementFromItem(item: ItemInfo): List<Element> {
-//
-//    }
 }

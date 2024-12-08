@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.stalcraftobserver.data.manager.ItemDataService
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.ItemsRoomService
+import com.example.stalcraftobserver.data.manager.Lines
 import com.example.stalcraftobserver.domain.model.FunctionResult
 import com.example.stalcraftobserver.domain.model.Item
 import com.example.stalcraftobserver.domain.model.StalcraftApplication
@@ -61,7 +62,7 @@ class ItemInfoViewModel @Inject constructor(
         }
     }
 
-    private fun getAllElementFromItem(item: ItemInfo){
+    private fun getAllElementFromItem(item: ItemInfo) {
 
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.room.Room
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.stalcraftobserver.domain.model.FunctionResult
 import com.example.stalcraftobserver.domain.model.Item
 import com.example.stalcraftobserver.domain.model.RoomModel
@@ -79,7 +80,26 @@ class ItemsRoomService(
         }
     }
 
-    fun getItemsPaged(limit: Int, offset: Int): FunctionResult<List<Item>>{
+    fun searchItemsByName(query: String, limit: Int, offset: Int): FunctionResult<List<Item>> {
+        return try {
+            val item = db.ItemDao().searchItemsByName(query, limit, offset)
+            FunctionResult.Success(item)
+        } catch (e: SQLiteException) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
+        } catch (e: Exception) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
+        }
+    }
+
+    fun getItemsPaged(limit: Int, offset: Int): FunctionResult<List<Item>> {
         return try {
             val item = db.ItemDao().getItemsPaged(limit = limit, offset = offset)
             Log.i(
@@ -101,6 +121,96 @@ class ItemsRoomService(
             FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
         }
     }
+
+    suspend fun getItemsWithDynamicSort(
+        query: String,
+        sortColumns: List<String>,
+        limit: Int,
+        offset: Int,
+        categoryFilters: List<String> = emptyList(),
+        rarityFilters: List<String> = emptyList()
+    ): FunctionResult<List<Item>> {
+        return try {
+            val item = db.ItemDao()
+                .getItemsWithDynamicSort(
+                    buildDynamicSortQuery(
+                        query,
+                        sortColumns,
+                        limit,
+                        offset,
+                        categoryFilters,
+                        rarityFilters
+                    )
+                )
+            FunctionResult.Success(item)
+        } catch (e: SQLiteException) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
+        } catch (e: Exception) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
+        }
+
+    }
+
+    fun buildDynamicSortQuery(
+        query: String,
+        sortColumns: List<String>,
+        limit: Int,
+        offset: Int,
+        categoryFilters: List<String> = emptyList(),
+        rarityFilters: List<String> = emptyList()
+    ): SimpleSQLiteQuery {
+        val whereClauses = mutableListOf<String>()
+
+        if (query.isNotEmpty()) {
+            whereClauses.add("(nameEng LIKE '%' || ? || '%' OR nameRus LIKE '%' || ? || '%')")
+        }
+
+        if (categoryFilters.isNotEmpty()) {
+            whereClauses.add("category IN (${categoryFilters.joinToString(", ") { "?" }})")
+        }
+
+        if (rarityFilters.isNotEmpty()) {
+            whereClauses.add("rarity IN (${rarityFilters.joinToString(", ") { "?" }})")
+        }
+
+        val baseQuery = """
+        SELECT * FROM Map_Name_Id
+        ${if (whereClauses.isNotEmpty()) "WHERE ${whereClauses.joinToString(" AND ")}" else ""}
+    """.trimIndent()
+
+        val orderClause = if (sortColumns.isNotEmpty()) {
+            "ORDER BY ${sortColumns.joinToString(", ")}"
+        } else {
+            ""
+        }
+
+        val sql = """
+        $baseQuery
+        $orderClause
+        LIMIT ? OFFSET ?
+    """.trimIndent()
+
+        val args = mutableListOf<Any>()
+        if (query.isNotEmpty()) {
+            args.add(query)
+            args.add(query)
+        }
+        args.addAll(categoryFilters)
+        args.addAll(rarityFilters)
+        args.add(limit)
+        args.add(offset)
+
+        return SimpleSQLiteQuery(sql, args.toTypedArray())
+    }
+
 
     fun closeDatabase() {
         instance?.close()
