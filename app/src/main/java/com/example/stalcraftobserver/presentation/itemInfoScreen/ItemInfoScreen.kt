@@ -14,6 +14,7 @@ import com.example.stalcraftobserver.data.manager.Element
 import com.example.stalcraftobserver.data.manager.InfoBlock
 import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArmorInfoScreen
+import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArtefactInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
 @Composable
@@ -32,10 +33,19 @@ fun ItemInfoScreen(
 
 
     info?.let {
-        ArmorInfoScreen(
-            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-            item = it
-        )
+        if (it.category.contains("armor")){
+            ArmorInfoScreen(
+                imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                item = it
+            )
+        }
+        else if (it.category.contains("artefact")){
+            ArtefactInfoScreen(
+                imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                item = it
+            )
+        }
+
     }
 }
 

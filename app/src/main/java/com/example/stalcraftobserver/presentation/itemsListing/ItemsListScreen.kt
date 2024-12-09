@@ -56,8 +56,8 @@ fun ItemsListScreen(
     val selectedFilters = remember { mutableStateListOf<FilterItem>() }
     val searchQuery = remember { mutableStateOf("") }
 
-    var showCategoryDialog by remember { mutableStateOf(false) }
-    var showRarityDialog by remember { mutableStateOf(false) }
+    //var showCategoryDialog by remember { mutableStateOf(false) }
+    //var showRarityDialog by remember { mutableStateOf(false) }
     val selectedCategories = remember { mutableStateListOf<String>() }
     val selectedRarities = remember { mutableStateListOf<String>() }
 
@@ -81,8 +81,8 @@ fun ItemsListScreen(
         onFilterSelected = { updatedFilters ->
             updatedFilters.forEach { filter ->
                 when (filter.name) {
-                    "Category" -> showCategoryDialog = true
-                    "Rarity" -> showRarityDialog = true
+                    //"Category" -> showCategoryDialog = true
+                    //"Rarity" -> showRarityDialog = true
                     else -> {
                         // Применение сортировки
                         val sortCriteria = updatedFilters.mapNotNull { f ->
@@ -144,35 +144,35 @@ fun ItemsListScreen(
                     }
             }
 
-            // Диалог выбора категорий
-            if (showCategoryDialog) {
-                CategoryDialog(
-                    availableCategories = CategoryItemHelper.getAllCategories(),
-                    selectedCategories = selectedCategories,
-                    onConfirm = { selected ->
-                        selectedCategories.clear()
-                        selectedCategories.addAll(selected)
-                        showCategoryDialog = false
-                        viewModel.updateCategoryFilters(selected)
-                    },
-                    onDismiss = { showCategoryDialog = false }
-                )
-            }
-
-            // Диалог выбора редкостей
-            if (showRarityDialog) {
-                RarityDialog(
-                    availableRarities = RarityItemHelper.getAllRarities(),
-                    selectedRarities = selectedRarities,
-                    onConfirm = { selected ->
-                        selectedRarities.clear()
-                        selectedRarities.addAll(selected)
-                        showRarityDialog = false
-                        viewModel.updateRarityFilters(selected)
-                    },
-                    onDismiss = { showRarityDialog = false }
-                )
-            }
+//            // Диалог выбора категорий
+//            if (showCategoryDialog) {
+//                CategoryDialog(
+//                    availableCategories = CategoryItemHelper.getAllCategories(),
+//                    selectedCategories = selectedCategories,
+//                    onConfirm = { selected ->
+//                        selectedCategories.clear()
+//                        selectedCategories.addAll(selected)
+//                        showCategoryDialog = false
+//                        viewModel.updateCategoryFilters(selected)
+//                    },
+//                    onDismiss = { showCategoryDialog = false }
+//                )
+//            }
+//
+//            // Диалог выбора редкостей
+//            if (showRarityDialog) {
+//                RarityDialog(
+//                    availableRarities = RarityItemHelper.getAllRarities(),
+//                    selectedRarities = selectedRarities,
+//                    onConfirm = { selected ->
+//                        selectedRarities.clear()
+//                        selectedRarities.addAll(selected)
+//                        showRarityDialog = false
+//                        viewModel.updateRarityFilters(selected)
+//                    },
+//                    onDismiss = { showRarityDialog = false }
+//                )
+//            }
         }
     }
 }

@@ -130,16 +130,34 @@ object ItemProperty {
             const val BASE_PRICE = "${ItemsKey.CORE_TOOLTIP_INFO}.base_price"
             const val DURABILITY = "${ItemsKey.CORE_TOOLTIP_INFO}.durability"
             const val MAX_DURABILITY = "${ItemsKey.CORE_TOOLTIP_INFO}.max_durability"
+
+            val generalKeys = listOf(
+                NAME,
+                CATEGORY,
+                TYPE,
+                WEIGHT,
+                BASE_PRICE,
+                DURABILITY,
+                MAX_DURABILITY
+            )
         }
+
+
 
         object Quality {
             // Качество артефактов
             const val COMMON = "${ItemsKey.ITEM_QUALITY}.common"
             const val NOT_PROBED = "stalker.tooltip.artefact.not_probed"
             const val FRESHNESS = "stalker.tooltip.artefact.info.freshness"
+
+            val qualityKeys = listOf(
+                COMMON,
+                NOT_PROBED,
+                FRESHNESS
+            )
         }
 
-        object ResistanceKeys {
+        object Resistance {
             // Ключи для сопротивлений
             const val BULLET_RESISTANCE =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bullet_dmg_factor"
@@ -155,9 +173,19 @@ object ItemProperty {
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.biological_dmg_factor"
             const val PSYCHO_RESISTANCE =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_dmg_factor"
+
+            val resistanceKeys = listOf(
+                BULLET_RESISTANCE,
+                LACERATION_PROTECTION,
+                EXPLOSION_PROTECTION,
+                RADIATION_RESISTANCE,
+                THERMAL_RESISTANCE,
+                BIOLOGICAL_RESISTANCE,
+                PSYCHO_RESISTANCE
+            )
         }
 
-        object AccumulationKeys {
+        object Accumulation {
             // Ключи для накоплений (негативные эффекты)
             const val RADIATION_ACCUMULATION =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.radiation_accumulation"
@@ -167,6 +195,13 @@ object ItemProperty {
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.biological_accumulation"
             const val PSYCHO_ACCUMULATION =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_accumulation"
+
+            val accumulationKeys = listOf(
+                RADIATION_ACCUMULATION,
+                THERMAL_ACCUMULATION,
+                BIOLOGICAL_ACCUMULATION,
+                PSYCHO_ACCUMULATION
+            )
         }
 
         object StatModifiers {
@@ -181,9 +216,17 @@ object ItemProperty {
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.health_bonus"
             const val HEALING_EFFECTIVENESS =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.heal_efficiency"
+
+            val statModifiersKeys = listOf(
+                SPEED_MODIFIER,
+                STAMINA_BONUS,
+                STAMINA_REGENERATION,
+                HEALTH_BONUS,
+                HEALING_EFFECTIVENESS
+            )
         }
 
-        object SpecialKeys {
+        object Special {
             // Специальные ключи для редких свойств
             const val LIFESAVER_TRIGGER_DAMAGE =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.lifesaver_trigger_damage"
@@ -192,6 +235,13 @@ object ItemProperty {
             const val LIFESAVER_RECHARGE =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.lifesaver_recharge"
             const val DESCRIPTION = "${ItemsKey.ITEM_DESCRIPTION}.special_rubik"
+
+            val specialKeys = listOf(
+                LIFESAVER_TRIGGER_DAMAGE,
+                LIFESAVER_BLOCKING_DAMAGE,
+                LIFESAVER_RECHARGE,
+                DESCRIPTION
+            )
         }
     }
 

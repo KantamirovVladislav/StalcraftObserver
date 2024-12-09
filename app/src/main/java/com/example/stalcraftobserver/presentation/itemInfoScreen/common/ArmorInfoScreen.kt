@@ -1,16 +1,14 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen.common
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +23,7 @@ import com.example.stalcraftobserver.util.ItemProperty.Armor.ProtectionKeys.prot
 import com.example.stalcraftobserver.util.ItemProperty.Armor.ResistanceKeys.resistanceKeys
 import com.example.stalcraftobserver.util.ItemProperty.Armor.StatModifiers.statModifierKeys
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ArmorInfoScreen(
     imagePath: String,
@@ -37,6 +36,7 @@ fun ArmorInfoScreen(
     val descriptionParam = remember { mutableStateOf<String>("") }
     val statModifiersParam = remember { mutableStateOf<String>("") }
     val compatibilityParam = remember { mutableStateOf<String>("") }
+    val armorParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
         generalParam.value =
@@ -87,47 +87,55 @@ fun ArmorInfoScreen(
                 }.joinToString(separator = ", ")
                 formattedValues
             }.joinToString(separator = "\n")
+
+        armorParam.value = ItemInfoHelper.getArmorClassFromItemInfo(item).toString()
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Row {
-                CustomOutlinedCard(
-                    data = compatibilityParam.value,
-                    modifier = Modifier.weight(1f)
-                )
-                CustomImage(
-                    imagePath = imagePath,
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                )
-            }
-        }
-        item {
-            LazyRow(
-                horizontalArrangement = Arrangement.Start
-            ) {
-                item {
+    Scaffold {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            item {
+                Row {
                     CustomOutlinedCard(
-                        data = resistanceParam.value,
-                        modifier = Modifier
+                        data = generalParam.value,
+                        modifier = Modifier.weight(1f)
                     )
-                }
-                item {
-                    CustomOutlinedCard(
-                        data = protectionParam.value,
+                    CustomImage(
+                        imagePath = imagePath,
                         modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
                     )
                 }
             }
-        }
-        item {
-            Row() {
-                CustomOutlinedCard(
-                    data = descriptionParam.value
-                )
+            item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    item {
+                        CustomOutlinedCard(
+                            data = resistanceParam.value
+                        )
+                    }
+                    item {
+                        CustomOutlinedCard(
+                            data = protectionParam.value
+                        )
+                    }
+                    item {
+                        CustomOutlinedCard(
+                            data = compatibilityParam.value
+                        )
+                    }
+                }
+            }
+            item {
+                Row() {
+                    CustomOutlinedCard(
+                        data = descriptionParam.value
+                    )
+                }
             }
         }
     }
+
 }
