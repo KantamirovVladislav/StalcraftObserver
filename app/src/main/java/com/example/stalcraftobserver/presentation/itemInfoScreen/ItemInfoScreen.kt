@@ -1,7 +1,9 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +19,7 @@ import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArmorInf
 import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArtefactInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ItemInfoScreen(
     id: String,
@@ -31,21 +34,22 @@ fun ItemInfoScreen(
         viewModel.getItemWithId(id)
     }
 
+    Scaffold {
+        info?.let {
+            if (it.category.contains("armor")){
+                ArmorInfoScreen(
+                    imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                    item = it
+                )
+            }
+            else if (it.category.contains("artefact")){
+                ArtefactInfoScreen(
+                    imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                    item = it
+                )
+            }
 
-    info?.let {
-        if (it.category.contains("armor")){
-            ArmorInfoScreen(
-                imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                item = it
-            )
         }
-        else if (it.category.contains("artefact")){
-            ArtefactInfoScreen(
-                imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                item = it
-            )
-        }
-
     }
 }
 

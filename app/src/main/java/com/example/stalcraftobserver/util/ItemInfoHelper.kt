@@ -17,9 +17,9 @@ class ItemInfoHelper {
                 return Pair("", "")
             }
             val values = input
-                .removeSurrounding("[", "]") // Убираем квадратные скобки
-                .split(";") // Разделяем по символу ";"
-                .map { it.trim().replace(",", ".") } // Заменяем запятую на точку и убираем пробелы
+                .removeSurrounding("[", "]")
+                .split(";")
+                .map { it.trim().replace(",", ".") }
 
             return Pair(values[0], values[1])  // Возвращаем пару значений
         }
@@ -63,7 +63,7 @@ class ItemInfoHelper {
 
             val resultMap = mutableMapOf<Lines?, Lines?>()
 
-            itemInfo.name.key?.let {
+            itemInfo.name?.key?.let {
                 if (containsParts(key, it)) {
                     resultMap[Lines(ru = "Название", en = "Name")] = itemInfo.name.lines
                 }
