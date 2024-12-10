@@ -26,6 +26,7 @@ import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
 import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.domain.model.viewModel.ItemViewModel
 import com.example.stalcraftobserver.domain.model.viewModel.OnBoardingViewModel
+import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
@@ -103,8 +104,23 @@ class MainActivity : ComponentActivity() {
                                 val itemInfoViewModel: ItemInfoViewModel =
                                     hiltViewModel(backStackEntry)
                                 Log.d("ScreenSwitch", "Go to ItemInfo $it")
-                                ItemInfoScreen(id = it, viewModel = itemInfoViewModel)
+                                ItemInfoScreen(id = it, viewModel = itemInfoViewModel, navController = navController)
                             }
+                        }
+                        composable(
+                            route = "compare_items?item1Id={item1Id}&item2Id={item2Id}",
+                            arguments = listOf(
+                                navArgument("item1Id") { defaultValue = "" },
+                                navArgument("item2Id") { defaultValue = "" }
+                            )
+                        ) { backStackEntry ->
+                            val itemInfoViewModel: ItemInfoViewModel =
+                                hiltViewModel(backStackEntry)
+                            val item1Id = backStackEntry.arguments?.getString("item1Id")
+                            val item2Id = backStackEntry.arguments?.getString("item2Id")
+
+                            Log.d("ItemsId", "$item1Id - $item2Id")
+                            CompareItemsScreen(navController = navController, item1Id = item1Id, item2Id = item2Id, viewModel = itemInfoViewModel)
                         }
                     }
                 }

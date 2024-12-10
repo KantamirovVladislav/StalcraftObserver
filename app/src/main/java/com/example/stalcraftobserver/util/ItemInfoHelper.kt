@@ -81,10 +81,10 @@ class ItemInfoHelper {
 
                                 is Element.NumericElement -> checkKeyMatch(
                                     element.name?.key,
-                                    mapOf(element.name?.lines to element.formatted?.value.let {
+                                    mapOf(element.name?.lines to element.value.let {
                                         Lines(
-                                            en = it?.en,
-                                            ru = it?.ru
+                                            en = it.toString(),
+                                            ru = it.toString()
                                         )
                                     })
                                 )
@@ -144,7 +144,7 @@ class ItemInfoHelper {
         }
 
 
-        suspend fun getArmorClassFromItemInfo(item: ItemInfo): Armor? {
+        fun getArmorClassFromItemInfo(item: ItemInfo): Armor? {
             if (item.category.contains("armor")) {
                 return Armor(
                     name = getValuesForKey(item, ItemProperty.Armor.General.NAME),

@@ -13,35 +13,22 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.model.FilterItem
 import com.example.stalcraftobserver.domain.model.viewModel.ItemViewModel
-import com.example.stalcraftobserver.presentation.common.CategoryDialog
-import com.example.stalcraftobserver.presentation.common.RarityDialog
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithSearchAndFilter
 import com.example.stalcraftobserver.presentation.itemsListing.components.ItemCell
-import com.example.stalcraftobserver.util.CategoryItem
-import com.example.stalcraftobserver.util.CategoryItemHelper
 import com.example.stalcraftobserver.util.NavigationItem
-import com.example.stalcraftobserver.util.RarityItem
-import com.example.stalcraftobserver.util.RarityItemHelper
-import java.util.logging.Filter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,6 +89,9 @@ fun ItemsListScreen(
                     }
                 }
             }
+        },
+        onMenuSelected = { value ->
+            Log.d("MenuSelected", value)
         }
     ) { modifierFromTopBar ->
         Column(

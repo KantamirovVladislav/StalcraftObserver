@@ -23,6 +23,7 @@ import coil3.request.crossfade
 fun CustomImage(
     imagePath: String,
     imageDescription: String = "description not initialize",
+    contentScale: ContentScale = ContentScale.None,
     modifier: Modifier = Modifier
 ) {
     var isLoading by remember { mutableStateOf(true) }
@@ -41,7 +42,7 @@ fun CustomImage(
                 )
                 .build(),
             contentDescription = imageDescription,
-            contentScale = ContentScale.Crop,
+            contentScale = contentScale,
             modifier = modifier.then(
                 Modifier
                     .fillMaxWidth()

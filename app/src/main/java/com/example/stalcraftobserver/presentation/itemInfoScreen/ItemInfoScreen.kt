@@ -1,9 +1,7 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,18 +10,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.stalcraftobserver.data.manager.Element
 import com.example.stalcraftobserver.data.manager.InfoBlock
 import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArmorInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArtefactInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ItemInfoScreen(
     id: String,
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: ItemInfoViewModel
 ) {
     val info by viewModel.info.collectAsState()
@@ -34,7 +34,9 @@ fun ItemInfoScreen(
         viewModel.getItemWithId(id)
     }
 
-    Scaffold {
+    TopAppBarWithoutSearch(navController = navController, onMenuSelected = {
+        navController.navigate("compare_items?item1Id=${id ?: ""}&item2Id=${""}")
+    }){
         info?.let {
             if (it.category.contains("armor")){
                 ArmorInfoScreen(
