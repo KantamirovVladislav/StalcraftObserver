@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getArmorClassFromItemInfo
+import com.example.stalcraftobserver.util.NavigationItem
 
 @Composable
 fun CompareItemsScreen(
@@ -35,15 +36,31 @@ fun CompareItemsScreen(
     var item1Info by remember { mutableStateOf<ItemInfo?>(null) }
     var item2Info by remember { mutableStateOf<ItemInfo?>(null) }
 
-    LaunchedEffect(item1Id) {
+    LaunchedEffect(Unit) {
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("item1")
+            ?.observeForever { selectedId ->
+                if (selectedId != null) {
+                    viewModel.fetchItemWithId(selectedId) {
+                        item1Info = it
+                    }
+                }
+            }
+
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("item2")
+            ?.observeForever { selectedId ->
+                if (selectedId != null) {
+                    viewModel.fetchItemWithId(selectedId) {
+                        item2Info = it
+                    }
+                }
+            }
+
         if (item1Id != null) {
             viewModel.fetchItemWithId(item1Id) {
                 item1Info = it
             }
         }
-    }
 
-    LaunchedEffect(item2Id) {
         if (item2Id != null) {
             viewModel.fetchItemWithId(item2Id) {
                 item2Info = it
@@ -57,7 +74,11 @@ fun CompareItemsScreen(
         LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
             item {
                 if (item1Id.isNullOrEmpty()) {
-                    Button(onClick = { navController.navigate("list_items") }) {
+                    Button(onClick = {
+                        navController.navigate(
+                            NavigationItem.SelectItem(itemSlot = "item1", category = "armor/combat").route
+                        )
+                    }) {
                         Text("Выбрать предмет 1")
                     }
                 } else {
@@ -73,7 +94,11 @@ fun CompareItemsScreen(
 
             item {
                 if (item2Id.isNullOrEmpty()) {
-                    Button(onClick = { navController.navigate("list_items") }) {
+                    Button(onClick = {
+                        navController.navigate(
+                            NavigationItem.SelectItem(itemSlot = "item2", category = "armor/combat").route
+                        )
+                    }) {
                         Text("Выбрать предмет 2")
                     }
                 } else {
@@ -93,8 +118,6 @@ fun CompareItemsScreen(
 }
 
 
-
-
 @Composable
 fun CompareAttributes(item1: ItemInfo?, item2: ItemInfo?) {
     val armor1 = item1?.let { getArmorClassFromItemInfo(it) }
@@ -103,12 +126,36 @@ fun CompareAttributes(item1: ItemInfo?, item2: ItemInfo?) {
     Column {
         Text("Сравнение характеристик", style = MaterialTheme.typography.titleMedium)
 
-        CompareRow("Название", armor1?.name?.values?.joinToString(), armor2?.name?.values?.joinToString())
-        CompareRow("Ранг", armor1?.rank?.values?.joinToString(), armor2?.rank?.values?.joinToString())
-        CompareRow("Категория", armor1?.category?.values?.joinToString(), armor2?.category?.values?.joinToString())
-        CompareRow("Вес", armor1?.weight?.values?.firstOrNull(), armor2?.weight?.values?.firstOrNull())
-        CompareRow("Прочность", armor1?.durability?.values?.firstOrNull(), armor2?.durability?.values?.firstOrNull())
-        CompareRow("Пулестойкость", armor1?.bulletResistance?.values?.firstOrNull(), armor2?.bulletResistance?.values?.firstOrNull())
+        CompareRow(
+            "Название",
+            armor1?.name?.values?.firstOrNull()?.ru,
+            armor2?.name?.values?.firstOrNull()?.ru
+        )
+        CompareRow(
+            "Ранг",
+            armor1?.rank?.values?.firstOrNull()?.ru,
+            armor2?.rank?.values?.firstOrNull()?.ru
+        )
+        CompareRow(
+            "Категория",
+            armor1?.category?.values?.firstOrNull()?.ru,
+            armor2?.category?.values?.firstOrNull()?.ru
+        )
+        CompareRow(
+            "Вес",
+            armor1?.weight?.values?.firstOrNull(),
+            armor2?.weight?.values?.firstOrNull()
+        )
+        CompareRow(
+            "Прочность",
+            armor1?.durability?.values?.firstOrNull(),
+            armor2?.durability?.values?.firstOrNull()
+        )
+        CompareRow(
+            "Пулестойкость",
+            armor1?.bulletResistance?.values?.firstOrNull(),
+            armor2?.bulletResistance?.values?.firstOrNull()
+        )
     }
 }
 

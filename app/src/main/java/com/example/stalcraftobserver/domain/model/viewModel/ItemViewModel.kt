@@ -51,7 +51,7 @@ class ItemViewModel @Inject constructor(
     fun updateCategoryFilters(categories: List<String>) {
         selectedCategoryFilters.clear()
         selectedCategoryFilters.addAll(categories)
-
+        Log.d("Category", selectedCategoryFilters.toString())
         reloadItems()
     }
 

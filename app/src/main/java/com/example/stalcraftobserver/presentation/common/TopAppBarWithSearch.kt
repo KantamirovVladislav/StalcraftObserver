@@ -48,6 +48,7 @@ fun TopAppBarWithSearchAndFilter(
     onCategorySelected: (List<String>) -> Unit = {}, // Новый параметр
     onRaritySelected: (List<String>) -> Unit = {}, // Новый параметр
     onMenuSelected: (String) -> Unit = {},
+    isFilterDisabled: (FilterItem) -> Boolean,
     content: @Composable (modifier: Modifier) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -136,7 +137,8 @@ fun TopAppBarWithSearchAndFilter(
                     filterList = filters,
                     selectedFilters = selectedFilters,
                     onFilterSelected =
-                    onFilterSelected
+                    onFilterSelected,
+                    isFilterDisabled = isFilterDisabled
                 )
             }
 

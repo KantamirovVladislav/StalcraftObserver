@@ -92,7 +92,28 @@ class MainActivity : ComponentActivity() {
                             Log.d("ScreenSwitch", "Go to ListItems")
                             ItemsListScreen(
                                 navController = navController,
-                                viewModel = itemViewModel
+                                viewModel = itemViewModel,
+                                mode = "view"
+                            )
+                        }
+                        composable(
+                            route = NavigationItem.SelectItem("{itemSlot}", "{category}").route,
+                            arguments = listOf(
+                                navArgument("itemSlot") { defaultValue = "" },
+                                navArgument("category") {
+                                    type = NavType.StringType; nullable = true
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val mode = "selection"
+                            val itemSlot = backStackEntry.arguments?.getString("itemSlot")
+                            val category = backStackEntry.arguments?.getString("category")
+                            ItemsListScreen(
+                                navController = navController,
+                                viewModel = hiltViewModel(),
+                                mode = mode,
+                                itemSlot = itemSlot,
+                                category = category
                             )
                         }
                         composable(
@@ -104,7 +125,11 @@ class MainActivity : ComponentActivity() {
                                 val itemInfoViewModel: ItemInfoViewModel =
                                     hiltViewModel(backStackEntry)
                                 Log.d("ScreenSwitch", "Go to ItemInfo $it")
-                                ItemInfoScreen(id = it, viewModel = itemInfoViewModel, navController = navController)
+                                ItemInfoScreen(
+                                    id = it,
+                                    viewModel = itemInfoViewModel,
+                                    navController = navController
+                                )
                             }
                         }
                         composable(
@@ -120,7 +145,12 @@ class MainActivity : ComponentActivity() {
                             val item2Id = backStackEntry.arguments?.getString("item2Id")
 
                             Log.d("ItemsId", "$item1Id - $item2Id")
-                            CompareItemsScreen(navController = navController, item1Id = item1Id, item2Id = item2Id, viewModel = itemInfoViewModel)
+                            CompareItemsScreen(
+                                navController = navController,
+                                item1Id = item1Id,
+                                item2Id = item2Id,
+                                viewModel = itemInfoViewModel
+                            )
                         }
                     }
                 }

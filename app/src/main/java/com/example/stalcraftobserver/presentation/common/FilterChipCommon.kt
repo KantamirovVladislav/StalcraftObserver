@@ -20,10 +20,12 @@ fun FilterChipCommon(
     filter: FilterItem,
     isSelected: Boolean,
     onSelected: (FilterItem?) -> Unit,
+    isEnabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     FilterChip(
         modifier = modifier,
+        enabled = isEnabled,
         onClick = {
             if (isSelected) {
                 onSelected(null) // Убираем фильтр

@@ -35,7 +35,10 @@ import com.example.stalcraftobserver.util.NavigationItem
 fun ItemsListScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: ItemViewModel
+    viewModel: ItemViewModel,
+    mode: String = "view", // "view" - обычный режим, "selection" - выбор предмета
+    itemSlot: String? = null,
+    category: String? = null
 ) {
 
     val itemsState = viewModel.itemsList
@@ -47,23 +50,32 @@ fun ItemsListScreen(
     //var showRarityDialog by remember { mutableStateOf(false) }
     val selectedCategories = remember { mutableStateListOf<String>() }
     val selectedRarities = remember { mutableStateListOf<String>() }
+    val disabledFilters = remember { mutableStateListOf<FilterItem>() }
+
+    val filters = listOf(
+        FilterItem(name = "A-z", group = "alphabetSort"),
+        FilterItem(name = "Z-a", group = "alphabetSort"),
+        FilterItem(name = "Category", group = "categorySort"),
+        FilterItem(name = "Rarity", group = "raritySort")
+    )
 
     val currentHeightCell: Dp = ((LocalConfiguration.current.screenHeightDp / 5) + 10).dp
     val currentCellCount: Int = LocalConfiguration.current.screenWidthDp / 130
 
+    if (category != null) {
+        LaunchedEffect(category) {
+            disabledFilters.addAll(listOf(filters[2]))
+            viewModel.updateCategoryFilters(listOf(category))
+        }
+    }
+
     TopAppBarWithSearchAndFilter(
         query = searchQuery.value,
-        onQueryChanged = {
-            newQuery ->
+        onQueryChanged = { newQuery ->
             searchQuery.value = newQuery
             viewModel.searchItems(newQuery)
         },
-        filters = listOf(
-            FilterItem(name = "A-z", group = "alphabetSort"),
-            FilterItem(name = "Z-a", group = "alphabetSort"),
-            FilterItem(name = "Category", group = "categorySort"),
-            FilterItem(name = "Rarity", group = "raritySort")
-        ),
+        filters = filters,
         selectedFilters = selectedFilters,
         onFilterSelected = { updatedFilters ->
             updatedFilters.forEach { filter ->
@@ -79,10 +91,11 @@ fun ItemsListScreen(
                                 else -> null
                             }
                         }
-
                         // Если фильтров сортировки нет, задаём сортировку по умолчанию
                         if (sortCriteria.isEmpty()) {
                             viewModel.updateSortFilters(listOf("nameEng ASC"))
+
+
                         } else {
                             viewModel.updateSortFilters(sortCriteria)
                         }
@@ -91,8 +104,9 @@ fun ItemsListScreen(
             }
         },
         onMenuSelected = { value ->
-            Log.d("MenuSelected", value)
-        }
+            navController.navigate("compare_items?item1Id=${""}&item2Id=${""}")
+        },
+        isFilterDisabled = { filter -> filter in disabledFilters }
     ) { modifierFromTopBar ->
         Column(
             modifier = modifierFromTopBar
@@ -115,7 +129,15 @@ fun ItemsListScreen(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                navController.navigate(NavigationItem.ItemInfo(item.id).route)
+                                if (mode == "view") {
+                                    navController.navigate(NavigationItem.ItemInfo(item.id).route)
+                                } else if (mode == "selection") {
+                                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                                        itemSlot ?: "Item not selected",
+                                        item.id
+                                    )
+                                    navController.popBackStack()
+                                }
                             },
                         item = item,
                         region = "ru"
