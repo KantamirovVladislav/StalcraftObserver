@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,49 +30,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.data.manager.ItemInfo
-import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.domain.viewModel.CompareItemsViewModel
+import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.presentation.compareItems.components.CompareRow
 import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getArmorClassFromItemInfo
 import com.example.stalcraftobserver.util.NavigationItem
 
 @Composable
 fun CompareItemsScreen(
     navController: NavController,
-    viewModel: ItemInfoViewModel,
+    viewModel: CompareItemsViewModel,
     item1Id: String?,
     item2Id: String?
 ) {
-    var item1Info by remember { mutableStateOf<ItemInfo?>(null) }
-    var item2Info by remember { mutableStateOf<ItemInfo?>(null) }
+    val item1Info by viewModel.item1.collectAsState()
+    val item2Info by viewModel.item2.collectAsState()
 
     LaunchedEffect(Unit) {
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("item1")
             ?.observeForever { selectedId ->
                 if (selectedId != null) {
-                    viewModel.fetchItemWithId(selectedId) {
-                        item1Info = it
-                    }
+                    viewModel.setItem1Id(selectedId)
                 }
             }
 
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("item2")
             ?.observeForever { selectedId ->
                 if (selectedId != null) {
-                    viewModel.fetchItemWithId(selectedId) {
-                        item2Info = it
-                    }
+                    viewModel.setItem2Id(selectedId)
                 }
             }
 
-        if (item1Id != null) {
-            viewModel.fetchItemWithId(item1Id) {
-                item1Info = it
-            }
+        if (!item1Id.isNullOrEmpty()) {
+            viewModel.setItem1Id(item1Id)
         }
 
-        if (item2Id != null) {
-            viewModel.fetchItemWithId(item2Id) {
-                item2Info = it
-            }
+        if (!item2Id.isNullOrEmpty()) {
+            viewModel.setItem2Id(item2Id)
         }
     }
 
@@ -89,9 +84,7 @@ fun CompareItemsScreen(
                         Text("Выбрать предмет 1")
                     }
                 } else {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(item1Info?.name?.toString() ?: "Загрузка...")
-                    }
+
                 }
             }
 
@@ -109,9 +102,7 @@ fun CompareItemsScreen(
                         Text("Выбрать предмет 2")
                     }
                 } else {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(item2Info?.name?.toString() ?: "Загрузка...")
-                    }
+
                 }
             }
         }
@@ -181,58 +172,6 @@ fun CompareAttributes(item1: ItemInfo?, item2: ItemInfo?) {
     }
 }
 
-@Composable
-fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
-    val (color1, color2, sign) = if (value1 is Number && value2 is Number) {
-        val v1 = value1.toDouble()
-        val v2 = value2.toDouble()
-        when {
-            v1 < v2 -> Triple(Color.Red, Color.Green, "<")
-            v1 > v2 -> Triple(Color.Green, Color.Red, ">")
-            else -> Triple(Color.Black, Color.Black, "=")
-        }
-    } else {
-        Triple(Color.Black, Color.Black, "")
-    }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-    ) {
-        Card(modifier = Modifier.padding(4.dp)) {
-            Row(
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "$value1",
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = color1
-                )
-                Text(
-                    text = "$attribute\n$sign",
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = Color.Black
-                )
-                Text(
-                    text = "$value2",
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = color2
-                )
-            }
-        }
-    }
-}
 
 

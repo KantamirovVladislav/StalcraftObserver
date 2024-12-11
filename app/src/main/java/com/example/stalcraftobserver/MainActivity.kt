@@ -23,9 +23,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
-import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
-import com.example.stalcraftobserver.domain.model.viewModel.ItemViewModel
-import com.example.stalcraftobserver.domain.model.viewModel.OnBoardingViewModel
+import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
+import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
 import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
@@ -139,8 +139,6 @@ class MainActivity : ComponentActivity() {
                                 navArgument("item2Id") { defaultValue = "" }
                             )
                         ) { backStackEntry ->
-                            val itemInfoViewModel: ItemInfoViewModel =
-                                hiltViewModel(backStackEntry)
                             val item1Id = backStackEntry.arguments?.getString("item1Id")
                             val item2Id = backStackEntry.arguments?.getString("item2Id")
 
@@ -149,7 +147,7 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 item1Id = item1Id,
                                 item2Id = item2Id,
-                                viewModel = itemInfoViewModel
+                                viewModel = hiltViewModel(backStackEntry)
                             )
                         }
                     }

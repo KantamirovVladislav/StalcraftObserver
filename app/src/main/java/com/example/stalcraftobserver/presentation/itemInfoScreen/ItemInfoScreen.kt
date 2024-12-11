@@ -1,22 +1,17 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen
 
 import android.content.res.Configuration
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.example.stalcraftobserver.data.manager.Element
-import com.example.stalcraftobserver.data.manager.InfoBlock
-import com.example.stalcraftobserver.domain.model.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
-import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArmorInfoScreen
-import com.example.stalcraftobserver.presentation.itemInfoScreen.common.ArtefactInfoScreen
+import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArmorInfoScreen
+import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArtefactInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
 @Composable

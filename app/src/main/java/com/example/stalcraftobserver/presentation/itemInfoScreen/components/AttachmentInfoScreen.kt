@@ -1,4 +1,4 @@
-package com.example.stalcraftobserver.presentation.itemInfoScreen.common
+package com.example.stalcraftobserver.presentation.itemInfoScreen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,7 +17,6 @@ import com.example.stalcraftobserver.presentation.common.CustomImage
 import com.example.stalcraftobserver.presentation.common.CustomOutlinedCard
 import com.example.stalcraftobserver.util.ItemInfoHelper
 import com.example.stalcraftobserver.util.ItemProperty
-import javax.xml.transform.stream.StreamSource
 
 @Composable
 fun AttachmentInfoScreen(

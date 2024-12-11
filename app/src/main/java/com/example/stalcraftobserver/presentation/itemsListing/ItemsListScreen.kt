@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.model.FilterItem
-import com.example.stalcraftobserver.domain.model.viewModel.ItemViewModel
+import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithSearchAndFilter
 import com.example.stalcraftobserver.presentation.itemsListing.components.ItemCell
 import com.example.stalcraftobserver.util.NavigationItem

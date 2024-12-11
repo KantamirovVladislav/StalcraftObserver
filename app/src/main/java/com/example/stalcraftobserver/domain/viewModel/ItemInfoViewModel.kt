@@ -1,4 +1,4 @@
-package com.example.stalcraftobserver.domain.model.viewModel
+package com.example.stalcraftobserver.domain.viewModel
 
 import android.app.Application
 import android.util.Log
@@ -88,9 +88,5 @@ class ItemInfoViewModel @Inject constructor(
                 Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, itemData.message)
             }
         }
-    }
-
-    private fun getAllElementFromItem(item: ItemInfo) {
-
     }
 }

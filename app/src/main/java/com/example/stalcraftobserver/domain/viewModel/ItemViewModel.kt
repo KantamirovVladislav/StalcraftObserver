@@ -1,4 +1,4 @@
-package com.example.stalcraftobserver.domain.model.viewModel
+package com.example.stalcraftobserver.domain.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf

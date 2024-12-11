@@ -1,4 +1,4 @@
-package com.example.stalcraftobserver.presentation.itemInfoScreen.common
+package com.example.stalcraftobserver.presentation.itemInfoScreen.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
