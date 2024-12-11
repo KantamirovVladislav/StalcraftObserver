@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.model.FilterItem
 import com.example.stalcraftobserver.domain.model.StalcraftApplication
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
@@ -47,6 +48,7 @@ fun TopAppBarWithSearchAndFilter(
     onFilterSelected: (List<FilterItem>) -> Unit = {},
     onCategorySelected: (List<String>) -> Unit = {}, // Новый параметр
     onRaritySelected: (List<String>) -> Unit = {}, // Новый параметр
+    onBack: () -> Unit = {},
     onMenuSelected: (String) -> Unit = {},
     isFilterDisabled: (FilterItem) -> Boolean,
     content: @Composable (modifier: Modifier) -> Unit = {}
@@ -85,7 +87,7 @@ fun TopAppBarWithSearchAndFilter(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Navigation back logic */ }) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"

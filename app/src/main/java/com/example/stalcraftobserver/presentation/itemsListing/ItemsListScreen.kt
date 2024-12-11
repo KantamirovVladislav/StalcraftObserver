@@ -106,7 +106,10 @@ fun ItemsListScreen(
         onMenuSelected = { value ->
             navController.navigate("compare_items?item1Id=${""}&item2Id=${""}")
         },
-        isFilterDisabled = { filter -> filter in disabledFilters }
+        isFilterDisabled = { filter -> filter in disabledFilters },
+        onBack = {
+            if (mode == "view") navController.popBackStack()
+        }
     ) { modifierFromTopBar ->
         Column(
             modifier = modifierFromTopBar
