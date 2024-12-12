@@ -1,36 +1,31 @@
 package com.example.stalcraftobserver.util
 
+import retrofit2.http.HEAD
+
 data class ItemPropertyKey(val key: String, val type: String)
 
-object ItemsKey {
-    // Глобальные ключи
-    const val CORE_TOOLTIP_INFO = "core.tooltip.info"
-    const val STALKER_ARTEFACT_PROPERTIES_FACTOR = "stalker.artefact_properties.factor"
-    const val GENERAL_ARMOR_COMPATIBILITY = "general.armor.compatibility"
-    const val ITEM_NAME = "item.name"
-    const val ITEM_DESCRIPTION = "item.description"
-    const val ITEM_DEVICE_NVD = "item.device"
-    const val ITEM_QUALITY = "core.quality"
-    const val CORE_HANDBOOK_CATEGORY = "core.handbook.category"
-    const val CORE_RANK = "core.rank"
-    const val STALKER_LORE_ARMOR_ARTEFACT_INFO = "stalker.lore.armor_artefact.info"
-}
 object ItemProperty {
     object Armor {
         object General {
             // Ключи для описания брони
             // Ранг
             const val RANK = "${ItemsKey.CORE_TOOLTIP_INFO}.rank"
+
             // Категория
             const val CATEGORY = "${ItemsKey.CORE_TOOLTIP_INFO}.category"
+
             // Вес
             const val WEIGHT = "${ItemsKey.CORE_TOOLTIP_INFO}.weight"
+
             //Прочность
             const val DURABILITY = "${ItemsKey.CORE_TOOLTIP_INFO}.durability"
+
             // Максимальная прочность
             const val MAX_DURABILITY = "${ItemsKey.CORE_TOOLTIP_INFO}.max_durability"
+
             // Название
             const val NAME = "${ItemsKey.ITEM_NAME}"
+
             //Описание
             const val DESCRIPTION = "${ItemsKey.ITEM_DESCRIPTION}"
 
@@ -46,12 +41,18 @@ object ItemProperty {
 
         object ResistanceKeys {
             // Ключи для сопротивлений
-            const val BULLET_RESISTANCE = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bullet_dmg_factor"
-            const val LACERATION_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.tear_dmg_factor"
-            const val EXPLOSION_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.explosion_dmg_factor"
-            const val ELECTRICITY_RESISTANCE = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.electra_dmg_factor"
-            const val FIRE_RESISTANCE = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.burn_dmg_factor"
-            const val CHEMICAL_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.chemical_burn_dmg_factor"
+            const val BULLET_RESISTANCE =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bullet_dmg_factor"
+            const val LACERATION_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.tear_dmg_factor"
+            const val EXPLOSION_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.explosion_dmg_factor"
+            const val ELECTRICITY_RESISTANCE =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.electra_dmg_factor"
+            const val FIRE_RESISTANCE =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.burn_dmg_factor"
+            const val CHEMICAL_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.chemical_burn_dmg_factor"
 
             val resistanceKeys = listOf(
                 Armor.ResistanceKeys.BULLET_RESISTANCE,
@@ -63,12 +64,17 @@ object ItemProperty {
             )
         }
 
-        object ProtectionKeys{
-            const val RADIATION_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.radiation_protection"
-            const val THERMAL_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.thermal_protection"
-            const val BIOLOGICAL_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.biological_protection"
-            const val PSYCHO_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_protection"
-            const val BLEEDING_PROTECTION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bleeding_protection"
+        object ProtectionKeys {
+            const val RADIATION_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.radiation_protection"
+            const val THERMAL_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.thermal_protection"
+            const val BIOLOGICAL_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.biological_protection"
+            const val PSYCHO_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_protection"
+            const val BLEEDING_PROTECTION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bleeding_protection"
 
             val protectionKeys = listOf(
                 Armor.ProtectionKeys.RADIATION_PROTECTION,
@@ -86,12 +92,17 @@ object ItemProperty {
 
         object StatModifiers {
             // Ключи для модификаторов характеристик
-            const val SPEED_MODIFIER = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.speed_modifier"
-            const val MAX_WEIGHT_BONUS = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.max_weight_bonus"
-            const val PERIODIC_HEALING = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.artefakt_heal"
-            const val BLEEDING_ACCUMULATION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bleeding_accumulation"
+            const val SPEED_MODIFIER =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.speed_modifier"
+            const val MAX_WEIGHT_BONUS =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.max_weight_bonus"
+            const val PERIODIC_HEALING =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.artefakt_heal"
+            const val BLEEDING_ACCUMULATION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bleeding_accumulation"
             const val STAMINA_BONUS = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.stamina_bonus"
-            const val STAMINA_REGENERATION = "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.stamina_regeneration_bonus"
+            const val STAMINA_REGENERATION =
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.stamina_regeneration_bonus"
 
             val statModifierKeys = listOf(
                 Armor.StatModifiers.SPEED_MODIFIER,
@@ -105,12 +116,18 @@ object ItemProperty {
 
         object CompatibilityKeys {
             // Ключи для совместимости
-            const val COMPATIBILITY_BACKPACKS = "${ItemsKey.STALKER_LORE_ARMOR_ARTEFACT_INFO}.compatible_backpacks"
-            const val COMPATIBILITY_CONTAINERS = "${ItemsKey.STALKER_LORE_ARMOR_ARTEFACT_INFO}.compatible_containers"
-            const val COMPATIBLE_BACKPACKS_LIGHT = "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.backpacks.light"
-            const val COMPATIBLE_BACKPACKS_SUPERHEAVY = "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.backpacks.superheavy"
-            const val COMPATIBLE_CONTAINERS_STANDARD = "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.containers.standard"
-            const val COMPATIBLE_CONTAINERS_BULKY = "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.containers.bulky"
+            const val COMPATIBILITY_BACKPACKS =
+                "${ItemsKey.STALKER_LORE_ARMOR_ARTEFACT_INFO}.compatible_backpacks"
+            const val COMPATIBILITY_CONTAINERS =
+                "${ItemsKey.STALKER_LORE_ARMOR_ARTEFACT_INFO}.compatible_containers"
+            const val COMPATIBLE_BACKPACKS_LIGHT =
+                "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.backpacks.light"
+            const val COMPATIBLE_BACKPACKS_SUPERHEAVY =
+                "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.backpacks.superheavy"
+            const val COMPATIBLE_CONTAINERS_STANDARD =
+                "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.containers.standard"
+            const val COMPATIBLE_CONTAINERS_BULKY =
+                "${ItemsKey.GENERAL_ARMOR_COMPATIBILITY}.containers.bulky"
 
             val compatibilityKeys = listOf(
                 Armor.CompatibilityKeys.COMPATIBILITY_BACKPACKS,
@@ -141,7 +158,6 @@ object ItemProperty {
                 MAX_DURABILITY
             )
         }
-
 
 
         object Quality {
@@ -371,15 +387,19 @@ object ItemProperty {
 
             object StatModifiers {
                 const val RECOIL = "weapon.stat_factor.recoil" // Уменьшение отдачи
-                const val HORIZONTAL_RECOIL = "weapon.stat_factor.horizontal_recoil" // Горизонтальная отдача
+                const val HORIZONTAL_RECOIL =
+                    "weapon.stat_factor.horizontal_recoil" // Горизонтальная отдача
                 const val RECOIL_GAIN = "weapon.stat_factor.recoil_gain" // Нарастание отдачи
-                const val AIM_SWITCH_TIME = "weapon.stat_factor.aim_switch_time" // Скорость прицеливания
+                const val AIM_SWITCH_TIME =
+                    "weapon.stat_factor.aim_switch_time" // Скорость прицеливания
                 const val DRAW_TIME = "weapon.stat_factor.draw_time" // Время доставания
-                const val STABILIZATION = "weapon.stat_factor.shoot_factor_decrement" // Стабилизация
+                const val STABILIZATION =
+                    "weapon.stat_factor.shoot_factor_decrement" // Стабилизация
             }
 
             object CompatibilityKeys {
-                const val SUITABLE_TARGETS = "weapon.lore.attachment.all_suitable_targets" // Совместимое оружие
+                const val SUITABLE_TARGETS =
+                    "weapon.lore.attachment.all_suitable_targets" // Совместимое оружие
             }
         }
 
@@ -396,13 +416,141 @@ object ItemProperty {
             }
 
             object StatModifiers {
-                const val RECOIL_GAIN = "weapon.stat_factor.recoil_gain" // Уменьшение нарастания отдачи
+                const val RECOIL_GAIN =
+                    "weapon.stat_factor.recoil_gain" // Уменьшение нарастания отдачи
                 const val SWAY = "weapon.stat_factor.wiggle" // Уменьшение покачивания
             }
 
             object CompatibilityKeys {
-                const val SUITABLE_TARGETS = "weapon.lore.attachment.all_suitable_targets" // Совместимое оружие
+                const val SUITABLE_TARGETS =
+                    "weapon.lore.attachment.all_suitable_targets" // Совместимое оружие
             }
         }
     }
+
+    object Weapon {
+        object General {
+            const val NAME = ItemsKey.ITEM_NAME
+            const val DESCRIPTION = ItemsKey.ITEM_DESCRIPTION
+            const val RANK = ItemsKey.CORE_RANK
+            const val CATEGORY = "${ItemsKey.CORE_TOOLTIP_INFO}.category"
+            const val WEIGHT = "${ItemsKey.CORE_TOOLTIP_INFO}.weight"
+            const val DURABILITY = "${ItemsKey.CORE_TOOLTIP_INFO}.durability"
+            const val FEATURES = "item.features"
+            const val AMMO_545MM = "${ItemsKey.ITEM_DISPLAY_AMMO_TYPES}.545mm"
+            const val AMMO_762MM = "${ItemsKey.ITEM_DISPLAY_AMMO_TYPES}.762mm"
+            const val AMMO_556MM = "${ItemsKey.ITEM_DISPLAY_AMMO_TYPES}.556mm"
+            const val AMMO_127MM = "${ItemsKey.ITEM_DISPLAY_AMMO_TYPES}.127mm"
+            const val AMMO_939MM = "${ItemsKey.ITEM_DISPLAY_AMMO_TYPES}.939mm"
+            const val HEAD_DAMAGE_MODIFIER = "weapon.tooltip.weapon.head_damage_modifier"
+            const val LIMBS_DAMAGE_MODIFIER = "weapon.tooltip.weapon.limbs_damage_modifier"
+
+            val generalKeys = listOf(
+                NAME,
+                RANK,
+                CATEGORY,
+                WEIGHT,
+                DURABILITY,
+                FEATURES,
+                HEAD_DAMAGE_MODIFIER,
+                LIMBS_DAMAGE_MODIFIER
+            )
+        }
+
+        object StatFactor {
+            const val DAMAGE_DISTANT = "${ItemsKey.WEAPON_STAT_FACTOR}.damage_distant"
+            const val DAMAGE = "${ItemsKey.WEAPON_STAT_FACTOR}.damage"
+            const val RECOIL = "${ItemsKey.WEAPON_STAT_FACTOR}.recoil"
+            const val SPREAD = "${ItemsKey.WEAPON_STAT_FACTOR}.spread"
+            const val DRAW_TIME = "${ItemsKey.WEAPON_STAT_FACTOR}.draw_time"
+            const val DAMAGE_DECREASE_START = "${ItemsKey.WEAPON_STAT_FACTOR}.damage_decrease_start"
+            const val WIGGLE = "${ItemsKey.WEAPON_STAT_FACTOR}.wiggle"
+            const val RELOAD_MODIFIER = "${ItemsKey.WEAPON_STAT_FACTOR}.reload_modifier"
+            const val HORIZONTAL_RECOIL = "${ItemsKey.WEAPON_STAT_FACTOR}.horizontal_recoil"
+            const val AIM_SWITCH_TIME = "${ItemsKey.WEAPON_STAT_FACTOR}.aim_switch_time"
+
+            val statFactorKeys = listOf(
+                DAMAGE_DISTANT,
+                DAMAGE,
+                RECOIL,
+                SPREAD,
+                DRAW_TIME,
+                DAMAGE_DECREASE_START,
+                WIGGLE,
+                RELOAD_MODIFIER,
+                HORIZONTAL_RECOIL,
+                AIM_SWITCH_TIME
+            )
+        }
+
+        object ToolTip {
+            object WeaponInfo {
+                const val SPREAD = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.spread"
+                const val CLIP_SIZE = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.clip_size"
+                const val ATTACHMENT_STATS =
+                    "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.attachment_stat"
+                const val RATE_OF_FIRE = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.rate_of_fire"
+                const val HORIZONTAL_RECOIL =
+                    "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.horizontal_recoil"
+                const val DISTANCE = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.distance"
+                const val AIM_SWITCH = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.aim_switch"
+                const val DAMAGE_MODIFIERS =
+                    "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.damage_modifiers"
+                const val UPGRADE_STATS = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.upgrade_stat"
+                const val OVERHEAT_AFTER = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.overheat_after"
+                const val DRAW_TIME = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.draw_time"
+                const val FEATURE = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.feature"
+                const val RECOIL = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.recoil"
+                const val HIP_SPREAD = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.hip_spread"
+                const val AMMO_TYPE = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.ammo_type"
+
+                val weaponInfoKeys = listOf(
+                    SPREAD,
+                    CLIP_SIZE,
+                    ATTACHMENT_STATS,
+                    RATE_OF_FIRE,
+                    HORIZONTAL_RECOIL,
+                    DISTANCE,
+                    AIM_SWITCH,
+                    DAMAGE_MODIFIERS,
+                    UPGRADE_STATS,
+                    OVERHEAT_AFTER,
+                    DRAW_TIME,
+                    FEATURE,
+                    RECOIL,
+                    HIP_SPREAD,
+                    AMMO_TYPE
+                )
+            }
+
+            object MagazineInfo {
+                const val RELOAD_TIME_TACTICAL =
+                    "${ItemsKey.WEAPON_TOOLTIP_MAGAZINE_INFO}.reload_time_tactical"
+                const val RELOAD_TIME = "${ItemsKey.WEAPON_TOOLTIP_MAGAZINE_INFO}.reload_time"
+
+                val magazineInfoKeys = listOf(
+                    RELOAD_TIME,
+                    RELOAD_TIME_TACTICAL
+                )
+            }
+        }
+    }
+}
+
+object ItemsKey {
+    // Глобальные ключи
+    const val CORE_TOOLTIP_INFO = "core.tooltip.info"
+    const val STALKER_ARTEFACT_PROPERTIES_FACTOR = "stalker.artefact_properties.factor"
+    const val GENERAL_ARMOR_COMPATIBILITY = "general.armor.compatibility"
+    const val ITEM_NAME = "item.name"
+    const val ITEM_DESCRIPTION = "item.description"
+    const val ITEM_DEVICE_NVD = "item.device"
+    const val ITEM_QUALITY = "core.quality"
+    const val CORE_HANDBOOK_CATEGORY = "core.handbook.category"
+    const val CORE_RANK = "core.rank"
+    const val STALKER_LORE_ARMOR_ARTEFACT_INFO = "stalker.lore.armor_artefact.info"
+    const val ITEM_DISPLAY_AMMO_TYPES = "item.wpn.display_ammo_types"
+    const val WEAPON_STAT_FACTOR = "weapon.stat_factor"
+    const val WEAPON_TOOLTIP_WEAPON_INFO = "weapon.tooltip.weapon.info"
+    const val WEAPON_TOOLTIP_MAGAZINE_INFO = "weapon.tooltip.magazine.info"
 }

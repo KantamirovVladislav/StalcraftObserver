@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.presentation.common.CustomImage
 import com.example.stalcraftobserver.presentation.common.CustomOutlinedCard
@@ -39,54 +40,17 @@ fun ArmorInfoScreen(
     val armorParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value =
-            ItemInfoHelper.getValuesByKeys(item, generalKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: ""}:  ${lineValue?.ru ?: ""}"
-                }.joinToString(separator = ", ")
-                formattedValues
-            }.joinToString(separator = "\n")
+        generalParam.value = ItemInfoHelper.getStringFromKeys(item, generalKeys)
 
-        statModifiersParam.value =
-            ItemInfoHelper.getValuesByKeys(item, statModifierKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: "null"}:  ${lineValue?.ru ?: "null"}"
-                }.joinToString(separator = ", ")
-                formattedValues
-            }.joinToString(separator = "\n")
+        statModifiersParam.value = ItemInfoHelper.getStringFromKeys(item, statModifierKeys)
 
-        resistanceParam.value =
-            ItemInfoHelper.getValuesByKeys(item, resistanceKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: "null"}:  ${lineValue?.ru ?: "null"}"
-                }.joinToString(separator = ", ")
-                formattedValues
-            }.joinToString(separator = "\n")
+        resistanceParam.value = ItemInfoHelper.getStringFromKeys(item, resistanceKeys)
 
-        protectionParam.value =
-            ItemInfoHelper.getValuesByKeys(item, protectionKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: "null"}:  ${lineValue?.ru ?: "null"}"
-                }.joinToString(separator = ", ")
-                formattedValues
-            }.joinToString(separator = "\n")
+        protectionParam.value = ItemInfoHelper.getStringFromKeys(item, protectionKeys)
 
-        descriptionParam.value =
-            ItemInfoHelper.getValuesForKey(item, ItemProperty.Armor.General.DESCRIPTION)
-                .map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: "null"}:  ${lineValue?.ru ?: "null"}"
-                }.joinToString(separator = ", ")
+        descriptionParam.value = ItemInfoHelper.getStringFromKey(item, ItemProperty.Armor.General.DESCRIPTION)
 
-        compatibilityParam.value =
-            ItemInfoHelper.getValuesByKeys(
-                item,
-                ItemProperty.Armor.CompatibilityKeys.compatibilityKeys
-            ).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: "null"}:  ${lineValue?.ru ?: "null"}"
-                }.joinToString(separator = ", ")
-                formattedValues
-            }.joinToString(separator = "\n")
+        compatibilityParam.value =ItemInfoHelper.getStringFromKeys(item, ItemProperty.Armor.CompatibilityKeys.compatibilityKeys)
 
         armorParam.value = ItemInfoHelper.getArmorClassFromItemInfo(item).toString()
     }
@@ -103,7 +67,8 @@ fun ArmorInfoScreen(
                         imagePath = imagePath,
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically)
+                            .align(Alignment.CenterVertically),
+                        contentScale = ContentScale.FillWidth
                     )
                 }
             }

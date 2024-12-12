@@ -5,6 +5,8 @@ import com.example.stalcraftobserver.data.manager.Element
 import com.example.stalcraftobserver.data.manager.InfoBlock
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.Lines
+import com.example.stalcraftobserver.domain.model.Item
+import com.example.stalcraftobserver.util.ItemProperty.Armor.ProtectionKeys.protectionKeys
 import com.example.stalcraftobserver.util.itemSupportModel.Armor
 
 class ItemInfoHelper {
@@ -239,5 +241,51 @@ class ItemInfoHelper {
             }
             return null
         }
+
+        fun getStringFromKeys(
+            item: ItemInfo,
+            property: List<String>,
+            language: String = "ru"
+        ): String {
+            return getValuesByKeys(item, property).map { (_, valueMap) ->
+                val formattedValues = valueMap.map { (lineKey, lineValue) ->
+                    val lineKeyText = when (language) {
+                        "ru" -> lineKey?.ru
+                        "en" -> lineKey?.en
+                        else -> null
+                    }
+
+                    val lineValueText = when (language) {
+                        "ru" -> lineValue?.ru
+                        "en" -> lineValue?.en
+                        else -> null
+                    }
+
+                    "${lineKeyText ?: "null"}: ${lineValueText ?: "null"}"
+                }.joinToString(separator = ", ")
+
+                formattedValues
+            }.joinToString(separator = "\n")
+        }
+
+        fun getStringFromKey(item: ItemInfo, propertyKey: String, language: String = "ru"): String {
+            return getValuesForKey(item, propertyKey)
+                .map { (lineKey, lineValue) ->
+                    val lineKeyText = when (language) {
+                        "ru" -> lineKey?.ru
+                        "en" -> lineKey?.en
+                        else -> null
+                    }
+
+                    val lineValueText = when (language) {
+                        "ru" -> lineValue?.ru
+                        "en" -> lineValue?.en
+                        else -> null
+                    }
+
+                    "${lineKeyText ?: "null"}: ${lineValueText ?: "null"}"
+                }.joinToString(separator = ", ")
+        }
+
     }
 }

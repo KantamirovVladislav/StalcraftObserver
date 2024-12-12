@@ -2,14 +2,12 @@ package com.example.stalcraftobserver.domain.viewModel
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stalcraftobserver.data.manager.ItemDataService
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.ItemsRoomService
 import com.example.stalcraftobserver.domain.model.FunctionResult
-import com.example.stalcraftobserver.domain.model.StalcraftApplication
 import com.example.stalcraftobserver.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

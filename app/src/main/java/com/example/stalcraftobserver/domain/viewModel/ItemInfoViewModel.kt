@@ -45,34 +45,6 @@ class ItemInfoViewModel @Inject constructor(
         }
     }
 
-    fun fetchItemWithId(id: String, onResult: (ItemInfo?) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = when (val itemResult = itemsRoomService.getItemWithId(id)) {
-                is FunctionResult.Success -> {
-                    val item = itemResult.data
-                    if (item != null) {
-                        when (val itemData = itemDataService.getItemData(item)) {
-                            is FunctionResult.Success -> itemData.data
-                            is FunctionResult.Error -> {
-                                Log.e(Constants.ERROR_DATABASE_TAG, itemData.message)
-                                null
-                            }
-                        }
-                    } else {
-                        Log.e(Constants.ERROR_DATABASE_TAG, "Item with id $id is null")
-                        null
-                    }
-                }
-                is FunctionResult.Error -> {
-                    Log.e(Constants.ERROR_DATABASE_TAG, itemResult.message)
-                    null
-                }
-            }
-            onResult(result)
-        }
-    }
-
-
     private fun getItemData(item: Item?) = viewModelScope.launch {
         if (item == null) {
             Log.e(Constants.ERROR_DATABASE_TAG, "Item is null in getItemData")

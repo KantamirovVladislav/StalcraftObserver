@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +13,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.presentation.common.CustomImage
 import com.example.stalcraftobserver.presentation.common.CustomOutlinedCard
 import com.example.stalcraftobserver.util.ItemInfoHelper
 import com.example.stalcraftobserver.util.ItemProperty
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AttachmentInfoScreen(
     imagePath: String,
@@ -114,7 +117,8 @@ fun AttachmentInfoScreen(
                         imagePath = imagePath,
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically)
+                            .align(Alignment.CenterVertically),
+                        contentScale = ContentScale.FillWidth
                     )
                 }
             }

@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,7 +64,7 @@ fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
                     .padding(6.dp)
             )
         ) {
-            imagePath?.let { CustomImage(imagePath = it,modifier = Modifier.weight(1.5f) ) }
+            imagePath?.let { CustomImage(imagePath = it,modifier = Modifier.weight(1.5f), contentScale = ContentScale.Fit ) }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
