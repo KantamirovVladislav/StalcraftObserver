@@ -108,7 +108,7 @@ fun ItemsListScreen(
         },
         isFilterDisabled = { filter -> filter in disabledFilters },
         onBack = {
-            if (mode == "view") navController.popBackStack()
+            navController.popBackStack()
         }
     ) { modifierFromTopBar ->
         Column(

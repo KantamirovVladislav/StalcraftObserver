@@ -1,28 +1,23 @@
-package com.example.stalcraftobserver.presentation.onBoarding.components
+package com.example.stalcraftobserver.presentation.common
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PagesIndicator(
+fun PagesIndicatorRounder(
     modifier: Modifier = Modifier,
     pageSize: Int,
     selectedPage: Int
@@ -36,7 +31,7 @@ fun PagesIndicator(
         verticalAlignment = Alignment.Bottom
     ) {
         repeat(pageSize) { page ->
-            val targetHeight = if (page == selectedPage) 40.dp else 30.dp
+            val targetHeight = if (page == selectedPage) 12.dp else 10.dp
             val animatedHeight = animateDpAsState(targetValue = targetHeight)
 
             Box(

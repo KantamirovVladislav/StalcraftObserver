@@ -48,9 +48,13 @@ fun ArmorInfoScreen(
 
         protectionParam.value = ItemInfoHelper.getStringFromKeys(item, protectionKeys)
 
-        descriptionParam.value = ItemInfoHelper.getStringFromKey(item, ItemProperty.Armor.General.DESCRIPTION)
+        descriptionParam.value =
+            ItemInfoHelper.getStringFromKey(item, ItemProperty.Armor.General.DESCRIPTION)
 
-        compatibilityParam.value =ItemInfoHelper.getStringFromKeys(item, ItemProperty.Armor.CompatibilityKeys.compatibilityKeys)
+        compatibilityParam.value = ItemInfoHelper.getStringFromKeys(
+            item,
+            ItemProperty.Armor.CompatibilityKeys.compatibilityKeys
+        )
 
         armorParam.value = ItemInfoHelper.getArmorClassFromItemInfo(item).toString()
     }
@@ -102,5 +106,4 @@ fun ArmorInfoScreen(
             }
         }
     }
-
 }

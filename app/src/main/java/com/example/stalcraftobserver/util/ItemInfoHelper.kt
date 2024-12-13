@@ -1,6 +1,7 @@
 package com.example.stalcraftobserver.util
 
 import android.util.Log
+import androidx.datastore.dataStore
 import com.example.stalcraftobserver.data.manager.Element
 import com.example.stalcraftobserver.data.manager.InfoBlock
 import com.example.stalcraftobserver.data.manager.ItemInfo
@@ -135,14 +136,29 @@ class ItemInfoHelper {
                     }
 
                     is InfoBlock.Damage -> {
-                        //TODO
                     }
 
                     else -> null
                 }
             }
-            Log.d("DEBUG", "Key: $key, Result: $resultMap")
             return resultMap
+        }
+
+        fun getStringDamageParam(item: ItemInfo): String {
+            return if (item.category.contains("weapon")) {
+                val damageBlock = item.infoBlocks?.find { it is InfoBlock.Damage } as? InfoBlock.Damage
+                if (damageBlock != null) {
+                    "Start damage: ${damageBlock.startDamage}\n" +
+                            "Start decrease damage: ${damageBlock.damageDecreaseStart}\n" +
+                            "End damage: ${damageBlock.endDamage}\n" +
+                            "End decrease damage: ${damageBlock.damageDecreaseEnd}\n" +
+                            "Max distance: ${damageBlock.maxDistance}"
+                } else {
+                    "Not found damage"
+                }
+            } else {
+                "Not weapon"
+            }
         }
 
 
@@ -253,19 +269,24 @@ class ItemInfoHelper {
                         "ru" -> lineKey?.ru
                         "en" -> lineKey?.en
                         else -> null
-                    }
+                    }?.trim()
 
                     val lineValueText = when (language) {
                         "ru" -> lineValue?.ru
                         "en" -> lineValue?.en
                         else -> null
+                    }?.trim()
+
+                    if (lineKeyText.isNullOrBlank()) {
+                        lineValueText ?: ""
+                    } else {
+                        "$lineKeyText: ${lineValueText ?: ""}"
                     }
-
-                    "${lineKeyText ?: "null"}: ${lineValueText ?: "null"}"
-                }.joinToString(separator = ", ")
-
-                formattedValues
-            }.joinToString(separator = "\n")
+                }
+                formattedValues.filter { it.isNotEmpty() }.joinToString(separator = ", ")
+            }
+                .filter { it.isNotEmpty() }
+                .joinToString(separator = "\n")
         }
 
         fun getStringFromKey(item: ItemInfo, propertyKey: String, language: String = "ru"): String {
@@ -275,17 +296,24 @@ class ItemInfoHelper {
                         "ru" -> lineKey?.ru
                         "en" -> lineKey?.en
                         else -> null
-                    }
+                    }?.trim()
 
                     val lineValueText = when (language) {
                         "ru" -> lineValue?.ru
                         "en" -> lineValue?.en
                         else -> null
-                    }
+                    }?.trim()
 
-                    "${lineKeyText ?: "null"}: ${lineValueText ?: "null"}"
-                }.joinToString(separator = ", ")
+                    if (lineKeyText.isNullOrBlank()) {
+                        lineValueText ?: ""
+                    } else {
+                        "$lineKeyText: ${lineValueText ?: ""}"
+                    }
+                }
+                .filter { it.isNotEmpty() }
+                .joinToString(separator = ", ")
         }
+
 
     }
 }

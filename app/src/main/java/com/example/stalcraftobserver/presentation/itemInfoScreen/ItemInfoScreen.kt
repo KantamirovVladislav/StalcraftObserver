@@ -12,6 +12,7 @@ import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArmorInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArtefactInfoScreen
+import com.example.stalcraftobserver.presentation.itemInfoScreen.components.WeaponInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
 @Composable
@@ -45,7 +46,12 @@ fun ItemInfoScreen(
                     item = it
                 )
             }
-
+            else if (it.category.contains("weapon")){
+                WeaponInfoScreen(
+                    imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                    item = it
+                )
+            }
         }
     }
 }

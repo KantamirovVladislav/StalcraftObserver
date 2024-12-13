@@ -38,71 +38,17 @@ fun AttachmentInfoScreen(
     val specialParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value =
-            ItemInfoHelper.getValuesByKeys(item, ItemProperty.Artefact.General.generalKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: ""}:  ${lineValue?.ru ?: ""}"
-                }
-                formattedValues.filter { it.isNotEmpty() }.joinToString(separator = ", ")
-            }
-                // Фильтруем пустые строки перед добавлением в финальную строку
-                .filter { it.isNotEmpty() }
-                .joinToString(separator = "\n")
+        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.General.generalKeys)
 
-        qualityParam.value =
-            ItemInfoHelper.getValuesByKeys(item, ItemProperty.Artefact.Quality.qualityKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: ""}:  ${lineValue?.ru ?: ""}"
-                }
-                formattedValues.filter { it.isNotEmpty() }.joinToString(separator = ", ")
-            }
-                // Фильтруем пустые строки перед добавлением в финальную строку
-                .filter { it.isNotEmpty() }
-                .joinToString(separator = "\n")
+        qualityParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Quality.qualityKeys)
 
-        resistanceParam.value =
-            ItemInfoHelper.getValuesByKeys(item, ItemProperty.Artefact.Resistance.resistanceKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: ""}:  ${lineValue?.ru ?: ""}"
-                }
-                formattedValues.filter { it.isNotEmpty() }.joinToString(separator = ", ")
-            }
-                // Фильтруем пустые строки перед добавлением в финальную строку
-                .filter { it.isNotEmpty() }
-                .joinToString(separator = "\n")
+        resistanceParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Resistance.resistanceKeys)
 
-        accumulationParam.value =
-            ItemInfoHelper.getValuesByKeys(item, ItemProperty.Artefact.Accumulation.accumulationKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: ""}:  ${lineValue?.ru ?: ""}"
-                }
-                formattedValues.filter { it.isNotEmpty() }.joinToString(separator = ", ")
-            }
-                // Фильтруем пустые строки перед добавлением в финальную строку
-                .filter { it.isNotEmpty() }
-                .joinToString(separator = "\n")
+        accumulationParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Accumulation.accumulationKeys)
 
-        statModifierParam.value =
-            ItemInfoHelper.getValuesByKeys(item, ItemProperty.Artefact.StatModifiers.statModifiersKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: ""}:  ${lineValue?.ru ?: ""}"
-                }
-                formattedValues.filter { it.isNotEmpty() }.joinToString(separator = ", ")
-            }
-                // Фильтруем пустые строки перед добавлением в финальную строку
-                .filter { it.isNotEmpty() }
-                .joinToString(separator = "\n")
+        statModifierParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.StatModifiers.statModifiersKeys)
 
-        specialParam.value =
-            ItemInfoHelper.getValuesByKeys(item, ItemProperty.Artefact.Special.specialKeys).map { (key, valueMap) ->
-                val formattedValues = valueMap.map { (lineKey, lineValue) ->
-                    "${lineKey?.ru ?: ""}:  ${lineValue?.ru ?: ""}"
-                }
-                formattedValues.filter { it.isNotEmpty() }.joinToString(separator = ", ")
-            }
-                // Фильтруем пустые строки перед добавлением в финальную строку
-                .filter { it.isNotEmpty() }
-                .joinToString(separator = "\n")
+        specialParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Special.specialKeys)
     }
 
     Scaffold {
