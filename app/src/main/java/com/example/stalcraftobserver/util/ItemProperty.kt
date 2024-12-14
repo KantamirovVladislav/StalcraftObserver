@@ -490,6 +490,7 @@ object ItemProperty {
                 const val ATTACHMENT_STATS =
                     "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.attachment_stat"
                 const val RATE_OF_FIRE = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.rate_of_fire"
+                const val DAMAGE = "core.tooltip.stat_name.damage_type.direct"
                 const val HORIZONTAL_RECOIL =
                     "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.horizontal_recoil"
                 const val DISTANCE = "${ItemsKey.WEAPON_TOOLTIP_WEAPON_INFO}.distance"
@@ -510,6 +511,7 @@ object ItemProperty {
                     ATTACHMENT_STATS,
                     RATE_OF_FIRE,
                     HORIZONTAL_RECOIL,
+                    DAMAGE,
                     DISTANCE,
                     AIM_SWITCH,
                     DAMAGE_MODIFIERS,

@@ -3,6 +3,7 @@ package com.example.stalcraftobserver.presentation.common
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -50,7 +51,7 @@ fun PagedContent(
     }
 
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().fillMaxHeight(),
         contentAlignment = Alignment.TopStart
     ) {
         HorizontalPager(
@@ -79,6 +80,7 @@ fun PagedContent(
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .align(Alignment.CenterVertically)
                 ) {
                     content(

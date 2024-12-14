@@ -34,6 +34,7 @@ import com.example.stalcraftobserver.domain.viewModel.CompareItemsViewModel
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.presentation.compareItems.components.CompareRow
 import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getArmorClassFromItemInfo
+import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getWeaponClassFromItemInfo
 import com.example.stalcraftobserver.util.NavigationItem
 
 @Composable
@@ -118,8 +119,8 @@ fun CompareItemsScreen(
 
 @Composable
 fun CompareAttributes(item1: ItemInfo?, item2: ItemInfo?) {
-    val armor1 = item1?.let { getArmorClassFromItemInfo(it) }
-    val armor2 = item2?.let { getArmorClassFromItemInfo(it) }
+    val armor1 = item1?.let { getWeaponClassFromItemInfo(it) }
+    val armor2 = item2?.let { getWeaponClassFromItemInfo(it) }
 
     LazyColumn() {
         item {
@@ -161,13 +162,13 @@ fun CompareAttributes(item1: ItemInfo?, item2: ItemInfo?) {
             )
         }
 
-        item{
-            CompareRow(
-                "Пулестойкость",
-                armor1?.bulletResistance?.values?.firstOrNull(),
-                armor2?.bulletResistance?.values?.firstOrNull()
-            )
-        }
+//        item{
+//            CompareRow(
+//                "Пулестойкость",
+//                armor1?.bulletResistance?.values?.firstOrNull(),
+//                armor2?.bulletResistance?.values?.firstOrNull()
+//            )
+//        }
 
     }
 }

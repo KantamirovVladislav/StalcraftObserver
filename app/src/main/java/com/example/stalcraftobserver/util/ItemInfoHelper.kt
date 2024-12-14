@@ -9,6 +9,7 @@ import com.example.stalcraftobserver.data.manager.Lines
 import com.example.stalcraftobserver.domain.model.Item
 import com.example.stalcraftobserver.util.ItemProperty.Armor.ProtectionKeys.protectionKeys
 import com.example.stalcraftobserver.util.itemSupportModel.Armor
+import com.example.stalcraftobserver.util.itemSupportModel.Weapon
 
 class ItemInfoHelper {
 
@@ -146,7 +147,8 @@ class ItemInfoHelper {
 
         fun getStringDamageParam(item: ItemInfo): String {
             return if (item.category.contains("weapon")) {
-                val damageBlock = item.infoBlocks?.find { it is InfoBlock.Damage } as? InfoBlock.Damage
+                val damageBlock =
+                    item.infoBlocks?.find { it is InfoBlock.Damage } as? InfoBlock.Damage
                 if (damageBlock != null) {
                     "Start damage: ${damageBlock.startDamage}\n" +
                             "Start decrease damage: ${damageBlock.damageDecreaseStart}\n" +
@@ -159,6 +161,14 @@ class ItemInfoHelper {
             } else {
                 "Not weapon"
             }
+        }
+
+        fun getDamageParam(item: ItemInfo): InfoBlock.Damage? {
+            return if (item.category.contains("weapon")) {
+                val damageBlock =
+                    item.infoBlocks?.find { it is InfoBlock.Damage } as? InfoBlock.Damage
+                damageBlock
+            } else null
         }
 
 
@@ -253,6 +263,131 @@ class ItemInfoHelper {
                         entry.value?.ru?.replace("%", "")?.toDouble() ?: 0.0
                     },
                     extraModifier = listOf(mapOf(Lines("kekw", "kekw") to 0.0))
+                )
+            }
+            return null
+        }
+
+        fun getWeaponClassFromItemInfo(item: ItemInfo): Weapon? {
+            if (item.category.contains("weapon")) {
+                return Weapon(
+                    name = getValuesForKey(item, ItemProperty.Weapon.General.NAME),
+                    rank = getValuesForKey(item, ItemProperty.Weapon.General.RANK),
+                    category = getValuesForKey(item, ItemProperty.Weapon.General.CATEGORY),
+                    weight = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.General.WEIGHT
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    durability = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.General.DURABILITY
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    ammoType = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.AMMO_TYPE
+                    ),
+                    damage = mapOf(
+                        Lines(
+                            ru = "Базовый урон",
+                            "Start damage"
+                        ) to getDamageParam(item)?.startDamage
+                    ),
+                    magazineCapacity = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.CLIP_SIZE
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    maxDistance = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.DISTANCE
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    rateOfFire = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.RATE_OF_FIRE
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    reload = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.MagazineInfo.RELOAD_TIME
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    tacticalReload = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.MagazineInfo.RELOAD_TIME_TACTICAL
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    ergonomics = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.StatFactor.RELOAD_MODIFIER
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    spread = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.StatFactor.SPREAD
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    hipFireSpread = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.HIP_SPREAD
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    verticalRecoil = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.RECOIL
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    horizontalRecoil = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.HORIZONTAL_RECOIL
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    drawTime = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.DRAW_TIME
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    aimingTime = getValuesForKey(
+                        item,
+                        ItemProperty.Weapon.ToolTip.WeaponInfo.AIM_SWITCH
+                    ).mapValues { entry ->
+                        entry.value?.ru?.toDouble() ?: 0.0
+                    },
+                    damageModifier = mapOf(null to null),
+                    features = mapOf(null to null),
+                    damageDecreaseStart = mapOf(
+                        Lines(
+                            ru = "Начало падения урона",
+                            "Damage decrease start"
+                        ) to getDamageParam(item)?.damageDecreaseStart
+                    ),
+                    endDamage = mapOf(
+                        Lines(
+                            ru = "Конечный урон",
+                            "End damage"
+                        ) to getDamageParam(item)?.endDamage
+                    ),
+                    damageDecreaseEnd = mapOf(
+                        Lines(
+                            ru = "Конец падения урона",
+                            "Damage decrease end"
+                        ) to getDamageParam(item)?.damageDecreaseEnd
+                    )
                 )
             }
             return null
