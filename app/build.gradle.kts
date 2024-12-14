@@ -99,6 +99,9 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     // Coil for async images
     implementation(libs.coil.compose)
+
+    implementation(libs.kotlin.reflect)
+
     implementation(libs.coil.network.okhttp)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.navigation.compose)

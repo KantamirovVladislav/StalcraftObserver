@@ -33,9 +33,9 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
             .fillMaxWidth()
             .padding(4.dp)
     ) {
-        Card(modifier = Modifier.padding(4.dp)) {
+        Card(modifier = Modifier.padding(8.dp)) {
             Row(
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
