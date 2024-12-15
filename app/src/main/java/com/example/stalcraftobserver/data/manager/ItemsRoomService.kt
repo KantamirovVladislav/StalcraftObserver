@@ -159,7 +159,7 @@ class ItemsRoomService(
 
     }
 
-    fun buildDynamicSortQuery(
+    private fun buildDynamicSortQuery(
         query: String,
         sortColumns: List<String>,
         limit: Int,
@@ -168,48 +168,47 @@ class ItemsRoomService(
         rarityFilters: List<String> = emptyList()
     ): SimpleSQLiteQuery {
         val whereClauses = mutableListOf<String>()
+        val args = mutableListOf<Any>()
 
+        // Поиск по имени
         if (query.isNotEmpty()) {
             whereClauses.add("(nameEng LIKE '%' || ? || '%' OR nameRus LIKE '%' || ? || '%')")
+            args.add(query)
+            args.add(query)
         }
 
+        // Фильтры по категориям с LIKE
         if (categoryFilters.isNotEmpty()) {
-            whereClauses.add("category IN (${categoryFilters.joinToString(", ") { "?" }})")
+            whereClauses.add(categoryFilters.joinToString(" OR ") { "category LIKE '%' || ? || '%'" })
+            args.addAll(categoryFilters)
         }
 
+        // Фильтры по редкости
         if (rarityFilters.isNotEmpty()) {
             whereClauses.add("rarity IN (${rarityFilters.joinToString(", ") { "?" }})")
+            args.addAll(rarityFilters)
         }
 
-        val baseQuery = """
-        SELECT * FROM Map_Name_Id
-        ${if (whereClauses.isNotEmpty()) "WHERE ${whereClauses.joinToString(" AND ")}" else ""}
-    """.trimIndent()
-
-        val orderClause = if (sortColumns.isNotEmpty()) {
-            "ORDER BY ${sortColumns.joinToString(", ")}"
-        } else {
-            ""
+        // Базовый SQL запрос
+        val sql = buildString {
+            append("SELECT * FROM Map_Name_Id")
+            if (whereClauses.isNotEmpty()) {
+                append(" WHERE ${whereClauses.joinToString(" AND ")}")
+            }
+            if (sortColumns.isNotEmpty()) {
+                append(" ORDER BY ${sortColumns.joinToString(", ")}")
+            }
+            append(" LIMIT ? OFFSET ?")
         }
 
-        val sql = """
-        $baseQuery
-        $orderClause
-        LIMIT ? OFFSET ?
-    """.trimIndent()
-
-        val args = mutableListOf<Any>()
-        if (query.isNotEmpty()) {
-            args.add(query)
-            args.add(query)
-        }
-        args.addAll(categoryFilters)
-        args.addAll(rarityFilters)
+        // Добавление limit и offset
         args.add(limit)
         args.add(offset)
 
         return SimpleSQLiteQuery(sql, args.toTypedArray())
     }
+
+
 
 
     fun closeDatabase() {

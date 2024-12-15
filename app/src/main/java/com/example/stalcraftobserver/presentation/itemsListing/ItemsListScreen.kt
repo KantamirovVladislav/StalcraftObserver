@@ -15,9 +15,11 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -124,6 +126,7 @@ fun ItemsListScreen(
                     .padding(bottom = 16.dp)
             ) {
                 items(itemsState) { item ->
+                    var isHearted by remember { mutableStateOf(false) }
                     ItemCell(
                         modifier = Modifier
                             .padding(4.dp)
@@ -143,7 +146,11 @@ fun ItemsListScreen(
                                 }
                             },
                         item = item,
-                        region = "ru"
+                        region = "ru",
+                        onHeartClick = { hearted ->
+                            isHearted = hearted
+                            Log.d("LazyVerticalGrid", "Item ID: ${item.id}, Hearted: $hearted")
+                        }
                     )
                 }
             }

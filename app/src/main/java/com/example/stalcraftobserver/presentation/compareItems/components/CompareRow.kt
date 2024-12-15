@@ -31,9 +31,9 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(horizontal = 4.dp)
     ) {
-        Card(modifier = Modifier.padding(8.dp)) {
+        Card(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
             Row(
                 modifier = Modifier.padding(horizontal = 4.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -41,6 +41,7 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
             ) {
                 Text(
                     text = "$value1",
+                    style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
@@ -48,7 +49,7 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
                     color = color1
                 )
                 Text(
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     text = "$attribute\n$sign",
                     modifier = Modifier
                         .weight(1f)
@@ -58,6 +59,7 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
                 )
                 Text(
                     text = "$value2",
+                    style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),

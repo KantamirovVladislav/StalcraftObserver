@@ -461,7 +461,7 @@ object ItemProperty {
             const val DAMAGE_DISTANT = "${ItemsKey.WEAPON_STAT_FACTOR}.damage_distant"
             const val DAMAGE = "${ItemsKey.WEAPON_STAT_FACTOR}.damage"
             const val RECOIL = "${ItemsKey.WEAPON_STAT_FACTOR}.recoil"
-            const val SPREAD = "${ItemsKey.WEAPON_STAT_FACTOR}.spread"
+            const val SPREAD = "weapon.tooltip.weapon.info.spread"
             const val DRAW_TIME = "${ItemsKey.WEAPON_STAT_FACTOR}.draw_time"
             const val DAMAGE_DECREASE_START = "${ItemsKey.WEAPON_STAT_FACTOR}.damage_decrease_start"
             const val WIGGLE = "${ItemsKey.WEAPON_STAT_FACTOR}.wiggle"

@@ -20,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.domain.viewModel.CompareItemsViewModel
+import com.example.stalcraftobserver.presentation.compareItems.components.CompareArmor
 import com.example.stalcraftobserver.presentation.compareItems.components.CompareRow
+import com.example.stalcraftobserver.presentation.compareItems.components.CompareWeapon
+import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getArmorClassFromItemInfo
 import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getWeaponClassFromItemInfo
 import com.example.stalcraftobserver.util.NavigationItem
 
@@ -34,28 +37,12 @@ fun CompareItemsScreen(
     val item1Info by viewModel.item1.collectAsState()
     val item2Info by viewModel.item2.collectAsState()
 
+    val category = item1Info?.category ?: item2Info?.category
+
+    // Обработка событий изменения id
     LaunchedEffect(Unit) {
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("item1")
-            ?.observeForever { selectedId ->
-                if (selectedId != null) {
-                    viewModel.setItem1Id(selectedId)
-                }
-            }
-
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("item2")
-            ?.observeForever { selectedId ->
-                if (selectedId != null) {
-                    viewModel.setItem2Id(selectedId)
-                }
-            }
-
-        if (!item1Id.isNullOrEmpty()) {
-            viewModel.setItem1Id(item1Id)
-        }
-
-        if (!item2Id.isNullOrEmpty()) {
-            viewModel.setItem2Id(item2Id)
-        }
+        handleItemIdUpdates(navController, viewModel, item1Id, "item1")
+        handleItemIdUpdates(navController, viewModel, item2Id, "item2")
     }
 
     Column {
@@ -63,104 +50,74 @@ fun CompareItemsScreen(
 
         LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
             item {
-                if (item1Id.isNullOrEmpty()) {
-                    Button(onClick = {
-                        navController.navigate(
-                            NavigationItem.SelectItem(itemSlot = "item1", category = "armor/combat").route
-                        )
-                    }) {
-                        Text("Выбрать предмет 1")
-                    }
-                } else {
-
-                }
+                ItemButton(
+                    navController = navController,
+                    isItemEmpty = item1Id.isNullOrEmpty(),
+                    itemSlot = "item1",
+                    category = category
+                )
             }
-
+            item { Spacer(modifier = Modifier.width(16.dp)) }
             item {
-                Spacer(modifier = Modifier.width(16.dp))
-            }
-
-            item {
-                if (item2Id.isNullOrEmpty()) {
-                    Button(onClick = {
-                        navController.navigate(
-                            NavigationItem.SelectItem(itemSlot = "item2", category = "armor/combat").route
-                        )
-                    }) {
-                        Text("Выбрать предмет 2")
-                    }
-                } else {
-
-                }
+                ItemButton(
+                    navController = navController,
+                    isItemEmpty = item2Id.isNullOrEmpty(),
+                    itemSlot = "item2",
+                    category = category
+                )
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (item1Info != null || item2Info != null) {
-            CompareAttributes(item1 = item1Info, item2 = item2Info)
+        when {
+            item1Info?.category?.contains("armor") == true || item2Info?.category?.contains("armor") == true -> {
+                CompareArmor(item1 = item1Info, item2 = item2Info)
+            }
+            item1Info?.category?.contains("weapon") == true || item2Info?.category?.contains("weapon") == true -> {
+                CompareWeapon(item1 = item1Info, item2 = item2Info)
+            }
         }
     }
 }
 
+// Вынесенная функция для обработки навигации по id
+suspend fun handleItemIdUpdates(
+    navController: NavController,
+    viewModel: CompareItemsViewModel,
+    itemId: String?,
+    itemSlot: String
+) {
+    navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(itemSlot)
+        ?.observeForever { selectedId ->
+            if (!selectedId.isNullOrEmpty()) {
+                if (itemSlot == "item1") viewModel.setItem1Id(selectedId)
+                if (itemSlot == "item2") viewModel.setItem2Id(selectedId)
+            }
+        }
 
+    if (!itemId.isNullOrEmpty()) {
+        if (itemSlot == "item1") viewModel.setItem1Id(itemId)
+        if (itemSlot == "item2") viewModel.setItem2Id(itemId)
+    }
+}
+
+// Вынесенная функция для кнопок выбора предметов
 @Composable
-fun CompareAttributes(item1: ItemInfo?, item2: ItemInfo?) {
-    val armor1 = item1?.let { getWeaponClassFromItemInfo(it) }
-    val armor2 = item2?.let { getWeaponClassFromItemInfo(it) }
-
-
-    LazyColumn() {
-        item {
-            CompareRow(
-                "Название",
-                armor1?.name?.values?.firstOrNull()?.ru,
-                armor2?.name?.values?.firstOrNull()?.ru
+fun ItemButton(
+    navController: NavController,
+    isItemEmpty: Boolean,
+    itemSlot: String,
+    category: String?
+) {
+    if (isItemEmpty) {
+        Button(onClick = {
+            navController.navigate(
+                NavigationItem.SelectItem(itemSlot = itemSlot, category = category).route
             )
+        }) {
+            Text("Выбрать $itemSlot")
         }
-        item{
-            CompareRow(
-                "Ранг",
-                armor1?.rank?.values?.firstOrNull()?.ru,
-                armor2?.rank?.values?.firstOrNull()?.ru
-            )
-        }
-
-        item{
-            CompareRow(
-                "Категория",
-                armor1?.category?.values?.firstOrNull()?.ru,
-                armor2?.category?.values?.firstOrNull()?.ru
-            )
-        }
-
-        item{
-            CompareRow(
-                "Вес",
-                armor1?.weight?.values?.firstOrNull(),
-                armor2?.weight?.values?.firstOrNull()
-            )
-        }
-
-        item{
-            CompareRow(
-                "Прочность",
-                armor1?.durability?.values?.firstOrNull(),
-                armor2?.durability?.values?.firstOrNull()
-            )
-        }
-
-//        item{
-//            CompareRow(
-//                "Пулестойкость",
-//                armor1?.bulletResistance?.values?.firstOrNull(),
-//                armor2?.bulletResistance?.values?.firstOrNull()
-//            )
-//        }
-
     }
 }
-
-
-
 
