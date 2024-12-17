@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = NavigationItem.SelectItem("{itemSlot}", "{category}").route,
+                            route = "selectItem/{itemSlot}?categories={categories}",
                             arguments = listOf(
                                 navArgument("itemSlot") { defaultValue = "" },
                                 navArgument("category") {
@@ -106,14 +106,15 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { backStackEntry ->
                             val mode = "selection"
+                            val categoriesString = backStackEntry.arguments?.getString("categories")
+                            val categories = categoriesString?.split(",") ?: emptyList()
                             val itemSlot = backStackEntry.arguments?.getString("itemSlot")
-                            val category = backStackEntry.arguments?.getString("category")
                             ItemsListScreen(
                                 navController = navController,
                                 viewModel = hiltViewModel(),
                                 mode = mode,
                                 itemSlot = itemSlot,
-                                category = category
+                                category = categories
                             )
                         }
                         composable(

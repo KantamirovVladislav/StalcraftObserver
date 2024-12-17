@@ -11,6 +11,7 @@ sealed class NavigationItem(val route: String){
     data object ListItems: NavigationItem(Screen.ListItems.name)
     class ItemInfo(private val idItem: String): NavigationItem("${Screen.ItemInfo.name}/$idItem")
 
-    class SelectItem(private val itemSlot: String, private val category: String? = null) :
-        NavigationItem("${Screen.ListItems.name}/select/$itemSlot?category=$category")
+    data class SelectItem(val itemSlot: String, val categories: List<String?>?) : NavigationItem(
+        "selectItem/$itemSlot?categories=${categories?.joinToString(",")}"
+    )
 }

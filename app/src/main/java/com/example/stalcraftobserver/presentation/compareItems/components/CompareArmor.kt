@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.presentation.compareItems.components
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -96,13 +97,15 @@ fun CompareArmor(
         )
     )
 
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier.padding(top = 4.dp)
+    ) {
         // Общая информация
         item {
             Text(
                 text = "General",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
         }
         generalAttributes.forEach { (label, values) ->
@@ -116,7 +119,7 @@ fun CompareArmor(
             Text(
                 text = "Protection",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
         }
         protectionAttributes.forEach { (label, values) ->
@@ -130,7 +133,7 @@ fun CompareArmor(
             Text(
                 text = "Extra Modifiers",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
         }
         armor1?.extraModifier?.forEachIndexed { index, modifier1 ->

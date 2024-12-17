@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -82,11 +84,10 @@ fun ItemCell(
                     )
                 }
 
-                // Иконка Favorite
                 Icon(
-                    imageVector = if (isHearted) Icons.Filled.Favorite else Icons.Outlined.Favorite,
+                    imageVector = if (isHearted) Icons.Outlined.Star else Icons.Outlined.StarOutline,
                     contentDescription = "Favorite Icon",
-                    tint = if (isHearted) Color.Red else Color.Gray,
+                    tint = if (isHearted) Color.Yellow else Color.Gray,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
@@ -120,3 +121,4 @@ fun ItemCell(
         }
     }
 }
+

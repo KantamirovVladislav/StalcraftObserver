@@ -123,7 +123,7 @@ fun CompareWeapon(
             Text(
                 text = "General",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
         }
         generalAttributes.forEach { (label, values) ->
@@ -136,7 +136,7 @@ fun CompareWeapon(
             Text(
                 text = "Damage",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
         }
         damageAttributes.forEach { (label, values) ->

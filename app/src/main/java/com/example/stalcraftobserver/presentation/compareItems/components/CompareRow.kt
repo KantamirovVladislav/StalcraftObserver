@@ -22,16 +22,16 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
         when {
             v1 < v2 -> Triple(Color.Red, Color.Green, "<")
             v1 > v2 -> Triple(Color.Green, Color.Red, ">")
-            else -> Triple(Color.Black, Color.Black, "=")
+            else -> Triple(Color.Unspecified, Color.Unspecified, "=")
         }
     } else {
-        Triple(Color.Black, Color.Black, "")
+        Triple(Color.Unspecified, Color.Unspecified, "")
     }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp, vertical = 2.dp)
     ) {
         Card(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
             Row(
@@ -54,8 +54,7 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = Color.Black
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = "$value2",

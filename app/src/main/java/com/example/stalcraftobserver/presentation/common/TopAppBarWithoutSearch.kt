@@ -41,6 +41,7 @@ import com.example.stalcraftobserver.domain.model.StalcraftApplication
 fun TopAppBarWithoutSearch(
     modifier: Modifier = Modifier,
     navController: NavController,
+    title:String = "",
     onMenuSelected: (String) -> Unit = {},
     content: @Composable (modifier: Modifier) -> Unit = {}
 ) {
@@ -60,7 +61,7 @@ fun TopAppBarWithoutSearch(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
-                title = { },
+                title = { Text(text = title) },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()

@@ -1,6 +1,8 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,6 +17,7 @@ import com.example.stalcraftobserver.presentation.itemInfoScreen.components.Arte
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.WeaponInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ItemInfoScreen(
     id: String,
@@ -29,28 +32,29 @@ fun ItemInfoScreen(
     LaunchedEffect(Unit) {
         viewModel.getItemWithId(id)
     }
-
-    TopAppBarWithoutSearch(navController = navController, onMenuSelected = {
-        navController.navigate("compare_items?item1Id=${id ?: ""}&item2Id=${""}")
-    }){
-        info?.let {
-            if (it.category.contains("armor")){
-                ArmorInfoScreen(
-                    imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                    item = it
-                )
-            }
-            else if (it.category.contains("artefact")){
-                ArtefactInfoScreen(
-                    imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                    item = it
-                )
-            }
-            else if (it.category.contains("weapon")){
-                WeaponInfoScreen(
-                    imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                    item = it
-                )
+    Scaffold {
+        TopAppBarWithoutSearch(navController = navController, onMenuSelected = {
+            navController.navigate("compare_items?item1Id=${id ?: ""}&item2Id=${""}")
+        }){
+            info?.let {
+                if (it.category.contains("armor")){
+                    ArmorInfoScreen(
+                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                        item = it
+                    )
+                }
+                else if (it.category.contains("artefact")){
+                    ArtefactInfoScreen(
+                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                        item = it
+                    )
+                }
+                else if (it.category.contains("weapon")){
+                    WeaponInfoScreen(
+                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                        item = it
+                    )
+                }
             }
         }
     }

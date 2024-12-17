@@ -38,22 +38,15 @@ fun ItemsListScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: ItemViewModel,
-    mode: String = "view", // "view" - обычный режим, "selection" - выбор предмета
+    mode: String = "view",
     itemSlot: String? = null,
-    category: String? = null
+    category: List<String>? = null
 ) {
-
     val itemsState = viewModel.itemsList
     val gridState = rememberLazyGridState()
     val selectedFilters = remember { mutableStateListOf<FilterItem>() }
     val searchQuery = remember { mutableStateOf("") }
-
-    //var showCategoryDialog by remember { mutableStateOf(false) }
-    //var showRarityDialog by remember { mutableStateOf(false) }
-    val selectedCategories = remember { mutableStateListOf<String>() }
-    val selectedRarities = remember { mutableStateListOf<String>() }
     val disabledFilters = remember { mutableStateListOf<FilterItem>() }
-
     val filters = listOf(
         FilterItem(name = "A-z", group = "alphabetSort"),
         FilterItem(name = "Z-a", group = "alphabetSort"),
@@ -64,59 +57,31 @@ fun ItemsListScreen(
     val currentHeightCell: Dp = ((LocalConfiguration.current.screenHeightDp / 5) + 10).dp
     val currentCellCount: Int = LocalConfiguration.current.screenWidthDp / 130
 
-    if (category != null) {
+    if (!category.isNullOrEmpty()) {
         LaunchedEffect(category) {
-            disabledFilters.addAll(listOf(filters[2]))
-            viewModel.updateCategoryFilters(listOf(category))
+            disabledFilters.add(filters[2])
+            viewModel.updateCategoryFilters(category)
         }
     }
 
     TopAppBarWithSearchAndFilter(
         query = searchQuery.value,
-        onQueryChanged = { newQuery ->
-            searchQuery.value = newQuery
-            viewModel.searchItems(newQuery)
+        onQueryChanged = {
+            searchQuery.value = it
+            viewModel.searchItems(it)
         },
         filters = filters,
         selectedFilters = selectedFilters,
         onFilterSelected = { updatedFilters ->
-            updatedFilters.forEach { filter ->
-                when (filter.name) {
-                    //"Category" -> showCategoryDialog = true
-                    //"Rarity" -> showRarityDialog = true
-                    else -> {
-                        // Применение сортировки
-                        val sortCriteria = updatedFilters.mapNotNull { f ->
-                            when (f.name) {
-                                "A-z" -> "nameEng ASC"
-                                "Z-a" -> "nameEng DESC"
-                                else -> null
-                            }
-                        }
-                        // Если фильтров сортировки нет, задаём сортировку по умолчанию
-                        if (sortCriteria.isEmpty()) {
-                            viewModel.updateSortFilters(listOf("nameEng ASC"))
-
-
-                        } else {
-                            viewModel.updateSortFilters(sortCriteria)
-                        }
-                    }
-                }
-            }
+            applyFilters(updatedFilters, viewModel)
         },
-        onMenuSelected = { value ->
+        onMenuSelected = {
             navController.navigate("compare_items?item1Id=${""}&item2Id=${""}")
         },
-        isFilterDisabled = { filter -> filter in disabledFilters },
-        onBack = {
-            navController.popBackStack()
-        }
+        isFilterDisabled = { it in disabledFilters },
+        onBack = { navController.popBackStack() }
     ) { modifierFromTopBar ->
-        Column(
-            modifier = modifierFromTopBar
-                .fillMaxSize()
-        ) {
+        Column(modifier = modifierFromTopBar.fillMaxSize()) {
             LazyVerticalGrid(
                 state = gridState,
                 columns = GridCells.Fixed(currentCellCount),
@@ -135,27 +100,26 @@ fun ItemsListScreen(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                if (mode == "view") {
-                                    navController.navigate(NavigationItem.ItemInfo(item.id).route)
-                                } else if (mode == "selection") {
-                                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                                        itemSlot ?: "Item not selected",
-                                        item.id
-                                    )
-                                    navController.popBackStack()
+                                when (mode) {
+                                    "view" -> navController.navigate(NavigationItem.ItemInfo(item.id).route)
+                                    "selection" -> {
+                                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                                            itemSlot ?: "Item not selected",
+                                            item.id
+                                        )
+                                        navController.popBackStack()
+                                    }
                                 }
                             },
                         item = item,
                         region = "ru",
                         onHeartClick = { hearted ->
-                            isHearted = hearted
+                            isHearted = true
                             Log.d("LazyVerticalGrid", "Item ID: ${item.id}, Hearted: $hearted")
                         }
                     )
                 }
             }
-
-
 
             LaunchedEffect(gridState) {
                 snapshotFlow { gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
@@ -165,36 +129,17 @@ fun ItemsListScreen(
                         }
                     }
             }
-
-//            // Диалог выбора категорий
-//            if (showCategoryDialog) {
-//                CategoryDialog(
-//                    availableCategories = CategoryItemHelper.getAllCategories(),
-//                    selectedCategories = selectedCategories,
-//                    onConfirm = { selected ->
-//                        selectedCategories.clear()
-//                        selectedCategories.addAll(selected)
-//                        showCategoryDialog = false
-//                        viewModel.updateCategoryFilters(selected)
-//                    },
-//                    onDismiss = { showCategoryDialog = false }
-//                )
-//            }
-//
-//            // Диалог выбора редкостей
-//            if (showRarityDialog) {
-//                RarityDialog(
-//                    availableRarities = RarityItemHelper.getAllRarities(),
-//                    selectedRarities = selectedRarities,
-//                    onConfirm = { selected ->
-//                        selectedRarities.clear()
-//                        selectedRarities.addAll(selected)
-//                        showRarityDialog = false
-//                        viewModel.updateRarityFilters(selected)
-//                    },
-//                    onDismiss = { showRarityDialog = false }
-//                )
-//            }
         }
     }
+}
+
+fun applyFilters(filters: List<FilterItem>, viewModel: ItemViewModel) {
+    val sortCriteria = filters.mapNotNull {
+        when (it.name) {
+            "A-z" -> "nameEng ASC"
+            "Z-a" -> "nameEng DESC"
+            else -> null
+        }
+    }
+    viewModel.updateSortFilters(sortCriteria.ifEmpty { listOf("nameEng ASC") })
 }
