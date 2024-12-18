@@ -29,6 +29,7 @@ import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
 import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
+import com.example.stalcraftobserver.presentation.loadoutScreen.LoadoutScreen
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.NavigationItem
@@ -149,6 +150,22 @@ class MainActivity : ComponentActivity() {
                                 item1Id = item1Id,
                                 item2Id = item2Id,
                                 viewModel = hiltViewModel(backStackEntry)
+                            )
+                        }
+                        composable(
+                            route = "loadout?weapon={weapon}&armor={armor}",
+                            arguments = listOf(
+                                navArgument("weapon") { defaultValue = "" },
+                                navArgument("armor") { defaultValue = "" }
+                            )
+                        ) { backStackEntry ->
+                            val item1Id = backStackEntry.arguments?.getString("weapon")
+                            val item2Id = backStackEntry.arguments?.getString("armor")
+
+                            Log.d("LoadoutId", "$item1Id - $item2Id")
+                            LoadoutScreen(
+                                navController = navController,
+                                viewModel = hiltViewModel()
                             )
                         }
                     }

@@ -22,5 +22,12 @@ fun DropdownMenuMore(
                 onMenuItemClick("Сравнить")
             }
         )
+        DropdownMenuItem(
+            text = { Text("Loadout")},
+            onClick ={
+                onDismissRequest()
+                onMenuItemClick("Loadout")
+            }
+        )
     }
 }

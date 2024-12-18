@@ -2,6 +2,7 @@ package com.example.stalcraftobserver.presentation.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,69 +51,71 @@ fun PagedContent(
         }
     }
 
-    Box(
-        modifier = modifier.fillMaxWidth().fillMaxHeight(),
-        contentAlignment = Alignment.TopStart
-    ) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top
-        ) { page ->
-            Row(
+    Column {
+        Box(
+            modifier = modifier.fillMaxWidth().fillMaxHeight(),
+            contentAlignment = Alignment.TopStart
+        ) {
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                if (showLeftArrow) {
-                    IconButton(
-                        onClick = onClickLeft,
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                verticalAlignment = Alignment.Top
+            ) { page ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    if (showLeftArrow) {
+                        IconButton(
+                            onClick = onClickLeft,
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ChevronLeft,
+                                contentDescription = "Previous Page",
+                                modifier = Modifier.scale(1.5f)
+                            )
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .align(Alignment.CenterVertically)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.ChevronLeft,
-                            contentDescription = "Previous Page",
-                            modifier = Modifier.scale(2f)
+                        content(
+                            pages[page],
+                            Modifier.fillMaxWidth()
                         )
                     }
-                }
 
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .align(Alignment.CenterVertically)
-                ) {
-                    content(
-                        pages[page],
-                        Modifier.fillMaxWidth()
-                    )
-                }
-
-                if (showRightArrow) {
-                    IconButton(
-                        onClick = onClickRight,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.ChevronRight,
-                            contentDescription = "Next Page",
-                            modifier = Modifier.scale(2f)
-                        )
+                    if (showRightArrow) {
+                        IconButton(
+                            onClick = onClickRight,
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ChevronRight,
+                                contentDescription = "Next Page",
+                                modifier = Modifier.scale(1.5f)
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        PagesIndicatorRounder(
-            modifier = Modifier.align(Alignment.CenterVertically),
-            pageSize = totalPages,
-            selectedPage = currentPage
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            PagesIndicatorRounder(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                pageSize = totalPages,
+                selectedPage = currentPage
+            )
+        }
     }
 }

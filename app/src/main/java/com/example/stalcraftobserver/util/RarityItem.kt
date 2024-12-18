@@ -20,7 +20,22 @@ enum class RarityItem {
     Stalker,
     Veteran,
     Master,
-    Legend
+    Legend;
+
+    companion object {
+        fun getRank(rarity: RarityItem): Int {
+            return when (rarity) {
+                None -> 0
+                Common -> 1
+                Picklock -> 2
+                Newbie -> 3
+                Stalker -> 4
+                Veteran -> 5
+                Master -> 6
+                Legend -> 7
+            }
+        }
+    }
 }
 
 object RarityItemHelper {

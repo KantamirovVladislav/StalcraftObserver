@@ -75,8 +75,14 @@ fun ItemsListScreen(
         onFilterSelected = { updatedFilters ->
             applyFilters(updatedFilters, viewModel)
         },
-        onMenuSelected = {
-            navController.navigate("compare_items?item1Id=${""}&item2Id=${""}")
+        onMenuSelected = { menu ->
+            if (menu == "Loadout"){
+                navController.navigate("loadout?weapon=${""}&armor=${""}")
+            }
+            else if (menu == "Сравнить"){
+                navController.navigate("compare_items?item1Id=${""}&item2Id=${""}")
+            }
+
         },
         isFilterDisabled = { it in disabledFilters },
         onBack = { navController.popBackStack() }
