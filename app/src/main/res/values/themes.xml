@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.StalcraftObserver" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.StalcraftObserver" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation
         duration. -->
-        <item name="windowSplashScreenBackground">@color/customWhite</item>
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
 
         <!-- Use windowSplashScreenAnimatedIcon to add a drawable or an animated
              drawable. One of these is required. -->
@@ -16,5 +18,7 @@
         <!-- Set the theme of the Activity that directly follows your splash
         screen. This is required. -->
         <item name="postSplashScreenTheme">@style/Theme.StalcraftObserver</item>
+
+
     </style>
 </resources>
