@@ -1,5 +1,8 @@
+// package com.example.stalcraftobserver.presentation.itemsListing
+
 package com.example.stalcraftobserver.presentation.itemsListing
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,9 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.model.FilterItem
 import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithSearchAndFilter
 import com.example.stalcraftobserver.presentation.itemsListing.components.ItemCell
 import com.example.stalcraftobserver.util.NavigationItem
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +46,9 @@ fun ItemsListScreen(
     viewModel: ItemViewModel,
     mode: String = "view",
     itemSlot: String? = null,
-    category: List<String>? = null
+    category: List<String>? = null,
+    sharedItemViewModel: SharedItemViewModel,
+    sharedCompareItemsViewModel: SharedCompareItemsViewModel
 ) {
     val itemsState = viewModel.itemsList
     val gridState = rememberLazyGridState()
@@ -76,13 +84,14 @@ fun ItemsListScreen(
             applyFilters(updatedFilters, viewModel)
         },
         onMenuSelected = { menu ->
-            if (menu == "Loadout"){
-                navController.navigate("loadout?weapon=${""}&armor=${""}")
+            when (menu) {
+                "Loadout" -> {
+                    navController.navigate(NavigationItem.Loadout.createRoute())
+                }
+                "Сравнить" -> {
+                    navController.navigate(NavigationItem.CompareItems.createRoute())
+                }
             }
-            else if (menu == "Сравнить"){
-                navController.navigate("compare_items?item1Id=${""}&item2Id=${""}")
-            }
-
         },
         isFilterDisabled = { it in disabledFilters },
         onBack = { navController.popBackStack() }
@@ -106,13 +115,20 @@ fun ItemsListScreen(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
+
                                 when (mode) {
-                                    "view" -> navController.navigate(NavigationItem.ItemInfo(item.id).route)
+                                    "view" -> navController.navigate(NavigationItem.ItemInfo.createRoute(item.id))
                                     "selection" -> {
-                                        navController.previousBackStackEntry?.savedStateHandle?.set(
-                                            itemSlot ?: "Item not selected",
-                                            item.id
-                                        )
+                                        // Передаём выбранный id обратно через SharedLoadoutViewModel
+                                        itemSlot?.let { slot ->
+                                            when (slot) {
+                                                "weapon" -> sharedItemViewModel.setWeaponId(item.id)
+                                                "armor" -> sharedItemViewModel.setArmorId(item.id)
+                                                "item1" -> sharedCompareItemsViewModel.setItem1Id(item.id)
+                                                "item2" -> sharedCompareItemsViewModel.setItem2Id(item.id)
+                                            }
+                                        }
+                                        // Возвращаемся на предыдущий экран
                                         navController.popBackStack()
                                     }
                                 }
@@ -120,7 +136,7 @@ fun ItemsListScreen(
                         item = item,
                         region = "ru",
                         onHeartClick = { hearted ->
-                            isHearted = true
+                            isHearted = hearted
                             Log.d("LazyVerticalGrid", "Item ID: ${item.id}, Hearted: $hearted")
                         }
                     )

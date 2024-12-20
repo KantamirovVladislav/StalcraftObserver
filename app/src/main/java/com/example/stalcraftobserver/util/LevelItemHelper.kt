@@ -28,7 +28,7 @@ enum class UpgradeLevel(val level: Int, val percentageIncrease: Double) {
 object DamageCalculator {
     fun increaseDamage(minDamage: Double, endDamage: Double, level: Int): Pair<Double, Double> {
         val upgradeLevel = UpgradeLevel.fromLevel(level)
-            ?: throw IllegalArgumentException("Уровень улучшения должен быть от 1 до 15. Получен: $level")
+            ?: throw IllegalArgumentException("Уровень улучшения должен быть от 0 до 15. Получен: $level")
 
         // Вычисляем множитель
         val multiplier = 1 + (upgradeLevel.percentageIncrease / 100)
@@ -38,5 +38,9 @@ object DamageCalculator {
         val newEndDamage = endDamage * multiplier
 
         return Pair(newMinDamage, newEndDamage)
+    }
+
+    fun calculateDPS(damage: Double, rateOfFire: Double): Double {
+        return (damage * rateOfFire) / 60.0
     }
 }
