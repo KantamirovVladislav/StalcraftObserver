@@ -1,6 +1,9 @@
+// package com.example.stalcraftobserver.presentation.itemInfoScreen
+
 package com.example.stalcraftobserver.presentation.itemInfoScreen
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.content.res.Configuration
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -11,11 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArmorInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArtefactInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.WeaponInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
+import com.example.stalcraftobserver.util.NavigationItem
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -23,34 +28,56 @@ fun ItemInfoScreen(
     id: String,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: ItemInfoViewModel
+    viewModel: ItemInfoViewModel,
+    sharedItemViewModel: SharedItemViewModel
 ) {
     val info by viewModel.info.collectAsState()
-
-
 
     LaunchedEffect(Unit) {
         viewModel.getItemWithId(id)
     }
     Scaffold {
-        TopAppBarWithoutSearch(navController = navController, onMenuSelected = {
-            navController.navigate("compare_items?item1Id=${id ?: ""}&item2Id=${""}")
-        }){
+        TopAppBarWithoutSearch(navController = navController, onMenuSelected = { menu ->
+            if (menu == "Loadout") {
+                val weaponId = if (info?.category?.contains("weapon") == true) id else ""
+                val armorId = if (info?.category?.contains("armor") == true) id else ""
+
+                // Передаём данные через SharedLoadoutViewModel
+                if (weaponId.isNotEmpty()) {
+                    sharedItemViewModel.setWeaponId(weaponId)
+                }
+                if (armorId.isNotEmpty()) {
+                    sharedItemViewModel.setArmorId(armorId)
+                }
+
+                navController.navigate(
+                    NavigationItem.Loadout.createRoute(
+                        weapon = weaponId,
+                        armor = armorId
+                    )
+                )
+            } else if (menu == "Сравнить") {
+                navController.navigate(
+                    NavigationItem.CompareItems.createRoute(
+                        item1Id = id,
+                        item2Id = ""
+                    )
+                )
+            }
+        }) {
             info?.let {
-                if (it.category.contains("armor")){
-                    ArmorInfoScreen(
+                when {
+                    it.category.contains("armor") -> ArmorInfoScreen(
                         imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
                         item = it
                     )
-                }
-                else if (it.category.contains("artefact")){
-                    ArtefactInfoScreen(
+
+                    it.category.contains("artefact") -> ArtefactInfoScreen(
                         imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
                         item = it
                     )
-                }
-                else if (it.category.contains("weapon")){
-                    WeaponInfoScreen(
+
+                    it.category.contains("weapon") -> WeaponInfoScreen(
                         imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
                         item = it
                     )
@@ -75,6 +102,6 @@ fun ItemInfoScreen(
 @Composable
 fun GreetingPreviewItemInfoScreen() {
     StalcraftObserverTheme {
-        //ItemInfoScreen()
+        // Предварительный просмотр можно настроить с фиктивными данными
     }
 }

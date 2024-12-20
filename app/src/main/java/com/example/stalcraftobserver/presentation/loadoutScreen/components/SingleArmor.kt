@@ -8,18 +8,30 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.stalcraftobserver.data.manager.ItemInfo
+import com.example.stalcraftobserver.presentation.common.SingleAttributeRow
 import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getArmorClassFromItemInfo
+import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getWeaponClassFromItemInfo
+import com.example.stalcraftobserver.util.itemSupportModel.Armor
+import com.example.stalcraftobserver.util.itemSupportModel.Weapon
 
 @Composable
 fun SingleArmor(
     modifier: Modifier = Modifier,
     item: ItemInfo?
 ) {
-    val armor = item?.let { getArmorClassFromItemInfo(it) }
+    var armor: Armor? by remember { mutableStateOf(null) }
+    LaunchedEffect(Unit) {
+        armor = item?.let { getArmorClassFromItemInfo(it) }
+    }
 
     // Список атрибутов для отображения
     val generalAttributes = listOf(
