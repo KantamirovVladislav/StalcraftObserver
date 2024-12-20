@@ -3,6 +3,7 @@
 package com.example.stalcraftobserver.presentation.loadoutScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -28,6 +29,7 @@ import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.loadoutScreen.components.SingleArmor
 import com.example.stalcraftobserver.presentation.loadoutScreen.components.SingleWeapon
 import com.example.stalcraftobserver.util.NavigationItem
+import kotlin.math.log
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -37,34 +39,33 @@ fun LoadoutScreen(
     sharedItemViewModel: SharedItemViewModel,
 ) {
     // Получаем информацию о выбранных предметах из ViewModel
-    val weaponInfo by viewModel.item1.collectAsState()
-    val armorInfo by viewModel.item2.collectAsState()
+    val weaponInfo by viewModel.item1.collectAsStateWithLifecycle()
+    val armorInfo by viewModel.item2.collectAsStateWithLifecycle()
 
-    // Обновляем ViewModel на основе общего ViewModel
-    LaunchedEffect(sharedItemViewModel.weaponId.collectAsState().value) {
-        sharedItemViewModel.weaponId.value?.let { viewModel.setItem1Id(it) }
-    }
-    LaunchedEffect(sharedItemViewModel.armorId.collectAsState().value) {
-        sharedItemViewModel.armorId.value?.let { viewModel.setItem2Id(it) }
-    }
-
-    // Наблюдаем за изменениями в общем ViewModel
+    // Для weaponId
     LaunchedEffect(Unit) {
-        sharedItemViewModel.weaponId.collect { newWeaponId ->
-            if (!newWeaponId.isNullOrEmpty()) {
-                viewModel.setItem1Id(newWeaponId)
-            }
-        }
-        sharedItemViewModel.armorId.collect { newArmorId ->
-            if (!newArmorId.isNullOrEmpty()) {
-                viewModel.setItem2Id(newArmorId)
-            }
+        sharedItemViewModel.weaponId.collect { weaponId ->
+            Log.d("LoadoutScreen", "Received weaponId: $weaponId")
+            weaponId?.let { viewModel.setItem1Id(it) }
         }
     }
 
-    val pages = mutableListOf<String>()
-    if (weaponInfo != null) pages.add("weapon")
-    if (armorInfo != null) pages.add("armor")
+// Для armorId
+    LaunchedEffect(Unit) {
+        sharedItemViewModel.armorId.collect { armorId ->
+            Log.d("LoadoutScreen", "Received armorId: $armorId")
+            armorId?.let { viewModel.setItem2Id(it) }
+        }
+    }
+
+
+    val pages = remember(weaponInfo, armorInfo) {
+        buildList<String> {
+            if (weaponInfo != null) add("weapon")
+            if (armorInfo != null) add("armor")
+        }
+    }
+
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val currentPage = pagerState.currentPage
     val totalPages = pages.size

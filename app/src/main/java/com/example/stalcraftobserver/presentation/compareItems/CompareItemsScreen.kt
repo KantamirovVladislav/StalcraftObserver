@@ -56,7 +56,11 @@ fun CompareItemsScreen(
         Scaffold {
             Column(modifier = Modifier.fillMaxSize()) {
                 // Кнопки выбора предметов для сравнения
-                LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     item {
                         SelectItemButton(
                             navController = navController,
@@ -80,7 +84,9 @@ fun CompareItemsScreen(
 
                 // Сравнение предметов
                 when {
-                    item1Info?.category?.contains("armor") == true || item2Info?.category?.contains("armor") == true -> {
+                    item1Info?.category?.contains("armor") == true || item2Info?.category?.contains(
+                        "armor"
+                    ) == true -> {
                         CompareArmor(
                             item1 = item1Info,
                             item2 = item2Info,
@@ -88,7 +94,9 @@ fun CompareItemsScreen(
                         )
                     }
 
-                    item1Info?.category?.contains("weapon") == true || item2Info?.category?.contains("weapon") == true -> {
+                    item1Info?.category?.contains("weapon") == true || item2Info?.category?.contains(
+                        "weapon"
+                    ) == true -> {
                         CompareWeapon(
                             item1 = item1Info,
                             item2 = item2Info,
