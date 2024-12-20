@@ -133,8 +133,7 @@ class MainActivity : ComponentActivity() {
                                 ItemInfoScreen(
                                     id = it,
                                     viewModel = itemInfoViewModel,
-                                    navController = navController,
-                                    sharedItemViewModel = hiltViewModel()
+                                    navController = navController
                                 )
                             }
                         }
@@ -145,7 +144,15 @@ class MainActivity : ComponentActivity() {
                                 navArgument("item2Id") { type = NavType.StringType; defaultValue = "" }
                             )
                         ) { backStackEntry ->
-                            // В этом случае мы не передаём item1Id и item2Id через аргументы, так как используем общий ViewModel
+                            val id1 = backStackEntry.arguments?.getString("item1Id")
+                            val id2 = backStackEntry.arguments?.getString("item2Id")
+
+                            if (id1 != null) {
+                                sharedCompareItemsViewModel.setItem1Id(id1)
+                            }
+                            if (id2 != null){
+                                sharedCompareItemsViewModel.setItem2Id(id2)
+                            }
                             Log.d("CompareItems", "Navigate to CompareItemsScreen")
                             CompareItemsScreen(
                                 navController = navController,
@@ -162,7 +169,12 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val weaponId = backStackEntry.arguments?.getString("weapon")
                             val armorId = backStackEntry.arguments?.getString("armor")
-
+                            if (armorId?.isNotEmpty() == true){
+                                sharedItemViewModel.setArmorId(armorId)
+                            }
+                            if (weaponId?.isNotEmpty() == true){
+                                sharedItemViewModel.setWeaponId(weaponId)
+                            }
                             Log.d("LoadoutId", "$weaponId - $armorId")
                             LoadoutScreen(
                                 navController = navController,

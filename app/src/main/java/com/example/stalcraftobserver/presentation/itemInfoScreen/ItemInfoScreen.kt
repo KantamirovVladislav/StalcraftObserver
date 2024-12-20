@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArmorInfoScreen
@@ -28,8 +29,7 @@ fun ItemInfoScreen(
     id: String,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: ItemInfoViewModel,
-    sharedItemViewModel: SharedItemViewModel
+    viewModel: ItemInfoViewModel
 ) {
     val info by viewModel.info.collectAsState()
 
@@ -42,14 +42,6 @@ fun ItemInfoScreen(
                 val weaponId = if (info?.category?.contains("weapon") == true) id else ""
                 val armorId = if (info?.category?.contains("armor") == true) id else ""
 
-                // Передаём данные через SharedLoadoutViewModel
-                if (weaponId.isNotEmpty()) {
-                    sharedItemViewModel.setWeaponId(weaponId)
-                }
-                if (armorId.isNotEmpty()) {
-                    sharedItemViewModel.setArmorId(armorId)
-                }
-
                 navController.navigate(
                     NavigationItem.Loadout.createRoute(
                         weapon = weaponId,
@@ -57,6 +49,7 @@ fun ItemInfoScreen(
                     )
                 )
             } else if (menu == "Сравнить") {
+
                 navController.navigate(
                     NavigationItem.CompareItems.createRoute(
                         item1Id = id,
