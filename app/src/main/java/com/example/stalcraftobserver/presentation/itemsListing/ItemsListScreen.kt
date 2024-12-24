@@ -91,6 +91,9 @@ fun ItemsListScreen(
                 "Сравнить" -> {
                     navController.navigate(NavigationItem.CompareItems.createRoute())
                 }
+                "Artefact_build" ->{
+                    navController.navigate(NavigationItem.ContainerSelectScreen.createRoute())
+                }
             }
         },
         isFilterDisabled = { it in disabledFilters },

@@ -23,6 +23,7 @@ import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
 import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
+import com.example.stalcraftobserver.presentation.artefactBuildScreen.ContainerSelectScreen
 import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
@@ -180,6 +181,19 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 viewModel = hiltViewModel(),
                                 sharedItemViewModel = sharedItemViewModel
+                            )
+                        }
+                        composable(
+                            route = NavigationItem.ContainerSelectScreen.route,
+                            arguments = listOf(
+                                navArgument("container") {type = NavType.StringType; defaultValue = ""}
+                            )
+                        ) { backStackEntry ->
+                            //TODO change strict id
+                            val containerId = "49dj"
+                            ContainerSelectScreen(
+                                navController = navController,
+                                containerId = containerId
                             )
                         }
                     }

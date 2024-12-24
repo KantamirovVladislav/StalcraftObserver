@@ -55,11 +55,10 @@ fun CustomImage(
                 .build(),
             contentDescription = imageDescription,
             contentScale = contentScale,
-            modifier = modifier.then(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)
-            )
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+
 
         )
         if (isLoading) {
@@ -67,14 +66,12 @@ fun CustomImage(
                 modifier = Modifier
                     .size(50.dp)
             )
-        }
-        else if (isErrorLoading)
-        {
+        } else if (isErrorLoading) {
             Icon(
                 imageVector = Icons.Filled.Info,
                 contentDescription = "Info Icon",
                 tint = Color.Red,
-                modifier = Modifier
+                modifier = modifier
                     .padding(8.dp)
                     .scale(1.8f)
                     .clickable {

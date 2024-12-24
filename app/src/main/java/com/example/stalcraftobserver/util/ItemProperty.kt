@@ -190,6 +190,8 @@ object ItemProperty {
             const val PSYCHO_RESISTANCE =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_dmg_factor"
 
+            const val BIOLOGICAL_PROTECTION = "artefact_properties.factor.biological_protection"
+
             val resistanceKeys = listOf(
                 BULLET_RESISTANCE,
                 LACERATION_PROTECTION,
@@ -197,7 +199,8 @@ object ItemProperty {
                 RADIATION_RESISTANCE,
                 THERMAL_RESISTANCE,
                 BIOLOGICAL_RESISTANCE,
-                PSYCHO_RESISTANCE
+                PSYCHO_RESISTANCE,
+                BIOLOGICAL_PROTECTION
             )
         }
 
@@ -212,11 +215,14 @@ object ItemProperty {
             const val PSYCHO_ACCUMULATION =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_accumulation"
 
+            const val BLEEDING_ACCUMULATION = "stalker.artefact_properties.factor.bleeding_accumulation"
+
             val accumulationKeys = listOf(
                 RADIATION_ACCUMULATION,
                 THERMAL_ACCUMULATION,
                 BIOLOGICAL_ACCUMULATION,
-                PSYCHO_ACCUMULATION
+                PSYCHO_ACCUMULATION,
+                BLEEDING_ACCUMULATION
             )
         }
 
@@ -233,12 +239,18 @@ object ItemProperty {
             const val HEALING_EFFECTIVENESS =
                 "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.heal_efficiency"
 
+            const val REGENERATION_BONUS = "stalker.artefact_properties.factor.regeneration_bonus"
+
+            const val REACTION_ON_TEAR = "stalker.artefact_properties.factor.reaction_to_tear"
+
             val statModifiersKeys = listOf(
                 SPEED_MODIFIER,
                 STAMINA_BONUS,
                 STAMINA_REGENERATION,
                 HEALTH_BONUS,
-                HEALING_EFFECTIVENESS
+                HEALING_EFFECTIVENESS,
+                REGENERATION_BONUS,
+                REACTION_ON_TEAR
             )
         }
 

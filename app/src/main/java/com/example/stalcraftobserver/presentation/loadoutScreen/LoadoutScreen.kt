@@ -50,7 +50,7 @@ fun LoadoutScreen(
         }
     }
 
-// Для armorId
+    // Для armorId
     LaunchedEffect(Unit) {
         sharedItemViewModel.armorId.collect { armorId ->
             Log.d("LoadoutScreen", "Received armorId: $armorId")
@@ -110,8 +110,7 @@ fun LoadoutScreen(
                         modifier = Modifier
                             .fillMaxSize()
                     ) { page ->
-                        val currentPage = pages[page]
-                        when (currentPage) {
+                        when (pages[page]) {
                             "weapon" -> Column(
                                 modifier = Modifier
                                     .fillMaxSize()

@@ -32,4 +32,11 @@ sealed class NavigationItem(val route: String) {
             return "compare_items?item1Id=$item1Param&item2Id=$item2Param"
         }
     }
+
+    object ContainerSelectScreen : NavigationItem("container_select?container={container}"){
+        fun createRoute(containerId: String? = null): String{
+            val containerParam = containerId?.let { Uri.encode(it) } ?: ""
+            return "container_select?container=${containerParam}"
+        }
+    }
 }

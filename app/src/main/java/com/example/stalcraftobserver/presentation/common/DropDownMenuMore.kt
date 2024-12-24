@@ -29,5 +29,12 @@ fun DropdownMenuMore(
                 onMenuItemClick("Loadout")
             }
         )
+        DropdownMenuItem(
+            text = { Text("Artefact build")},
+            onClick = {
+                onDismissRequest()
+                onMenuItemClick("Artefact_build")
+            }
+        )
     }
 }
