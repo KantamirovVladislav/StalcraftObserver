@@ -37,6 +37,7 @@ fun CustomArtefactGrid(
     itemIds: List<String?> = emptyList(),
     onCellClick: (Int) -> Unit = {}
 ) {
+    // Генерируем список ячеек по количеству maxCountCell
     val cells = (0 until maxCountCell).map { index ->
         itemIds.getOrNull(index)
     }
@@ -76,6 +77,7 @@ fun ArtefactCell(
         contentAlignment = Alignment.Center
     ) {
         if (itemId == null) {
+            // Если артефакта нет, выводим заглушку
             Text(
                 text = "Пусто",
                 color = Color.White,
@@ -83,8 +85,11 @@ fun ArtefactCell(
                 style = MaterialTheme.typography.bodyMedium
             )
         } else {
+            // Формируем URL для картинки
+            val imageUrl = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/artefact/biochemical/$itemId.png"
+
             CustomImage(
-                imagePath = "",
+                imagePath = imageUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -92,6 +97,7 @@ fun ArtefactCell(
         }
     }
 }
+
 
 
 

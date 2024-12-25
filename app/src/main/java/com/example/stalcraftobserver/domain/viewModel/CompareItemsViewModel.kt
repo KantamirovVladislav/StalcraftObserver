@@ -28,14 +28,25 @@ class CompareItemsViewModel @Inject constructor(
     val item2 = MutableStateFlow<ItemInfo?>(null)
 
     fun setItem1Id(id: String?) {
-        if (id != null) fetchItemWithId(id) { item1.value = it }
+        if (id == null) {
+            // Явно сбрасываем
+            item1.value = null
+        } else {
+            // Загружаем данные
+            fetchItemWithId(id) { item1.value = it }
+        }
         Log.d("CompareItemsViewModel", "Item1 updated: $id")
     }
 
     fun setItem2Id(id: String?) {
-        if (id != null) fetchItemWithId(id) { item2.value = it }
+        if (id == null) {
+            item2.value = null
+        } else {
+            fetchItemWithId(id) { item2.value = it }
+        }
         Log.d("CompareItemsViewModel", "Item2 updated: $id")
     }
+
 
     private fun fetchItemWithId(id: String, onResult: (ItemInfo?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {

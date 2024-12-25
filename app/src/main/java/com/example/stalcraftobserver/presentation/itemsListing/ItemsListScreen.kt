@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.model.FilterItem
 import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedArtefactViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithSearchAndFilter
@@ -48,7 +49,8 @@ fun ItemsListScreen(
     itemSlot: String? = null,
     category: List<String>? = null,
     sharedItemViewModel: SharedItemViewModel,
-    sharedCompareItemsViewModel: SharedCompareItemsViewModel
+    sharedCompareItemsViewModel: SharedCompareItemsViewModel,
+    sharedArtefactViewModel: SharedArtefactViewModel
 ) {
     val itemsState = viewModel.itemsList
     val gridState = rememberLazyGridState()
@@ -124,11 +126,19 @@ fun ItemsListScreen(
                                     "selection" -> {
                                         // Передаём выбранный id обратно через SharedLoadoutViewModel
                                         itemSlot?.let { slot ->
+                                            if (slot.startsWith("artefact")) {
+                                                // Получаем индекс
+                                                val index = slot.removePrefix("artefact").toIntOrNull()
+                                                if (index != null) {
+                                                    sharedArtefactViewModel.setArtefact(index, item.id)
+                                                }
+                                            }
                                             when (slot) {
                                                 "weapon" -> sharedItemViewModel.setWeaponId(item.id)
                                                 "armor" -> sharedItemViewModel.setArmorId(item.id)
-                                                "item1" -> sharedCompareItemsViewModel.setItem1Id(item.id)
-                                                "item2" -> sharedCompareItemsViewModel.setItem2Id(item.id)
+                                                "item1Id" -> sharedCompareItemsViewModel.setItem1Id(item.id)
+                                                "item2Id" -> sharedCompareItemsViewModel.setItem2Id(item.id)
+
                                             }
                                         }
                                         // Возвращаемся на предыдущий экран

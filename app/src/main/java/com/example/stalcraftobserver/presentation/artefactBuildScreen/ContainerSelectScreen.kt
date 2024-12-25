@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.stalcraftobserver.domain.viewModel.SharedArtefactViewModel
 import com.example.stalcraftobserver.presentation.common.CustomImage
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
@@ -38,6 +39,7 @@ import com.example.stalcraftobserver.util.NavigationItem
 fun ContainerSelectScreen(
     modifier: Modifier = Modifier,
     navController: NavController = NavController(LocalContext.current),
+    sharedArtefactViewModel: SharedArtefactViewModel,
     containerId: String? = null
 ) {
     val isChoosed = remember { mutableStateOf(true) }
@@ -137,7 +139,8 @@ fun ContainerSelectScreen(
                 ) {
                     ArtefactBuildScreen(
                         modifier = Modifier.fillMaxSize(),
-                        navController = navController
+                        navController = navController,
+                        sharedArtefactViewModel = sharedArtefactViewModel
                     )
                 }
             }
@@ -194,6 +197,6 @@ fun SelectContainerButton(
 @Composable
 fun GreetingPreview() {
     StalcraftObserverTheme {
-        ContainerSelectScreen()
+
     }
 }

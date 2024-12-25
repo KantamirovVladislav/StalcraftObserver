@@ -21,6 +21,7 @@ import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
 import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedArtefactViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.ContainerSelectScreen
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
     private val onBoardingViewModel: OnBoardingViewModel by viewModels()
     private val sharedItemViewModel: SharedItemViewModel by viewModels()
     private val sharedCompareItemsViewModel: SharedCompareItemsViewModel by viewModels()
+    private val sharedArtefactViewModel: SharedArtefactViewModel by viewModels()
 
     @Inject
     @Named("LocalUserManager")
@@ -94,6 +96,7 @@ class MainActivity : ComponentActivity() {
                                 viewModel = itemViewModel,
                                 mode = "view",
                                 sharedCompareItemsViewModel = sharedCompareItemsViewModel,
+                                sharedArtefactViewModel = sharedArtefactViewModel,
                                 sharedItemViewModel = sharedItemViewModel
                             )
                         }
@@ -119,7 +122,8 @@ class MainActivity : ComponentActivity() {
                                 itemSlot = itemSlot,
                                 category = categories,
                                 sharedCompareItemsViewModel = sharedCompareItemsViewModel,
-                                sharedItemViewModel = sharedItemViewModel
+                                sharedItemViewModel = sharedItemViewModel,
+                                sharedArtefactViewModel = sharedArtefactViewModel
                             )
                         }
                         composable(
@@ -148,10 +152,10 @@ class MainActivity : ComponentActivity() {
                             val id1 = backStackEntry.arguments?.getString("item1Id")
                             val id2 = backStackEntry.arguments?.getString("item2Id")
 
-                            if (id1 != null) {
+                            if (id1?.isNotEmpty() == true){
                                 sharedCompareItemsViewModel.setItem1Id(id1)
                             }
-                            if (id2 != null){
+                            if (id2?.isNotEmpty() == true){
                                 sharedCompareItemsViewModel.setItem2Id(id2)
                             }
                             Log.d("CompareItems", "Navigate to CompareItemsScreen")
@@ -193,7 +197,8 @@ class MainActivity : ComponentActivity() {
                             val containerId = "49dj"
                             ContainerSelectScreen(
                                 navController = navController,
-                                containerId = containerId
+                                containerId = containerId,
+                                sharedArtefactViewModel = sharedArtefactViewModel
                             )
                         }
                     }

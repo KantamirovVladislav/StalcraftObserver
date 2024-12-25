@@ -150,7 +150,6 @@ fun LoadoutScreen(
                         }
                     }
                 } else {
-                    // Если нет доступных страниц
                     Text(
                         text = "Нет доступных данных для отображения.",
                         modifier = Modifier

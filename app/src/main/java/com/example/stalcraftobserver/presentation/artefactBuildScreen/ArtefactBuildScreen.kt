@@ -1,10 +1,14 @@
 package com.example.stalcraftobserver.presentation.artefactBuildScreen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -14,30 +18,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.data.manager.ItemInfo
+import com.example.stalcraftobserver.domain.model.ArtefactAssembly
+import com.example.stalcraftobserver.domain.viewModel.SharedArtefactViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.components.CustomArtefactGrid
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
+import com.example.stalcraftobserver.util.Artefacts
+import com.example.stalcraftobserver.util.NavigationItem
 
 @Composable
 fun ArtefactBuildScreen(
     modifier: Modifier = Modifier,
-    navController: NavController = NavController(LocalContext.current)
+    navController: NavController,
+    sharedArtefactViewModel: SharedArtefactViewModel
 ) {
-    var artefactItemIds by remember {
-        mutableStateOf(List<String?>(size = 6) { null })
+    // Подписываемся на список ID
+    val artefactItemIds by sharedArtefactViewModel.artefactItemIds.collectAsState()
+
+    val kekw = ArtefactAssembly()
+    kekw.addArtefact(Artefacts.ARTEFACT_1)
+    kekw.addArtefact(Artefacts.ARTEFACT_2)
+    kekw.addArtefact(Artefacts.ARTEFACT_3)
+
+    Column {
+        CustomArtefactGrid(
+            modifier = Modifier.padding(6.dp),
+            maxCountCell = artefactItemIds.size,
+            itemIds = artefactItemIds,        // <-- передаём сюда ID артов
+            onCellClick = { cellIndex ->
+                val itemSlot = "artefact$cellIndex"
+                // идём на экран выбора
+                navController.navigate(
+                    // createRoute передаёт, например: "select_item_screen?itemSlot=artefact0&categories=artefact"
+                    NavigationItem.SelectItem.createRoute(itemSlot, listOf("artefact"))
+                )
+            }
+        )
+
+        // Для наглядности выводим текстовое представление
+        Text(text = "Текущие артефакты: ${artefactItemIds.joinToString()}")
+        Text(text = "${kekw.buildStatsString()}")
     }
-
-
-    CustomArtefactGrid(
-        modifier = Modifier.padding(6.dp),
-        maxCountCell = artefactItemIds.size,
-        itemIds = artefactItemIds,
-        onCellClick = { cellIndex ->
-            val updatedList = artefactItemIds.toMutableList()
-            updatedList[cellIndex] = "artefact$cellIndex"
-            artefactItemIds = updatedList
-        }
-    )
 }
 
 @Preview(showBackground = true)
@@ -55,6 +76,6 @@ fun ArtefactBuildScreen(
 @Composable
 fun GreetingPreview12() {
     StalcraftObserverTheme {
-        ArtefactBuildScreen()
+
     }
 }

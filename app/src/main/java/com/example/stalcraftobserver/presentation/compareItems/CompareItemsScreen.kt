@@ -2,16 +2,32 @@ package com.example.stalcraftobserver.presentation.compareItems
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,23 +46,19 @@ fun CompareItemsScreen(
     viewModel: CompareItemsViewModel,
     sharedCompareItemsViewModel: SharedCompareItemsViewModel
 ) {
-    // Получаем item1Id и item2Id из общего ViewModel
     val item1Id by sharedCompareItemsViewModel.item1Id.collectAsState()
     val item2Id by sharedCompareItemsViewModel.item2Id.collectAsState()
 
-    // Устанавливаем item1Id и item2Id в CompareItemsViewModel
     LaunchedEffect(item1Id) {
-        item1Id?.let { viewModel.setItem1Id(it) }
+        viewModel.setItem1Id(item1Id)
     }
     LaunchedEffect(item2Id) {
-        item2Id?.let { viewModel.setItem2Id(it) }
+        viewModel.setItem2Id(item2Id)
     }
 
-    // Получаем информацию о предметах из CompareItemsViewModel
     val item1Info by viewModel.item1.collectAsState()
     val item2Info by viewModel.item2.collectAsState()
 
-    // Определяем категории для фильтрации (на основе категорий выбранных предметов)
     val categories = listOfNotNull(
         item1Info?.category?.substringBefore("/"),
         item2Info?.category?.substringBefore("/")
@@ -55,38 +67,44 @@ fun CompareItemsScreen(
     TopAppBarWithoutSearch(navController = navController, title = "Сравнение") {
         Scaffold {
             Column(modifier = Modifier.fillMaxSize()) {
-                // Кнопки выбора предметов для сравнения
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     item {
                         SelectItemButton(
                             navController = navController,
                             isItemEmpty = item1Id.isNullOrEmpty(),
-                            itemSlot = "item1",
+                            itemSlot = "item1Id",
                             category = categories,
                             sharedCompareItemsViewModel = sharedCompareItemsViewModel
                         )
                     }
+
                     item { Spacer(modifier = Modifier.width(16.dp)) }
+
                     item {
                         SelectItemButton(
                             navController = navController,
                             isItemEmpty = item2Id.isNullOrEmpty(),
-                            itemSlot = "item2",
+                            itemSlot = "item2Id",
                             category = categories,
+                            sharedCompareItemsViewModel = sharedCompareItemsViewModel
+                        )
+                    }
+
+                    item { Spacer(modifier = Modifier.width(16.dp)) }
+
+                    item {
+                        ClearSelectedItemsButton(
                             sharedCompareItemsViewModel = sharedCompareItemsViewModel
                         )
                     }
                 }
 
-                // Сравнение предметов
                 when {
-                    item1Info?.category?.contains("armor") == true || item2Info?.category?.contains(
-                        "armor"
-                    ) == true -> {
+                    item1Info?.category?.contains("armor") == true ||
+                            item2Info?.category?.contains("armor") == true -> {
                         CompareArmor(
                             item1 = item1Info,
                             item2 = item2Info,
@@ -94,9 +112,8 @@ fun CompareItemsScreen(
                         )
                     }
 
-                    item1Info?.category?.contains("weapon") == true || item2Info?.category?.contains(
-                        "weapon"
-                    ) == true -> {
+                    item1Info?.category?.contains("weapon") == true ||
+                            item2Info?.category?.contains("weapon") == true -> {
                         CompareWeapon(
                             item1 = item1Info,
                             item2 = item2Info,
@@ -135,6 +152,31 @@ fun SelectItemButton(
             color = MaterialTheme.colorScheme.primary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun ClearSelectedItemsButton(
+    sharedCompareItemsViewModel: SharedCompareItemsViewModel
+) {
+    IconButton(
+        onClick = {
+            sharedCompareItemsViewModel.setItem1Id(null)
+            sharedCompareItemsViewModel.setItem2Id(null)
+        },
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clip(RoundedCornerShape(12.dp))
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = "Очистить",
+            tint = Color.Red
         )
     }
 }

@@ -18,6 +18,8 @@ import com.example.stalcraftobserver.presentation.common.SingleAttributeRow
 import com.example.stalcraftobserver.presentation.common.UpgradeLevelControl
 import com.example.stalcraftobserver.util.DamageCalculator
 import com.example.stalcraftobserver.util.DamageCalculator.calculateDPS
+import com.example.stalcraftobserver.util.DamageCalculator.calculateHeadDamage
+import com.example.stalcraftobserver.util.DamageCalculator.calculateTTK
 import com.example.stalcraftobserver.util.ItemInfoHelper.Companion.getWeaponClassFromItemInfo
 import com.example.stalcraftobserver.util.itemSupportModel.Weapon
 
@@ -55,11 +57,21 @@ fun SingleWeapon(
         calculateDPS(newMinDamage, rateOfFire)
     }
 
+    val ttk = remember(dps) {
+        calculateTTK(dps, 600.0)
+    }
+
+    val headDamage = remember(newMinDamage) {
+        calculateHeadDamage(newMinDamage)
+    }
+
     val levelDecreased = remember(newMinDamage, newEndDamage, dps) {
         listOf(
             "Урон" to String.format("%.2f", newMinDamage),
+            "Head damage" to String.format("%.2f", headDamage),
             "End damage" to String.format("%.2f", newEndDamage),
-            "DPS" to String.format("%.2f", dps)
+            "DPS" to String.format("%.2f", dps),
+            "TTK (600hp)" to String.format("%.2f", ttk)
         )
     }
 

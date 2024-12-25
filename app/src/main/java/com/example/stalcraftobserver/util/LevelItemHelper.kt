@@ -30,10 +30,8 @@ object DamageCalculator {
         val upgradeLevel = UpgradeLevel.fromLevel(level)
             ?: throw IllegalArgumentException("Уровень улучшения должен быть от 0 до 15. Получен: $level")
 
-        // Вычисляем множитель
         val multiplier = 1 + (upgradeLevel.percentageIncrease / 100)
 
-        // Увеличиваем значения
         val newMinDamage = minDamage * multiplier
         val newEndDamage = endDamage * multiplier
 
@@ -42,5 +40,13 @@ object DamageCalculator {
 
     fun calculateDPS(damage: Double, rateOfFire: Double): Double {
         return (damage * rateOfFire) / 60.0
+    }
+
+    fun calculateTTK(dps: Double, hp: Double):Double {
+        return hp/dps
+    }
+
+    fun calculateHeadDamage(damage: Double, headPercent: Double = 1.25): Double{
+        return damage * headPercent
     }
 }
