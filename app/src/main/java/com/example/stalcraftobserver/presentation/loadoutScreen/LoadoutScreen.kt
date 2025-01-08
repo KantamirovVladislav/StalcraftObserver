@@ -3,7 +3,6 @@
 package com.example.stalcraftobserver.presentation.loadoutScreen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -23,39 +22,37 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.viewModel.CompareItemsViewModel
-import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.common.PagesIndicatorLine
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
+import com.example.stalcraftobserver.presentation.compareItems.item1
+import com.example.stalcraftobserver.presentation.compareItems.item2
 import com.example.stalcraftobserver.presentation.loadoutScreen.components.SingleArmor
 import com.example.stalcraftobserver.presentation.loadoutScreen.components.SingleWeapon
 import com.example.stalcraftobserver.util.NavigationItem
-import kotlin.math.log
+
+const val weapon = "weaponId"
+const val armor = "armorId"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoadoutScreen(
     navController: NavController,
     viewModel: CompareItemsViewModel,
-    sharedItemViewModel: SharedItemViewModel,
+    sharedItemIdViewModel: SharedItemIdViewModel
 ) {
-    // Получаем информацию о выбранных предметах из ViewModel
     val weaponInfo by viewModel.item1.collectAsStateWithLifecycle()
     val armorInfo by viewModel.item2.collectAsStateWithLifecycle()
 
-    // Для weaponId
-    LaunchedEffect(Unit) {
-        sharedItemViewModel.weaponId.collect { weaponId ->
-            Log.d("LoadoutScreen", "Received weaponId: $weaponId")
-            weaponId?.let { viewModel.setItem1Id(it) }
-        }
+    val item1Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(weapon)) }
+    val item2Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(armor)) }
+
+    LaunchedEffect(item1Id) {
+        viewModel.setItem1Id(item1Id)
     }
 
-    // Для armorId
-    LaunchedEffect(Unit) {
-        sharedItemViewModel.armorId.collect { armorId ->
-            Log.d("LoadoutScreen", "Received armorId: $armorId")
-            armorId?.let { viewModel.setItem2Id(it) }
-        }
+    LaunchedEffect(item2Id) {
+        viewModel.setItem2Id(item2Id)
     }
 
 
@@ -76,7 +73,6 @@ fun LoadoutScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                // Кнопки выбора оружия и брони
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -86,13 +82,13 @@ fun LoadoutScreen(
                     SelectLoadoutButton(
                         navController = navController,
                         isItemEmpty = weaponInfo == null,
-                        itemSlot = "weapon",
+                        itemSlot = weapon,
                         label = "Выбрать оружие"
                     )
                     SelectLoadoutButton(
                         navController = navController,
                         isItemEmpty = armorInfo == null,
-                        itemSlot = "armor",
+                        itemSlot = armor,
                         label = "Выбрать броню"
                     )
                 }
@@ -104,7 +100,6 @@ fun LoadoutScreen(
                     selectedPage = currentPage
                 )
                 if (pages.isNotEmpty()) {
-                    // Создаём состояние Pager
                     HorizontalPager(
                         state = pagerState,
                         modifier = Modifier
@@ -173,8 +168,7 @@ fun SelectLoadoutButton(
 ) {
     OutlinedButton(
         onClick = {
-            // Переход на экран выбора предметов с указанием категории
-            val categories = if (itemSlot == "weapon") listOf("weapon") else listOf("armor")
+            val categories = if (itemSlot == weapon) listOf("weapon") else listOf("armor")
 
             navController.navigate(
                 NavigationItem.SelectItem.createRoute(itemSlot, categories)

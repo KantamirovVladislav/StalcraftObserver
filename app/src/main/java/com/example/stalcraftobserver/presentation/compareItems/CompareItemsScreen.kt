@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,21 +35,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.viewModel.CompareItemsViewModel
-import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.compareItems.components.CompareArmor
 import com.example.stalcraftobserver.presentation.compareItems.components.CompareWeapon
 import com.example.stalcraftobserver.util.NavigationItem
+import kotlinx.coroutines.flow.MutableStateFlow
+
+const val item1 = "Item1Id"
+const val item2 = "Item2Id"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CompareItemsScreen(
     navController: NavController,
     viewModel: CompareItemsViewModel,
-    sharedCompareItemsViewModel: SharedCompareItemsViewModel
+    sharedItemIdViewModel: SharedItemIdViewModel
 ) {
-    val item1Id by sharedCompareItemsViewModel.item1Id.collectAsState()
-    val item2Id by sharedCompareItemsViewModel.item2Id.collectAsState()
+    val item1Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item1)) }
+    val item2Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item2)) }
 
     LaunchedEffect(item1Id) {
         viewModel.setItem1Id(item1Id)
@@ -75,9 +81,8 @@ fun CompareItemsScreen(
                         SelectItemButton(
                             navController = navController,
                             isItemEmpty = item1Id.isNullOrEmpty(),
-                            itemSlot = "item1Id",
-                            category = categories,
-                            sharedCompareItemsViewModel = sharedCompareItemsViewModel
+                            itemSlot = item1,
+                            category = categories
                         )
                     }
 
@@ -87,18 +92,15 @@ fun CompareItemsScreen(
                         SelectItemButton(
                             navController = navController,
                             isItemEmpty = item2Id.isNullOrEmpty(),
-                            itemSlot = "item2Id",
-                            category = categories,
-                            sharedCompareItemsViewModel = sharedCompareItemsViewModel
+                            itemSlot = item2,
+                            category = categories
                         )
                     }
 
                     item { Spacer(modifier = Modifier.width(16.dp)) }
 
                     item {
-                        ClearSelectedItemsButton(
-                            sharedCompareItemsViewModel = sharedCompareItemsViewModel
-                        )
+
                     }
                 }
 
@@ -131,8 +133,7 @@ fun SelectItemButton(
     navController: NavController,
     isItemEmpty: Boolean,
     itemSlot: String,
-    category: List<String?>?,
-    sharedCompareItemsViewModel: SharedCompareItemsViewModel
+    category: List<String?>?
 ) {
     OutlinedButton(
         onClick = {
@@ -156,14 +157,13 @@ fun SelectItemButton(
     }
 }
 
+//TODO Доделать очистку
 @Composable
 fun ClearSelectedItemsButton(
-    sharedCompareItemsViewModel: SharedCompareItemsViewModel
 ) {
     IconButton(
         onClick = {
-            sharedCompareItemsViewModel.setItem1Id(null)
-            sharedCompareItemsViewModel.setItem2Id(null)
+
         },
         modifier = Modifier
             .border(

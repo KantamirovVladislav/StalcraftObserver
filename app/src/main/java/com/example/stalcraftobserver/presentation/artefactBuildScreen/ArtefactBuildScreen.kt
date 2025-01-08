@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.domain.model.ArtefactAssembly
-import com.example.stalcraftobserver.domain.viewModel.SharedArtefactViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.components.CustomArtefactGrid
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
@@ -30,10 +30,9 @@ import com.example.stalcraftobserver.util.NavigationItem
 fun ArtefactBuildScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    sharedArtefactViewModel: SharedArtefactViewModel
+    sharedItemIdViewModel: SharedItemIdViewModel
 ) {
-    // Подписываемся на список ID
-    val artefactItemIds by sharedArtefactViewModel.artefactItemIds.collectAsState()
+    val artefacts by sharedItemIdViewModel.items.collectAsState()
 
     val kekw = ArtefactAssembly()
     kekw.addArtefact(Artefacts.ARTEFACT_1)
@@ -43,20 +42,19 @@ fun ArtefactBuildScreen(
     Column {
         CustomArtefactGrid(
             modifier = Modifier.padding(6.dp),
-            maxCountCell = artefactItemIds.size,
-            itemIds = artefactItemIds,        // <-- передаём сюда ID артов
+            maxCountCell = 6,
+            itemIds = (0 until 6).map { index ->
+                artefacts["artefact$index"]
+            },
             onCellClick = { cellIndex ->
                 val itemSlot = "artefact$cellIndex"
-                // идём на экран выбора
                 navController.navigate(
-                    // createRoute передаёт, например: "select_item_screen?itemSlot=artefact0&categories=artefact"
                     NavigationItem.SelectItem.createRoute(itemSlot, listOf("artefact"))
                 )
             }
         )
 
-        // Для наглядности выводим текстовое представление
-        Text(text = "Текущие артефакты: ${artefactItemIds.joinToString()}")
+        Text(text = "Текущие артефакты: ${artefacts.filter { it.key.contains("artefact") }}")
         Text(text = "${kekw.buildStatsString()}")
     }
 }

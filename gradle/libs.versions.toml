@@ -1,31 +1,32 @@
 [versions]
-agp = "8.7.0"
+agp = "8.7.3"
 coilCompose = "3.0.0-rc01"
 converterGson = "2.9.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.1"
-hiltAndroid = "2.51.1"
-hiltAndroidCompiler = "2.51.1"
+hiltAndroid = "2.54"
+hiltAndroidCompiler = "2.54"
 hiltNavigationCompose = "1.2.0"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
+kotlin = "2.1.0"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinReflect = "1.9.23"
-kotlinxSerializationJson = "1.6.0"
+kotlinxSerializationJson = "1.6.3"
 kotlinxSerializationJsonVersion = "1.6.3"
 lifecycleRuntimeKtx = "2.8.4"
-activityCompose = "1.9.1"
-composeBom = "2024.11.00"
-navigationCompose = "2.8.4"
+activityCompose = "1.9.3"
+composeBom = "2024.12.01"
+navigationCompose = "2.8.5"
 retrofit = "2.9.0"
 retrofit2KotlinxSerializationConverter = "0.8.0"
 roomGuava = "2.6.1"
 roomRuntime = "2.6.1"
-runtimeLivedata = "1.6.8"
+runtimeLivedata = "1.7.6"
 materialIconsExtended = "1.6.8"
-ksp = "1.9.0-1.0.13"
+ksp = "2.1.0-1.0.29"
+vico = "2.0.0-beta.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,9 +68,19 @@ kotlinx-serialization-json-v163 = { module = "org.jetbrains.kotlinx:kotlinx-seri
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
+# For Jetpack Compose.
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+
+# For Material 3 theming in Jetpack Compose.
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+# For the view system.
+vico-views = { group = "com.patrykandpatrick.vico", name = "views", version.ref = "vico" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 devtoolsKsp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

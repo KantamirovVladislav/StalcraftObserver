@@ -14,8 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
-import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
-import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArmorInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArtefactInfoScreen

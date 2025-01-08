@@ -5,6 +5,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,9 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.example.stalcraftobserver.data.manager.ItemInfo
+import com.example.stalcraftobserver.data.manager.Price
+import com.example.stalcraftobserver.data.manager.PriceHistoryResponse
 import com.example.stalcraftobserver.presentation.common.CustomImage
 import com.example.stalcraftobserver.presentation.common.CustomOutlinedCard
 import com.example.stalcraftobserver.presentation.common.PagedContent
+import com.example.stalcraftobserver.presentation.common.PriceLineChart
 import com.example.stalcraftobserver.util.ItemInfoHelper
 import com.example.stalcraftobserver.util.ItemProperty
 import com.example.stalcraftobserver.util.ItemProperty.Armor.General.generalKeys
@@ -35,7 +39,6 @@ fun ArmorInfoScreen(
 ) {
     var isLoading by remember { mutableStateOf(true) }
 
-    // Состояния для данных
     val generalParam = remember { mutableStateOf<String>("") }
     val resistanceParam = remember { mutableStateOf<String>("") }
     val protectionParam = remember { mutableStateOf<String>("") }
@@ -44,10 +47,7 @@ fun ArmorInfoScreen(
     val compatibilityParam = remember { mutableStateOf<String>("") }
     val armorParam = remember { mutableStateOf<String>("") }
 
-    // Загрузка данных
     LaunchedEffect(Unit) {
-        // Симуляция задержки загрузки (удалите или измените по необходимости)
-        kotlinx.coroutines.delay(1000)
 
         generalParam.value = ItemInfoHelper.getStringFromKeys(item, generalKeys)
         statModifiersParam.value = ItemInfoHelper.getStringFromKeys(item, statModifierKeys)
@@ -72,7 +72,6 @@ fun ArmorInfoScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Блок с общей информацией и изображением
             item {
                 if (isLoading) {
                     ShimmerBlockRow()
@@ -93,7 +92,6 @@ fun ArmorInfoScreen(
                 }
             }
 
-            // Пагинированное содержимое
             item {
                 if (isLoading) {
                     ShimmerPagedContent()
@@ -110,21 +108,80 @@ fun ArmorInfoScreen(
                 }
             }
 
-            // Блок с описанием
             item {
-                if (isLoading) {
-                    ShimmerDescriptionBlock()
-                } else {
-                    Row {
-                        CustomOutlinedCard(
-                            data = descriptionParam.value,
-                            modifier = Modifier.fillMaxWidth()
+
+                PriceLineChart(
+                    modifier = Modifier.fillMaxWidth(),
+                    priceHistory = PriceHistoryResponse(
+                        total = 5L,
+                        prices = listOf(
+                            Price(
+                                amount = 1,
+                                price = 1000000,
+                                time = "2023-12-25T10:00:00Z",
+                                additional = emptyMap()
+                            ),
+                            Price(
+                                amount = 2,
+                                price = 100000,
+                                time = "2023-12-26T10:00:00Z",
+                                additional = emptyMap()
+                            ),
+                            Price(
+                                amount = 3,
+                                price = 500000,
+                                time = "2023-12-27T10:00:00Z",
+                                additional = emptyMap()
+                            ),
+                            Price(
+                                amount = 4,
+                                price = 600000,
+                                time = "2023-12-28T10:00:00Z",
+                                additional = emptyMap()
+                            ),
+                            Price(
+                                amount = 5,
+                                price = 900000,
+                                time = "2024-12-29T10:00:00Z",
+                                additional = emptyMap()
+                            ),
+                            Price(
+                                amount = 5,
+                                price = 900000,
+                                time = "2023-12-29T10:00:00Z",
+                                additional = emptyMap()
+                            ),
+                            Price(
+                                amount = 5,
+                                price = 900000,
+                                time = "2023-12-30T10:00:00Z",
+                                additional = emptyMap()
+                            ),
+                            Price(
+                                amount = 5,
+                                price = 900000,
+                                time = "2023-12-31T10:00:00Z",
+                                additional = emptyMap()
+                            )
                         )
-                    }
+                    )
+                )
+        }
+
+        item {
+            if (isLoading) {
+                ShimmerDescriptionBlock()
+            } else {
+                Row {
+                    CustomOutlinedCard(
+                        data = descriptionParam.value,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
     }
+}
 }
 
 @Composable

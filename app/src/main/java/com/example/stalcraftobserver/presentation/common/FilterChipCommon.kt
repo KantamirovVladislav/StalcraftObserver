@@ -18,8 +18,9 @@ import com.example.stalcraftobserver.domain.model.FilterItem
 @Composable
 fun FilterChipCommon(
     filter: FilterItem,
-    isSelected: Boolean,
-    onSelected: (FilterItem?) -> Unit,
+    isSelected: Boolean = false,
+    onSelected: (FilterItem) -> Unit,
+    onDisabled: (FilterItem) -> Unit,
     isEnabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
@@ -28,9 +29,9 @@ fun FilterChipCommon(
         enabled = isEnabled,
         onClick = {
             if (isSelected) {
-                onSelected(null) // Убираем фильтр
+                onDisabled(filter)
             } else {
-                onSelected(filter) // Выбираем фильтр
+                onSelected(filter)
             }
         },
         selected = isSelected,

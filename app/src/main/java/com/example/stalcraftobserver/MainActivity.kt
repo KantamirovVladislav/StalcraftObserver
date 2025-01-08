@@ -21,14 +21,16 @@ import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
 import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
-import com.example.stalcraftobserver.domain.viewModel.SharedArtefactViewModel
-import com.example.stalcraftobserver.domain.viewModel.SharedCompareItemsViewModel
-import com.example.stalcraftobserver.domain.viewModel.SharedItemViewModel
+import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.ContainerSelectScreen
 import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
+import com.example.stalcraftobserver.presentation.compareItems.item1
+import com.example.stalcraftobserver.presentation.compareItems.item2
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
 import com.example.stalcraftobserver.presentation.itemsListing.ItemsListScreen
 import com.example.stalcraftobserver.presentation.loadoutScreen.LoadoutScreen
+import com.example.stalcraftobserver.presentation.loadoutScreen.armor
+import com.example.stalcraftobserver.presentation.loadoutScreen.weapon
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.NavigationItem
@@ -44,13 +46,21 @@ class MainActivity : ComponentActivity() {
 
     private val itemViewModel: ItemViewModel by viewModels()
     private val onBoardingViewModel: OnBoardingViewModel by viewModels()
-    private val sharedItemViewModel: SharedItemViewModel by viewModels()
-    private val sharedCompareItemsViewModel: SharedCompareItemsViewModel by viewModels()
-    private val sharedArtefactViewModel: SharedArtefactViewModel by viewModels()
+    private val sharedItemIdViewModel: SharedItemIdViewModel by viewModels()
 
     @Inject
     @Named("LocalUserManager")
     lateinit var localUserManager: LocalUserManagerRel
+
+    override fun onDestroy() {
+        super.onDestroy()
+        itemViewModel.saveFavorites()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        itemViewModel.saveFavorites()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +68,7 @@ class MainActivity : ComponentActivity() {
         var keepSplashScreen = true
         splashscreen.setKeepOnScreenCondition { keepSplashScreen }
         lifecycleScope.launch {
-            delay(3000)
+            delay(1000)
             keepSplashScreen = false
         }
         enableEdgeToEdge()
@@ -95,9 +105,7 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 viewModel = itemViewModel,
                                 mode = "view",
-                                sharedCompareItemsViewModel = sharedCompareItemsViewModel,
-                                sharedArtefactViewModel = sharedArtefactViewModel,
-                                sharedItemViewModel = sharedItemViewModel
+                                sharedItemIdViewModel = sharedItemIdViewModel
                             )
                         }
                         composable(
@@ -121,9 +129,7 @@ class MainActivity : ComponentActivity() {
                                 mode = mode,
                                 itemSlot = itemSlot,
                                 category = categories,
-                                sharedCompareItemsViewModel = sharedCompareItemsViewModel,
-                                sharedItemViewModel = sharedItemViewModel,
-                                sharedArtefactViewModel = sharedArtefactViewModel
+                                sharedItemIdViewModel = sharedItemIdViewModel
                             )
                         }
                         composable(
@@ -145,46 +151,46 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = NavigationItem.CompareItems.route,
                             arguments = listOf(
-                                navArgument("item1Id") { type = NavType.StringType; defaultValue = "" },
-                                navArgument("item2Id") { type = NavType.StringType; defaultValue = "" }
+                                navArgument(item1) { type = NavType.StringType; defaultValue = "" },
+                                navArgument(item2) { type = NavType.StringType; defaultValue = "" }
                             )
                         ) { backStackEntry ->
-                            val id1 = backStackEntry.arguments?.getString("item1Id")
-                            val id2 = backStackEntry.arguments?.getString("item2Id")
+                            val id1 = backStackEntry.arguments?.getString(item1)
+                            val id2 = backStackEntry.arguments?.getString(item2)
 
                             if (id1?.isNotEmpty() == true){
-                                sharedCompareItemsViewModel.setItem1Id(id1)
+                                sharedItemIdViewModel.setItem(item1, id1)
                             }
                             if (id2?.isNotEmpty() == true){
-                                sharedCompareItemsViewModel.setItem2Id(id2)
+                                sharedItemIdViewModel.setItem(item2, id2)
                             }
                             Log.d("CompareItems", "Navigate to CompareItemsScreen")
                             CompareItemsScreen(
                                 navController = navController,
                                 viewModel = hiltViewModel(),
-                                sharedCompareItemsViewModel = sharedCompareItemsViewModel
+                                sharedItemIdViewModel = sharedItemIdViewModel
                             )
                         }
                         composable(
                             route = NavigationItem.Loadout.route,
                             arguments = listOf(
-                                navArgument("weapon") { type = NavType.StringType; defaultValue = "" },
-                                navArgument("armor") { type = NavType.StringType; defaultValue = "" }
+                                navArgument(weapon) { type = NavType.StringType; defaultValue = "" },
+                                navArgument(armor) { type = NavType.StringType; defaultValue = "" }
                             )
                         ) { backStackEntry ->
-                            val weaponId = backStackEntry.arguments?.getString("weapon")
-                            val armorId = backStackEntry.arguments?.getString("armor")
+                            val weaponId = backStackEntry.arguments?.getString(weapon)
+                            val armorId = backStackEntry.arguments?.getString(armor)
                             if (armorId?.isNotEmpty() == true){
-                                sharedItemViewModel.setArmorId(armorId)
+                                sharedItemIdViewModel.setItem(weapon, weaponId.toString())
                             }
                             if (weaponId?.isNotEmpty() == true){
-                                sharedItemViewModel.setWeaponId(weaponId)
+                                sharedItemIdViewModel.setItem(armor, armorId.toString())
                             }
                             Log.d("LoadoutId", "$weaponId - $armorId")
                             LoadoutScreen(
                                 navController = navController,
                                 viewModel = hiltViewModel(),
-                                sharedItemViewModel = sharedItemViewModel
+                                sharedItemIdViewModel = sharedItemIdViewModel
                             )
                         }
                         composable(
@@ -198,7 +204,7 @@ class MainActivity : ComponentActivity() {
                             ContainerSelectScreen(
                                 navController = navController,
                                 containerId = containerId,
-                                sharedArtefactViewModel = sharedArtefactViewModel
+                                sharedItemIdViewModel = sharedItemIdViewModel
                             )
                         }
                     }

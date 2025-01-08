@@ -1,4 +1,4 @@
-package com.example.stalcraftobserver.domain.model
+package com.example.stalcraftobserver.domain.model.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,22 +63,22 @@ fun CustomImage(
 
         )
         if (isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(50.dp)
+            TripleOrbitLoadingAnimation(
             )
         } else if (isErrorLoading) {
+
             Icon(
                 imageVector = Icons.Filled.Info,
                 contentDescription = "Info Icon",
                 tint = Color.Red,
                 modifier = modifier
+                    .scale(0.8f)
                     .padding(8.dp)
-                    .scale(1.8f)
                     .clickable {
 
                     }
             )
+
         }
     }
 }

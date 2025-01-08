@@ -1,9 +1,10 @@
-package com.example.stalcraftobserver.domain.model
+package com.example.stalcraftobserver.domain.model.daos
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import com.example.stalcraftobserver.domain.model.entities.Item
 
 @Dao
 interface ItemDao{

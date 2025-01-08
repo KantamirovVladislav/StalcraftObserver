@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.presentation.common
 
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,35 +18,28 @@ import java.util.logging.Filter
 @Composable
 fun FilterChipsList(
     filterList: List<FilterItem>,
-    selectedFilters: MutableList<FilterItem>,
-    onFilterSelected: (List<FilterItem>) -> Unit,
-    isFilterDisabled: (FilterItem) -> Boolean,
+    selectedFilters: Set<FilterItem>,
+    onFilterSelected: (FilterItem) -> Unit,
+    onFilterDisabled: (FilterItem) -> Unit,
+    disabledFilters: Set<FilterItem> = emptySet(),
     modifier: Modifier = Modifier
 ) {
-
     LazyRow(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp)
+        contentPadding = PaddingValues(horizontal = 6.dp)
     ) {
         items(filterList) { filter ->
-            val isSelected = filter in selectedFilters
-            val isEnabled = !isFilterDisabled(filter)
+            val isSelected = selectedFilters.any { it.group == filter.group && it == filter }
+            val isEnabled = !disabledFilters.contains(filter)
 
             FilterChipCommon(
                 filter = filter,
                 isSelected = isSelected,
-                onSelected = { selectedFilter ->
-                    if (isSelected) {
-                        // Если фильтр выбран, убираем его
-                        selectedFilters.remove(filter)
-                    } else {
-                        // Если фильтр не выбран, добавляем его
-                        // Сначала убираем фильтры из той же группы
-                        selectedFilters.removeAll { it.group == filter.group }
-                        selectedFilters.add(filter)
-                    }
-                    // Вызываем обновление фильтров
-                    onFilterSelected(selectedFilters.toList())
+                onSelected = {
+                    onFilterSelected(filter)
+                },
+                onDisabled = {
+                    onFilterDisabled(filter)
                 },
                 isEnabled = isEnabled,
                 modifier = Modifier.padding(horizontal = 2.dp)
@@ -53,4 +47,3 @@ fun FilterChipsList(
         }
     }
 }
-

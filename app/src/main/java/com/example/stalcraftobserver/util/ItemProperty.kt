@@ -2,6 +2,23 @@ package com.example.stalcraftobserver.util
 
 import retrofit2.http.HEAD
 
+object ItemsKey {
+    // Глобальные ключи
+    const val CORE_TOOLTIP_INFO = "core.tooltip.info"
+    const val STALKER_ARTEFACT_PROPERTIES_FACTOR = "stalker.artefact_properties.factor"
+    const val GENERAL_ARMOR_COMPATIBILITY = "general.armor.compatibility"
+    const val ITEM_NAME = "item.name"
+    const val ITEM_DESCRIPTION = "item.description"
+    const val ITEM_DEVICE_NVD = "item.device"
+    const val ITEM_QUALITY = "core.quality"
+    const val CORE_HANDBOOK_CATEGORY = "core.handbook.category"
+    const val CORE_RANK = "core.rank"
+    const val STALKER_LORE_ARMOR_ARTEFACT_INFO = "stalker.lore.armor_artefact.info"
+    const val ITEM_DISPLAY_AMMO_TYPES = "item.wpn.display_ammo_types"
+    const val WEAPON_STAT_FACTOR = "weapon.stat_factor"
+    const val WEAPON_TOOLTIP_WEAPON_INFO = "weapon.tooltip.weapon.info"
+    const val WEAPON_TOOLTIP_MAGAZINE_INFO = "weapon.tooltip.magazine.info"
+}
 data class ItemPropertyKey(val key: String, val type: String)
 
 object ItemProperty {
@@ -551,20 +568,3 @@ object ItemProperty {
     }
 }
 
-object ItemsKey {
-    // Глобальные ключи
-    const val CORE_TOOLTIP_INFO = "core.tooltip.info"
-    const val STALKER_ARTEFACT_PROPERTIES_FACTOR = "stalker.artefact_properties.factor"
-    const val GENERAL_ARMOR_COMPATIBILITY = "general.armor.compatibility"
-    const val ITEM_NAME = "item.name"
-    const val ITEM_DESCRIPTION = "item.description"
-    const val ITEM_DEVICE_NVD = "item.device"
-    const val ITEM_QUALITY = "core.quality"
-    const val CORE_HANDBOOK_CATEGORY = "core.handbook.category"
-    const val CORE_RANK = "core.rank"
-    const val STALKER_LORE_ARMOR_ARTEFACT_INFO = "stalker.lore.armor_artefact.info"
-    const val ITEM_DISPLAY_AMMO_TYPES = "item.wpn.display_ammo_types"
-    const val WEAPON_STAT_FACTOR = "weapon.stat_factor"
-    const val WEAPON_TOOLTIP_WEAPON_INFO = "weapon.tooltip.weapon.info"
-    const val WEAPON_TOOLTIP_MAGAZINE_INFO = "weapon.tooltip.magazine.info"
-}

@@ -6,14 +6,14 @@ import android.util.Log
 import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.stalcraftobserver.domain.model.FunctionResult
-import com.example.stalcraftobserver.domain.model.Item
+import com.example.stalcraftobserver.domain.model.entities.Item
 import com.example.stalcraftobserver.domain.model.RoomModel
+import com.example.stalcraftobserver.domain.model.entities.Favorite
 import com.example.stalcraftobserver.util.Constants
 
 class ItemsRoomService(
     context: Context
 ) {
-
     companion object {
         @Volatile
         private var instance: RoomModel? = null
@@ -25,7 +25,6 @@ class ItemsRoomService(
                     RoomModel::class.java, "Map_Name_Id"
                 )
                     .createFromAsset("dataBase/StalcraftObsDataBase.db")
-                    .fallbackToDestructiveMigration()
                     .build()
                     .also { instance = it }
             }
@@ -79,6 +78,99 @@ class ItemsRoomService(
             FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
         }
     }
+
+    suspend fun getFavorites(): FunctionResult<List<Favorite>> {
+        return try {
+            val item = db.FavoriteDao().getFavoritesId()
+            Log.i(
+                Constants.SUCCES_DATABASE_TAG,
+                "Successfully read data from database $item with id  (${this@ItemsRoomService})"
+            )
+            FunctionResult.Success(item)
+        } catch (e: SQLiteException) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
+        } catch (e: Exception) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
+        }
+    }
+
+    suspend fun setFavorite(id: String): FunctionResult<String>{
+        return try {
+            val result = db.FavoriteDao().insertFavoriteId(Favorite(id))
+            Log.i(
+                Constants.SUCCES_DATABASE_TAG,
+                "Success insert $result (${this@ItemsRoomService})"
+            )
+            FunctionResult.Success("Success insert")
+        } catch (e: SQLiteException) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
+        } catch (e: Exception) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
+        }
+    }
+
+    fun setFavorites(id: List<Favorite>): FunctionResult<String>{
+        return try {
+            val result = db.FavoriteDao().insertFavoriteIds(id)
+            Log.i(
+                Constants.SUCCES_DATABASE_TAG,
+                "Success insert $result (${this@ItemsRoomService})"
+            )
+            FunctionResult.Success("Success insert")
+        } catch (e: SQLiteException) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
+        } catch (e: Exception) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
+        }
+    }
+
+    fun deleteFavorite(id: List<Favorite>): FunctionResult<String>{
+        return try {
+            val result = db.FavoriteDao().deleteFavoriteId(id)
+            Log.i(
+                Constants.SUCCES_DATABASE_TAG,
+                "Success delete $result (${this@ItemsRoomService})"
+            )
+            FunctionResult.Success("Success delete")
+        } catch (e: SQLiteException) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Database error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Database error (${this@ItemsRoomService})")
+        } catch (e: Exception) {
+            Log.e(
+                Constants.ERROR_DATABASE_TAG,
+                "Unexpected error: ${e.message} (${this@ItemsRoomService})"
+            )
+            FunctionResult.Error("Unexpected error in database (${this@ItemsRoomService})")
+        }
+    }
+
 
     fun searchItemsByName(query: String, limit: Int, offset: Int): FunctionResult<List<Item>> {
         return try {
@@ -170,26 +262,22 @@ class ItemsRoomService(
         val whereClauses = mutableListOf<String>()
         val args = mutableListOf<Any>()
 
-        // Поиск по имени
         if (query.isNotEmpty()) {
             whereClauses.add("(nameEng LIKE '%' || ? || '%' OR nameRus LIKE '%' || ? || '%')")
             args.add(query)
             args.add(query)
         }
 
-        // Фильтры по категориям с LIKE
         if (categoryFilters.isNotEmpty()) {
             whereClauses.add(categoryFilters.joinToString(" OR ") { "category LIKE '%' || ? || '%'" })
             args.addAll(categoryFilters)
         }
 
-        // Фильтры по редкости
         if (rarityFilters.isNotEmpty()) {
             whereClauses.add("rarity IN (${rarityFilters.joinToString(", ") { "?" }})")
             args.addAll(rarityFilters)
         }
 
-        // Базовый SQL запрос
         val sql = buildString {
             append("SELECT * FROM Map_Name_Id")
             if (whereClauses.isNotEmpty()) {
@@ -201,7 +289,6 @@ class ItemsRoomService(
             append(" LIMIT ? OFFSET ?")
         }
 
-        // Добавление limit и offset
         args.add(limit)
         args.add(offset)
 

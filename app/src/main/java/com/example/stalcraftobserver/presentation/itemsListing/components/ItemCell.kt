@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.CardDefaults
@@ -33,7 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.stalcraftobserver.domain.model.Item
+import com.example.stalcraftobserver.domain.model.entities.Item
 import com.example.stalcraftobserver.presentation.common.CustomImage
 
 @Composable
@@ -41,11 +39,14 @@ fun ItemCell(
     modifier: Modifier = Modifier,
     item: Item,
     region: String,
-    onHeartClick: (Boolean) -> Unit
+    onHeartClick: (Boolean) -> Unit,
+    isHearted: Boolean = false
 ) {
     var imagePath by remember { mutableStateOf<String?>(null) }
-    var isHearted by remember { mutableStateOf(false) }
-
+    
+    var hearted by remember { mutableStateOf(false) }
+    hearted = isHearted
+    
     LaunchedEffect(item.id, region) {
         imagePath = item.createImagePath(region)
     }
@@ -85,9 +86,9 @@ fun ItemCell(
                 }
 
                 Icon(
-                    imageVector = if (isHearted) Icons.Outlined.Star else Icons.Outlined.StarOutline,
+                    imageVector = if (hearted) Icons.Outlined.Star else Icons.Outlined.StarOutline,
                     contentDescription = "Favorite Icon",
-                    tint = if (isHearted) Color.Yellow else Color.Gray,
+                    tint = if (hearted) Color.Yellow else Color.Gray,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
@@ -96,8 +97,8 @@ fun ItemCell(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         ) {
-                            isHearted = !isHearted
-                            onHeartClick(isHearted)
+                            hearted = !hearted
+                            onHeartClick(hearted)
                         }
                 )
             }
