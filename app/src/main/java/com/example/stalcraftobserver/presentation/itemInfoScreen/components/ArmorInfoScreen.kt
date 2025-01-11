@@ -16,11 +16,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
+import com.example.stalcraftobserver.data.manager.AuctionResponse
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.Price
 import com.example.stalcraftobserver.data.manager.PriceHistoryResponse
 import com.example.stalcraftobserver.presentation.common.CustomImage
 import com.example.stalcraftobserver.presentation.common.CustomOutlinedCard
+import com.example.stalcraftobserver.presentation.common.LotsPricesStates
 import com.example.stalcraftobserver.presentation.common.PagedContent
 import com.example.stalcraftobserver.presentation.common.PriceLineChart
 import com.example.stalcraftobserver.util.ItemInfoHelper
@@ -35,7 +38,8 @@ import com.example.stalcraftobserver.util.ItemProperty.Armor.StatModifiers.statM
 fun ArmorInfoScreen(
     imagePath: String,
     item: ItemInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    priceChart: @Composable () -> Unit
 ) {
     var isLoading by remember { mutableStateOf(true) }
 
@@ -70,7 +74,6 @@ fun ArmorInfoScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
             item {
                 if (isLoading) {
@@ -109,79 +112,23 @@ fun ArmorInfoScreen(
             }
 
             item {
+                priceChart()
+            }
 
-                PriceLineChart(
-                    modifier = Modifier.fillMaxWidth(),
-                    priceHistory = PriceHistoryResponse(
-                        total = 5L,
-                        prices = listOf(
-                            Price(
-                                amount = 1,
-                                price = 1000000,
-                                time = "2023-12-25T10:00:00Z",
-                                additional = emptyMap()
-                            ),
-                            Price(
-                                amount = 2,
-                                price = 100000,
-                                time = "2023-12-26T10:00:00Z",
-                                additional = emptyMap()
-                            ),
-                            Price(
-                                amount = 3,
-                                price = 500000,
-                                time = "2023-12-27T10:00:00Z",
-                                additional = emptyMap()
-                            ),
-                            Price(
-                                amount = 4,
-                                price = 600000,
-                                time = "2023-12-28T10:00:00Z",
-                                additional = emptyMap()
-                            ),
-                            Price(
-                                amount = 5,
-                                price = 900000,
-                                time = "2024-12-29T10:00:00Z",
-                                additional = emptyMap()
-                            ),
-                            Price(
-                                amount = 5,
-                                price = 900000,
-                                time = "2023-12-29T10:00:00Z",
-                                additional = emptyMap()
-                            ),
-                            Price(
-                                amount = 5,
-                                price = 900000,
-                                time = "2023-12-30T10:00:00Z",
-                                additional = emptyMap()
-                            ),
-                            Price(
-                                amount = 5,
-                                price = 900000,
-                                time = "2023-12-31T10:00:00Z",
-                                additional = emptyMap()
-                            )
+            item {
+                if (isLoading) {
+                    ShimmerDescriptionBlock()
+                } else {
+                    Row {
+                        CustomOutlinedCard(
+                            data = descriptionParam.value,
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    )
-                )
-        }
-
-        item {
-            if (isLoading) {
-                ShimmerDescriptionBlock()
-            } else {
-                Row {
-                    CustomOutlinedCard(
-                        data = descriptionParam.value,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    }
                 }
             }
         }
     }
-}
 }
 
 @Composable

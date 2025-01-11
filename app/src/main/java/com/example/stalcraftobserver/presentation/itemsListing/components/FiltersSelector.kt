@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.presentation.itemsListing.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +20,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.stalcraftobserver.domain.model.FilterItem
 import com.example.stalcraftobserver.domain.model.StalcraftApplication
@@ -34,9 +37,10 @@ fun FilterSelector(
     onCloseSheet: () -> Unit,
     label: String = "",
     filterItem: FilterItem,
-    previouslySelectedFilters: List<FilterItem>,
-    onFiltersSelected: (List<FilterItem>) -> Unit,
-    onFilterDisabled: (List<FilterItem>) -> Unit
+    previouslySelectedFilters: Set<FilterItem>,
+    onFiltersSelected: (Set<FilterItem>) -> Unit,
+    onFilterDisabled: (Set<FilterItem>) -> Unit,
+    isGlobalVisible: Boolean = true
 ) {
     val scope = rememberCoroutineScope()
 
@@ -45,8 +49,8 @@ fun FilterSelector(
     ModalBottomSheet(
         onDismissRequest = {
             onCloseSheet()
-            onFiltersSelected(selectedFilters)
-            onFilterDisabled(previouslySelectedFilters.filter { !selectedFilters.contains(it) })
+            onFiltersSelected(selectedFilters.toSet())
+            onFilterDisabled(previouslySelectedFilters.filter { !selectedFilters.contains(it) }.toSet())
         },
         sheetState = sheetState
     ) {
@@ -62,31 +66,35 @@ fun FilterSelector(
             var checkedState by remember { mutableStateOf(selectedFilters.contains(filterItem)) }
 
             Column(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                ) {
-                    Checkbox(
-                        checked = checkedState,
-                        onCheckedChange = {
-                            checkedState = it
-                            selectedFilters = if (it) {
-                                selectedFilters + filterItem
-                            } else {
-                                selectedFilters - filterItem
+                if (isGlobalVisible){
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Checkbox(
+                            checked = checkedState,
+                            onCheckedChange = {
+                                checkedState = it
+                                selectedFilters = if (it) {
+                                    selectedFilters + filterItem
+                                } else {
+                                    selectedFilters - filterItem
+                                }
                             }
-                        }
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = filterItem.name)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = filterItem.name)
+                    }
                 }
 
                 if (filterItem.extendFilters.isNotEmpty()) {
                     extendFilterList(
-                        filterItem.extendFilters,
+                        filterItem.extendFilters.toSet(),
                         selectedFilters = selectedFilters,
-                        onSelectedFiltersChange = { selectedFilters = it }
+                        onSelectedFiltersChange = {
+                            selectedFilters = it
+                        }
                     )
                 }
             }
@@ -101,7 +109,7 @@ fun FilterSelector(
                         if (!sheetState.isVisible) {
                             onCloseSheet()
                             onFiltersSelected(selectedFilters)
-                            onFilterDisabled(previouslySelectedFilters.filter { !selectedFilters.contains(it) })
+                            onFilterDisabled(previouslySelectedFilters.filter { !selectedFilters.contains(it) }.toSet())
                         }
                     }
                 },
@@ -117,9 +125,9 @@ fun FilterSelector(
 
 @Composable
 fun extendFilterList(
-    extendFilters: List<FilterItem>,
-    selectedFilters: List<FilterItem>,
-    onSelectedFiltersChange: (List<FilterItem>) -> Unit
+    extendFilters: Set<FilterItem>,
+    selectedFilters: Set<FilterItem>,
+    onSelectedFiltersChange: (Set<FilterItem>) -> Unit
 ) {
     extendFilters.forEach { filter ->
         var checkedState by remember { mutableStateOf(selectedFilters.contains(filter)) }
@@ -128,7 +136,8 @@ fun extendFilterList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 16.dp)
             ) {
                 Checkbox(
                     checked = checkedState,
@@ -145,12 +154,12 @@ fun extendFilterList(
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = filter.name)
+                Text(text = filter.name, textAlign = TextAlign.Left)
             }
 
             if (filter.extendFilters.isNotEmpty()) {
                 extendFilterList(
-                    filter.extendFilters,
+                    filter.extendFilters.toSet(),
                     selectedFilters = selectedFilters,
                     onSelectedFiltersChange = onSelectedFiltersChange
                 )

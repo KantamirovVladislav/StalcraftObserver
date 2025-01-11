@@ -3,18 +3,25 @@
 package com.example.stalcraftobserver.presentation.loadoutScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,6 +41,7 @@ import com.example.stalcraftobserver.util.NavigationItem
 const val weapon = "weaponId"
 const val armor = "armorId"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoadoutScreen(
@@ -41,12 +49,13 @@ fun LoadoutScreen(
     viewModel: CompareItemsViewModel,
     sharedItemIdViewModel: SharedItemIdViewModel
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val weaponInfo by viewModel.item1.collectAsStateWithLifecycle()
     val armorInfo by viewModel.item2.collectAsStateWithLifecycle()
 
     val item1Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(weapon)) }
     val item2Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(armor)) }
-
+    
     LaunchedEffect(item1Id) {
         viewModel.setItem1Id(item1Id)
     }
@@ -68,7 +77,7 @@ fun LoadoutScreen(
     val totalPages = pages.size
 
     Scaffold {
-        TopAppBarWithoutSearch(navController = navController, title = "Loadout") {
+        TopAppBarWithoutSearch(navController = navController, title = "Loadout", scrollBehavior = scrollBehavior) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -106,23 +115,28 @@ fun LoadoutScreen(
                             .fillMaxSize()
                     ) { page ->
                         when (pages[page]) {
-                            "weapon" -> Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(16.dp)
-                            ) {
-                                Text(
-                                    text = "Характеристики оружия:",
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 16.sp,
-                                    modifier = Modifier.padding(vertical = 8.dp)
-                                )
-                                SingleWeapon(
-                                    item = weaponInfo!!,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 0.dp)
-                                )
+                            "weapon" -> 
+                                if (!weaponInfo!!.category.contains("weapon")){
+                                    
+                                } else {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(16.dp)
+                                    ) {
+                                        Text(
+                                            text = "Характеристики оружия:",
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 16.sp,
+                                            modifier = Modifier.padding(vertical = 8.dp)
+                                        )
+                                        SingleWeapon(
+                                            item = weaponInfo!!,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 0.dp)
+                                        )
+                                    }
                             }
                             "armor" -> Column(
                                 modifier = Modifier

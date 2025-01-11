@@ -76,9 +76,11 @@ fun ItemsListScreen(
     var isSettingsVisible by remember { mutableStateOf(false) }
     var isMenuExpanded by remember { mutableStateOf(false) }
     var isCategoryFilterVisible by remember { mutableStateOf(false) }
+    var isRarityFilterVisible by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
     val categorySheetState = rememberModalBottomSheetState()
+    val raritySheetState = rememberModalBottomSheetState()
     val application = StalcraftApplication()
 
     val itemsState by viewModel.itemsList.collectAsState()
@@ -88,10 +90,12 @@ fun ItemsListScreen(
     val disabledFilters by viewModel.disabledFilters.collectAsState()
     val globalExpandedFilter by viewModel.globalExtendFilters.collectAsState()
     val selectedCategoryFilter by viewModel.selectedCategoryFilter.collectAsState()
+    val selectedRarityFilter by viewModel.selectedRarityFilters.collectAsState()
 
     val gridState = rememberLazyGridState()
     val searchQuery = remember { mutableStateOf("") }
     val triggeringGlobalFilter = remember { mutableStateOf<FilterItem?>(null) }
+    val triggerRarityFilter = remember { mutableStateOf<FilterItem?>(null) }
     val filters = listOf(
         FilterItem(name = "A-z", group = "alphabetSort"),
         FilterItem(name = "Z-a", group = "alphabetSort"),
@@ -149,8 +153,43 @@ fun ItemsListScreen(
                 FilterItem(name = "other", group = "other")
             )
         ),
-        FilterItem(name = "Rarity", group = "raritySort")
+        FilterItem(
+            name = "Rarity", group = "raritySort", extendFilters = listOf(
+                FilterItem(name = "None", group = "raritySort"),
+                FilterItem(name = "Common", group = "raritySort"),
+                FilterItem(name = "Picklock", group = "raritySort"),
+                FilterItem(name = "Newbie", group = "raritySort"),
+                FilterItem(name = "Stalker", group = "raritySort"),
+                FilterItem(name = "Veteran", group = "raritySort"),
+                FilterItem(name = "Master", group = "raritySort"),
+                FilterItem(name = "Legend", group = "raritySort"),
+            )
+        )
     )
+
+    LaunchedEffect(category) {
+
+    }
+
+    LaunchedEffect(selectedCategoryFilter) {
+        val shouldBeSelected = globalExpandedFilter.filter { filter ->
+            selectedCategoryFilter.any { it.group.toString() == filter.group.toString() }
+        }
+
+        val shouldBeUnSelected = globalExpandedFilter.filter { filter ->
+            selectedCategoryFilter.none { it.group.toString() == filter.group.toString() }
+        }
+        Log.d("Unselected", globalExpandedFilter.toString())
+        Log.d("Unselected", selectedCategoryFilter.toString())
+        shouldBeSelected.forEach(viewModel::selectFilter)
+        shouldBeUnSelected.forEach(viewModel::disableFilter)
+    }
+
+    LaunchedEffect(selectedFilters) {
+        val shouldBeSelected = filters.filter { filter ->
+            selectedCategoryFilter.any { it.group.toString() == filter.group.toString() }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.selectFilter(filters[0])
@@ -158,11 +197,6 @@ fun ItemsListScreen(
 
     val currentHeightCell: Dp = ((LocalConfiguration.current.screenHeightDp / 5) + 10).dp
     val currentCellCount: Int = LocalConfiguration.current.screenWidthDp / 130
-
-    LaunchedEffect(selectedFilters) {
-        applyFilters(selectedFilters.toList(), viewModel)
-
-    }
 
     Scaffold(
         modifier = modifier
@@ -233,9 +267,17 @@ fun ItemsListScreen(
                     disabledFilters = disabledFilters,
                     onFilterSelected = {
                         viewModel.selectFilter(it)
+                        if (it.group == "raritySort"){
+                            triggerRarityFilter.value = it
+                            isRarityFilterVisible = true
+                        }
                     },
                     onFilterDisabled = {
                         viewModel.collapseExtendFilters()
+                        if (it.group == "raritySort"){
+                            triggerRarityFilter.value = it
+                            isRarityFilterVisible = true
+                        }
                         viewModel.disableFilter(it)
                     }
                 )
@@ -258,8 +300,8 @@ fun ItemsListScreen(
                         isCategoryFilterVisible = true
                     },
                     onFilterDisabled = {
-                        viewModel.disableFilter(it)
-                        viewModel.deleteCategoryFilters(it)
+                        triggeringGlobalFilter.value = it
+                        isCategoryFilterVisible = true
                     }
                 )
             }
@@ -269,19 +311,23 @@ fun ItemsListScreen(
                     sheetState = categorySheetState,
                     filterItem = triggeringGlobalFilter.value!!,
                     onCloseSheet = { isCategoryFilterVisible = false },
-                    previouslySelectedFilters = selectedCategoryFilter,
-                    onFiltersSelected = {
-                        it.forEach{ filter -> viewModel.updateCategoryFilters(filter) }
-                        Log.d("Selected Filter", it.toString())
-                    },
-                    onFilterDisabled = {
-                        Log.d("Disabled Filter", it.toString())
-                        it.forEach{ filter -> viewModel.deleteCategoryFilters(filter) }
-                    }
+                    previouslySelectedFilters = selectedCategoryFilter.toSet(),
+                    onFiltersSelected = viewModel::updateCategoryFilters,
+                    onFilterDisabled = viewModel::deleteCategoryFilters
                 )
             }
 
-
+            if (isRarityFilterVisible){
+                FilterSelector(
+                    sheetState = raritySheetState,
+                    filterItem = triggerRarityFilter.value!!,
+                    onCloseSheet = { isRarityFilterVisible = false },
+                    previouslySelectedFilters = selectedRarityFilter.toSet(),
+                    onFiltersSelected = viewModel::updateRarityFilters,
+                    onFilterDisabled = viewModel::deleteRarityFilters,
+                    isGlobalVisible = false
+                )
+            }
 
             LazyVerticalGrid(
                 state = gridState,
@@ -291,7 +337,7 @@ fun ItemsListScreen(
                     .fillMaxSize()
                     .padding(bottom = 16.dp)
             ) {
-                items(itemsState) { item ->
+                items(itemsState.toList()) { item ->
                     ItemCell(
                         modifier = Modifier
                             .padding(4.dp)
@@ -352,15 +398,4 @@ fun ItemsListScreen(
             ).show()
         }
     }
-}
-
-fun applyFilters(filters: List<FilterItem>, viewModel: ItemViewModel) {
-    val sortCriteria = filters.mapNotNull {
-        when (it.name) {
-            "A-z" -> "nameEng ASC"
-            "Z-a" -> "nameEng DESC"
-            else -> null
-        }
-    }
-    viewModel.updateSortFilters(sortCriteria.ifEmpty { listOf("nameEng ASC") })
 }

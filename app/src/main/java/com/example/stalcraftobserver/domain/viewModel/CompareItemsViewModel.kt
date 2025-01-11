@@ -29,10 +29,8 @@ class CompareItemsViewModel @Inject constructor(
 
     fun setItem1Id(id: String?) {
         if (id == null) {
-            // Явно сбрасываем
             item1.value = null
         } else {
-            // Загружаем данные
             fetchItemWithId(id) { item1.value = it }
         }
         Log.d("CompareItemsViewModel", "Item1 updated: $id")

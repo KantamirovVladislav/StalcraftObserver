@@ -4,9 +4,11 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.stalcraftobserver.data.manager.AuctionResponse
 import com.example.stalcraftobserver.data.manager.ItemDataService
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.ItemsRoomService
+import com.example.stalcraftobserver.data.manager.PriceHistoryResponse
 import com.example.stalcraftobserver.domain.model.FunctionResult
 import com.example.stalcraftobserver.domain.model.entities.Item
 import com.example.stalcraftobserver.domain.model.StalcraftApplication
@@ -27,8 +29,12 @@ class ItemInfoViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _info = MutableStateFlow<ItemInfo?>(null)
+    private var _priceHistory = MutableStateFlow<PriceHistoryResponse?>(null)
+    private var _activeLots = MutableStateFlow<AuctionResponse?>(null)
 
     var info = _info.asStateFlow()
+    var priceHistory = _priceHistory.asStateFlow()
+    var activeLots = _activeLots.asStateFlow()
 
     private val app = application as StalcraftApplication
 
@@ -52,6 +58,40 @@ class ItemInfoViewModel @Inject constructor(
         when (val itemData = itemDataService.getItemData(item)) {
             is FunctionResult.Success -> {
                 _info.value = itemData.data
+                Log.i(Constants.RETROFIT_CLIENT_GIT_SUCCES, itemData.data.toString())
+            }
+
+            is FunctionResult.Error -> {
+                Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, itemData.message)
+            }
+        }
+    }
+
+    fun getPriceHistory(item: String?) = viewModelScope.launch {
+        if (item == null) {
+            Log.e(Constants.ERROR_DATABASE_TAG, "Item is null in getItemData")
+            return@launch
+        }
+        when (val itemData = itemDataService.getItemPriceHistory(item)) {
+            is FunctionResult.Success -> {
+                _priceHistory.value = itemData.data
+                Log.i(Constants.RETROFIT_CLIENT_GIT_SUCCES, itemData.data.toString())
+            }
+
+            is FunctionResult.Error -> {
+                Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, itemData.message)
+            }
+        }
+    }
+
+    fun getActiveLots(item: String?) = viewModelScope.launch {
+        if (item == null) {
+            Log.e(Constants.ERROR_DATABASE_TAG, "Item is null in getItemData")
+            return@launch
+        }
+        when (val itemData = itemDataService.getItemActiveLots(item)) {
+            is FunctionResult.Success -> {
+                _activeLots.value = itemData.data
                 Log.i(Constants.RETROFIT_CLIENT_GIT_SUCCES, itemData.data.toString())
             }
 

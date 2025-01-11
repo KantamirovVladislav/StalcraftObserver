@@ -43,11 +43,11 @@ class ItemDataService @Inject constructor(
         }
     }
 
-    suspend fun getItemPriceHistory(item: Item): FunctionResult<PriceHistoryResponse> {
+    suspend fun getItemPriceHistory(item: String): FunctionResult<PriceHistoryResponse> {
         return try {
             val response = stalcraftApi.getItemPriceHistory(
                 app.localRegion.value,
-                item.id,
+                item,
                 ClientSecret.X_API_ID,
                 ClientSecret.X_API_SECRET
             ).awaitResponse()
@@ -67,11 +67,11 @@ class ItemDataService @Inject constructor(
         }
     }
 
-    suspend fun getItemActiveLots(item: Item): FunctionResult<AuctionResponse> {
+    suspend fun getItemActiveLots(item: String): FunctionResult<AuctionResponse> {
         return try {
             val response = stalcraftApi.getItemActiveLots(
                 app.localRegion.value,
-                item.id,
+                item,
                 ClientSecret.X_API_ID,
                 ClientSecret.X_API_SECRET
             ).awaitResponse()

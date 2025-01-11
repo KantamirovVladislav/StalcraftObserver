@@ -82,9 +82,6 @@ class MainActivity : ComponentActivity() {
                 appEntry = localUserManager.readAppEntry().first()
                 isAppInitialized = true
             }
-            LaunchedEffect(Unit) {
-                itemViewModel.loadMoreItems()
-            }
 
             StalcraftObserverTheme {
                 if (isAppInitialized) {

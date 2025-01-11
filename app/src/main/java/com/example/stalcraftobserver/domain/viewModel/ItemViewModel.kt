@@ -27,15 +27,16 @@ class ItemViewModel @Inject constructor(
     private val _localFavoriteId =
         MutableStateFlow<List<Favorite>>(emptyList()) //For static favorite ids (Collect on init viewModel)
     private val _favoritesId = MutableStateFlow<List<Favorite>>(emptyList())
-    private val _itemsList = MutableStateFlow<List<Item>>(emptyList())
+    private val _itemsList = MutableStateFlow<Set<Item>>(emptySet())
     private val _onErrorFavorite = MutableStateFlow(false)
     private val _selectedFilters = MutableStateFlow<Set<FilterItem>>(emptySet())
     private val _disabledFilters = MutableStateFlow<Set<FilterItem>>(emptySet())
     private val _globalExtendFilters = MutableStateFlow<Set<FilterItem>>(emptySet())
-    private val _selectedCategoryFilters = MutableStateFlow<MutableList<FilterItem>>(mutableListOf())
+    private val _selectedCategoryFilters = MutableStateFlow<List<FilterItem>>(mutableListOf())
+    private val _selectedRarityFilters = MutableStateFlow<List<FilterItem>>(mutableListOf())
     private val trigger = MutableStateFlow<FilterItem?>(null)
     val favoritesId: StateFlow<List<Favorite>> = _favoritesId
-    val itemsList: StateFlow<List<Item>> = _itemsList
+    val itemsList: StateFlow<Set<Item>> = _itemsList
     val onErrorFavorite: StateFlow<Boolean> = _onErrorFavorite
     val selectedFilters: StateFlow<Set<FilterItem>> = _selectedFilters
     val disabledFilters: StateFlow<Set<FilterItem>> = _disabledFilters
@@ -44,7 +45,7 @@ class ItemViewModel @Inject constructor(
 
     private val currentSortFilters = mutableListOf("nameEng ASC")
 
-    private val selectedRarityFilters = MutableStateFlow<MutableList<String>>(mutableListOf())
+    val selectedRarityFilters = _selectedRarityFilters
 
 
     private var currentPage = 0
@@ -110,7 +111,7 @@ class ItemViewModel @Inject constructor(
     }
 
     private fun reloadItems() {
-        _itemsList.value = emptyList()
+        _itemsList.value = emptySet()
         currentPage = 0
         loadMoreItems()
     }
@@ -128,13 +129,14 @@ class ItemViewModel @Inject constructor(
                 limit = itemsPerPage,
                 offset = offset,
                 categoryFilters = _selectedCategoryFilters.value.map{ it.name },
-                rarityFilters = selectedRarityFilters.value
+                rarityFilters = _selectedRarityFilters.value.map { it.name }
             )) {
                 is FunctionResult.Success -> {
                     if (result.data.isNotEmpty()) {
+                        Log.d("KEKEWLoadItems", result.data.toString())
                         val updatedList =
                             _itemsList.value.toMutableList().apply { addAll(result.data) }
-                        _itemsList.value = updatedList
+                        _itemsList.value = updatedList.toSet()
                         currentPage++
                     }
                 }
@@ -166,7 +168,7 @@ class ItemViewModel @Inject constructor(
         }
     }
 
-    fun disableFilter(filter: FilterItem) {
+    fun disableFilter(filter: FilterItem?) {
         _selectedFilters.value = _selectedFilters.value.toMutableSet().apply { remove(filter) }
     }
 
@@ -181,9 +183,22 @@ class ItemViewModel @Inject constructor(
     }
 
     fun updateCategoryFilters(category: FilterItem) {
-        _selectedCategoryFilters.value.add(category)
+        _selectedCategoryFilters.value = _selectedCategoryFilters.value.toMutableList().apply{add(category)}
         reloadItems()
     }
+
+    fun updateCategoryFilters(category: Set<FilterItem>) {
+        val updatedCategoryFilters = _selectedCategoryFilters.value.toMutableList().apply { addAll(category) }
+        _selectedCategoryFilters.value = updatedCategoryFilters
+        reloadItems()
+    }
+
+    fun updateCategoryFilters(category: String) {
+        _selectedCategoryFilters.value = _selectedCategoryFilters.value.toMutableList().apply{add(
+            FilterItem(name = category, group = "kekw"))}
+        reloadItems()
+    }
+
 
     fun deleteCategoryFilters(category: FilterItem) {
         val updatedCategoryFilters = _selectedCategoryFilters.value.toMutableList().apply { remove(category) }
@@ -191,10 +206,29 @@ class ItemViewModel @Inject constructor(
         reloadItems()
     }
 
+    fun deleteCategoryFilters(category: Set<FilterItem>) {
+        val updatedCategoryFilters = _selectedCategoryFilters.value.toMutableList().apply { removeAll(category) }
+        _selectedCategoryFilters.value = updatedCategoryFilters
+        reloadItems()
+    }
+
     fun updateRarityFilters(rarity: FilterItem) {
         val updatedRarityFilters =
-            selectedRarityFilters.value.toMutableList().apply { add(rarity.name) }
-        selectedRarityFilters.value = updatedRarityFilters
+            _selectedRarityFilters.value.toMutableList().apply { add(rarity) }
+        _selectedRarityFilters.value = updatedRarityFilters
+        reloadItems()
+    }
+
+    fun updateRarityFilters(rarity: Set<FilterItem>) {
+        val updatedRarityFilters =
+            _selectedRarityFilters.value.toMutableList().apply { addAll(rarity) }
+        _selectedRarityFilters.value = updatedRarityFilters
+        reloadItems()
+    }
+
+    fun deleteRarityFilters(rarity: Set<FilterItem>) {
+        val updatedRarityFilters = _selectedRarityFilters.value.toMutableList().apply { removeAll(rarity) }
+        _selectedRarityFilters.value = updatedRarityFilters
         reloadItems()
     }
 

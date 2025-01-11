@@ -87,9 +87,7 @@ fun WeaponInfoScreen(
                     modifier = Modifier.fillParentMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    // Здесь уже PagesIndicatorRounder внутри PagedContent,
-                    // если хотите вынести - можно убрать из PagedContent и оставить здесь
-                    // но в данном примере он уже в PagedContent
+
                 }
             }
 

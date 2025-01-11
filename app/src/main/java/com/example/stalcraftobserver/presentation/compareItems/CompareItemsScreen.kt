@@ -15,12 +15,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,6 +48,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 const val item1 = "Item1Id"
 const val item2 = "Item2Id"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CompareItemsScreen(
@@ -52,6 +56,7 @@ fun CompareItemsScreen(
     viewModel: CompareItemsViewModel,
     sharedItemIdViewModel: SharedItemIdViewModel
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val item1Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item1)) }
     val item2Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item2)) }
 
@@ -70,7 +75,7 @@ fun CompareItemsScreen(
         item2Info?.category?.substringBefore("/")
     ).ifEmpty { listOf("weapon", "armor") }
 
-    TopAppBarWithoutSearch(navController = navController, title = "Сравнение") {
+    TopAppBarWithoutSearch(navController = navController, title = "Сравнение", scrollBehavior = scrollBehavior) {
         Scaffold {
             Column(modifier = Modifier.fillMaxSize()) {
                 LazyRow(

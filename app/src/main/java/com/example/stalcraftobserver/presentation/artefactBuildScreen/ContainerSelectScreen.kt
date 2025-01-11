@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +39,7 @@ import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.NavigationItem
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContainerSelectScreen(
     modifier: Modifier = Modifier,
@@ -43,12 +47,14 @@ fun ContainerSelectScreen(
     sharedItemIdViewModel: SharedItemIdViewModel,
     containerId: String? = null
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val isChoosed = remember { mutableStateOf(true) }
     val isContinueClicked = rememberSaveable { mutableStateOf(false) }
 
     TopAppBarWithoutSearch(
         navController = navController,
-        title = "Сборка"
+        title = "Сборка",
+        scrollBehavior = scrollBehavior
     ) {
         Column(
             modifier = Modifier.fillMaxSize()

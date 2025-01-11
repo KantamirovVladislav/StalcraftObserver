@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -42,9 +43,11 @@ fun TopAppBarWithoutSearch(
     modifier: Modifier = Modifier,
     navController: NavController,
     title:String = "",
+    scrollBehavior: TopAppBarScrollBehavior,
     onMenuSelected: (String) -> Unit = {},
     content: @Composable (modifier: Modifier) -> Unit = {}
 ) {
+
     var isSettingsVisible by remember { mutableStateOf(false) }
     var isMenuExpanded by remember { mutableStateOf(false) }
 
@@ -54,7 +57,8 @@ fun TopAppBarWithoutSearch(
 
     Scaffold(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -95,7 +99,8 @@ fun TopAppBarWithoutSearch(
                             contentDescription = "Settings"
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
