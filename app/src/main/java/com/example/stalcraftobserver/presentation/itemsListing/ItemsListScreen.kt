@@ -183,13 +183,24 @@ fun ItemsListScreen(
         Log.d("Unselected", selectedCategoryFilter.toString())
         shouldBeSelected.forEach(viewModel::selectFilter)
         shouldBeUnSelected.forEach(viewModel::disableFilter)
-    }
 
-    LaunchedEffect(selectedFilters) {
-        val shouldBeSelected = filters.filter { filter ->
-            selectedCategoryFilter.any { it.group.toString() == filter.group.toString() }
+        if (selectedCategoryFilter.isNotEmpty()){
+            viewModel.selectFilter(filters[2])
+        } else {
+            viewModel.disableFilter(filters[2])
         }
     }
+
+    LaunchedEffect(selectedRarityFilter) {
+        if (selectedRarityFilter.isNotEmpty()){
+            viewModel.selectFilter(filters[3])
+        }
+        else {
+            viewModel.disableFilter(filters[3])
+        }
+    }
+
+
 
     LaunchedEffect(Unit) {
         viewModel.selectFilter(filters[0])
@@ -266,19 +277,29 @@ fun ItemsListScreen(
                     selectedFilters = selectedFilters,
                     disabledFilters = disabledFilters,
                     onFilterSelected = {
-                        viewModel.selectFilter(it)
                         if (it.group == "raritySort"){
+                            viewModel.collapseExtendFilters()
                             triggerRarityFilter.value = it
                             isRarityFilterVisible = true
+                        } else if (it.group == "categorySort"){
+                            viewModel.selectFilter(it)
+                        }
+                        else if (it.group == "alphabetSort"){
+                            viewModel.collapseExtendFilters()
+                            viewModel.selectFilter(it)
+                            viewModel.updateSortFilters(it)
                         }
                     },
                     onFilterDisabled = {
-                        viewModel.collapseExtendFilters()
                         if (it.group == "raritySort"){
                             triggerRarityFilter.value = it
                             isRarityFilterVisible = true
+                        } else if (it.group == "categorySort"){
+                            viewModel.selectFilter(it)
                         }
-                        viewModel.disableFilter(it)
+                        else if (it.group == "alphabetSort"){
+                            viewModel.disableFilter(it)
+                        }
                     }
                 )
             }

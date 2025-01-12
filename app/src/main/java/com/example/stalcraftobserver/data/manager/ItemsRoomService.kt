@@ -261,6 +261,15 @@ class ItemsRoomService(
     ): SimpleSQLiteQuery {
         val whereClauses = mutableListOf<String>()
         val args = mutableListOf<Any>()
+        val sortColumnsOutput = mutableListOf<String>()
+
+        Log.d("ZAEBALO", sortColumns.toString())
+        sortColumns.forEach{
+            when(it){
+                "A-z" -> sortColumnsOutput.add("nameRus ASC")
+                "Z-a" -> sortColumnsOutput.add("nameRus DESC")
+            }
+        }
 
         if (query.isNotEmpty()) {
             whereClauses.add("(nameEng LIKE '%' || ? || '%' OR nameRus LIKE '%' || ? || '%')")
@@ -283,8 +292,8 @@ class ItemsRoomService(
             if (whereClauses.isNotEmpty()) {
                 append(" WHERE ${whereClauses.joinToString(" AND ")}")
             }
-            if (sortColumns.isNotEmpty()) {
-                append(" ORDER BY ${sortColumns.joinToString(", ")}")
+            if (sortColumnsOutput.isNotEmpty()) {
+                append(" ORDER BY ${sortColumnsOutput.joinToString(", ")}")
             }
             append(" LIMIT ? OFFSET ?")
         }

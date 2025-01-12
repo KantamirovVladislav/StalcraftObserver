@@ -26,7 +26,8 @@ import com.example.stalcraftobserver.util.ItemProperty
 fun WeaponInfoScreen(
     imagePath: String,
     item: ItemInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    priceChart: @Composable () -> Unit
 ) {
     val generalParam = remember { mutableStateOf("") }
     val damageParam = remember { mutableStateOf("") }
@@ -65,7 +66,7 @@ fun WeaponInfoScreen(
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically),
-                        contentScale = ContentScale.FillWidth
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
@@ -83,12 +84,7 @@ fun WeaponInfoScreen(
             }
 
             item {
-                Row(
-                    modifier = Modifier.fillParentMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-
-                }
+                priceChart()
             }
 
             item {

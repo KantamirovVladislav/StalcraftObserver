@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.presentation.common.CustomImage
@@ -20,37 +21,31 @@ import com.example.stalcraftobserver.presentation.common.CustomOutlinedCard
 import com.example.stalcraftobserver.util.ItemInfoHelper
 import com.example.stalcraftobserver.util.ItemProperty
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ArtefactInfoScreen(
+fun DrinkInfoScreen(
     imagePath: String,
     item: ItemInfo,
     modifier: Modifier = Modifier,
     priceChart: @Composable () -> Unit
 ){
-    if (!item.category.contains("artefact")){
+    if (!item.category.contains("drink")){
         return
     }
     val generalParam = remember { mutableStateOf<String>("") }
-    val qualityParam = remember { mutableStateOf<String>("") }
-    val resistanceParam = remember { mutableStateOf<String>("") }
-    val accumulationParam = remember { mutableStateOf<String>("") }
     val statModifierParam = remember { mutableStateOf<String>("") }
-    val specialParam = remember { mutableStateOf<String>("") }
+    val toolTipParams = remember { mutableStateOf<String>("") }
+    val effectParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.General.generalKeys)
+        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.General.generalKeys)
 
-        qualityParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Quality.qualityKeys)
+        statModifierParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.Stats.statKeys)
 
-        resistanceParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Resistance.resistanceKeys)
+        toolTipParams.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.ToolTips.toolTipKeys)
 
-        accumulationParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Accumulation.accumulationKeys)
+        effectParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.Effect.effectKeys)
 
-        statModifierParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.StatModifiers.statModifiersKeys)
-
-        specialParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Special.specialKeys)
     }
 
     Scaffold {
@@ -65,8 +60,8 @@ fun ArtefactInfoScreen(
                         imagePath = imagePath,
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically),
-                        contentScale = ContentScale.Crop
+                            .align(Alignment.CenterVertically).scale(3f),
+                        contentScale = ContentScale.None
                     )
                 }
             }
@@ -76,12 +71,13 @@ fun ArtefactInfoScreen(
                 ) {
                     item {
                         CustomOutlinedCard(
-                            data = "${resistanceParam.value} \n${accumulationParam.value}\n${statModifierParam.value}\n${specialParam.value}"
+                            data = "${statModifierParam.value} \n${toolTipParams.value}\n${effectParam.value}"
                         )
                     }
 
                 }
             }
+
             item{
                 priceChart()
             }

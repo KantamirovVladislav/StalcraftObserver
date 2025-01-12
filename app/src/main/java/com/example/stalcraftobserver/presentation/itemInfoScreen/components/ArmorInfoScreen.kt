@@ -89,7 +89,7 @@ fun ArmorInfoScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .align(Alignment.CenterVertically),
-                            contentScale = ContentScale.FillWidth
+                            contentScale = ContentScale.Crop
                         )
                     }
                 }

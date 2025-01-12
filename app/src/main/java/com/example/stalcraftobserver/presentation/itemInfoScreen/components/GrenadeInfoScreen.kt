@@ -20,37 +20,26 @@ import com.example.stalcraftobserver.presentation.common.CustomOutlinedCard
 import com.example.stalcraftobserver.util.ItemInfoHelper
 import com.example.stalcraftobserver.util.ItemProperty
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ArtefactInfoScreen(
+fun GrenadeInfoScreen(
     imagePath: String,
     item: ItemInfo,
     modifier: Modifier = Modifier,
     priceChart: @Composable () -> Unit
 ){
-    if (!item.category.contains("artefact")){
+    if (!item.category.contains("grenade")){
         return
     }
     val generalParam = remember { mutableStateOf<String>("") }
-    val qualityParam = remember { mutableStateOf<String>("") }
-    val resistanceParam = remember { mutableStateOf<String>("") }
-    val accumulationParam = remember { mutableStateOf<String>("") }
-    val statModifierParam = remember { mutableStateOf<String>("") }
-    val specialParam = remember { mutableStateOf<String>("") }
+    val statsParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.General.generalKeys)
+        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Grenade.General.generalKeys)
 
-        qualityParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Quality.qualityKeys)
+        statsParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Grenade.Stats.statKeys)
 
-        resistanceParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Resistance.resistanceKeys)
 
-        accumulationParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Accumulation.accumulationKeys)
-
-        statModifierParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.StatModifiers.statModifiersKeys)
-
-        specialParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Artefact.Special.specialKeys)
     }
 
     Scaffold {
@@ -76,12 +65,13 @@ fun ArtefactInfoScreen(
                 ) {
                     item {
                         CustomOutlinedCard(
-                            data = "${resistanceParam.value} \n${accumulationParam.value}\n${statModifierParam.value}\n${specialParam.value}"
+                            data = "${statsParam.value} "
                         )
                     }
 
                 }
             }
+
             item{
                 priceChart()
             }

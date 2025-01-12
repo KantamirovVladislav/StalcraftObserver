@@ -21,7 +21,7 @@ class ItemInfoHelper {
                 .split(";")
                 .map { it.trim().replace(",", ".") }
 
-            return Pair(values[0], values[1])  // Возвращаем пару значений
+            return Pair(values[0], values[1])
         }
 
         private fun containsParts(substring: String, fullString: String): Boolean {
@@ -82,9 +82,10 @@ class ItemInfoHelper {
                                 is Element.NumericElement -> checkKeyMatch(
                                     element.name?.key,
                                     mapOf(element.name?.lines to element.value.let {
+                                        val formattedValue = String.format("%.2f", it)
                                         Lines(
-                                            en = it.toString(),
-                                            ru = it.toString()
+                                            en = formattedValue,
+                                            ru = formattedValue
                                         )
                                     })
                                 )
@@ -146,11 +147,11 @@ class ItemInfoHelper {
                 val damageBlock =
                     item.infoBlocks?.find { it is InfoBlock.Damage } as? InfoBlock.Damage
                 if (damageBlock != null) {
-                    "Start damage: ${damageBlock.startDamage}\n" +
-                            "Start decrease damage: ${damageBlock.damageDecreaseStart}\n" +
-                            "End damage: ${damageBlock.endDamage}\n" +
-                            "End decrease damage: ${damageBlock.damageDecreaseEnd}\n" +
-                            "Max distance: ${damageBlock.maxDistance}"
+                    "Начальный урон: ${damageBlock.startDamage}\n" +
+                            "Начало падения урона: ${damageBlock.damageDecreaseStart}\n" +
+                            "Конечный урон: ${damageBlock.endDamage}\n" +
+                            "Конец надения урона: ${damageBlock.damageDecreaseEnd}\n" +
+                            "Максимальная дистанция: ${damageBlock.maxDistance}"
                 } else {
                     "Not found damage"
                 }
@@ -178,85 +179,85 @@ class ItemInfoHelper {
                         item,
                         ItemProperty.Armor.General.WEIGHT
                     ).mapValues { entry ->
-                        entry.value?.ru?.replace(" кг", "")?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     durability = getValuesForKey(
                         item,
                         ItemProperty.Armor.General.DURABILITY
                     ).mapValues { entry ->
-                        entry.value?.ru?.replace("%", "")?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     maxDurability = getValuesForKey(
                         item,
                         ItemProperty.Armor.General.MAX_DURABILITY
                     ).mapValues { entry ->
-                        entry.value?.ru?.replace("%", "")?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     bulletResistance = getValuesForKey(
                         item,
                         ItemProperty.Armor.ResistanceKeys.BULLET_RESISTANCE
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     lacerationProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ResistanceKeys.LACERATION_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     explosionProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ResistanceKeys.EXPLOSION_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     electricityResistance = getValuesForKey(
                         item,
                         ItemProperty.Armor.ResistanceKeys.ELECTRICITY_RESISTANCE
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     fireResistance = getValuesForKey(
                         item,
                         ItemProperty.Armor.ResistanceKeys.FIRE_RESISTANCE
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     chemicalProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ResistanceKeys.CHEMICAL_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     radiationProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ProtectionKeys.RADIATION_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     thermalProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ProtectionKeys.THERMAL_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     biologicalProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ProtectionKeys.BIOLOGICAL_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     psychoProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ProtectionKeys.PSYCHO_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     bleedingProtection = getValuesForKey(
                         item,
                         ItemProperty.Armor.ProtectionKeys.BLEEDING_PROTECTION
                     ).mapValues { entry ->
-                        entry.value?.ru?.replace("%", "")?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     extraModifier = listOf(mapOf(Lines("kekw", "kekw") to 0.0))
                 )
@@ -274,13 +275,13 @@ class ItemInfoHelper {
                         item,
                         ItemProperty.Weapon.General.WEIGHT
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     durability = getValuesForKey(
                         item,
                         ItemProperty.Weapon.General.DURABILITY
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     ammoType = getValuesForKey(
                         item,
@@ -296,73 +297,73 @@ class ItemInfoHelper {
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.CLIP_SIZE
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     maxDistance = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.DISTANCE
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     rateOfFire = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.RATE_OF_FIRE
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     reload = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.MagazineInfo.RELOAD_TIME
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     tacticalReload = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.MagazineInfo.RELOAD_TIME_TACTICAL
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     ergonomics = getValuesForKey(
                         item,
                         ItemProperty.Weapon.StatFactor.RELOAD_MODIFIER
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     spread = getValuesForKey(
                         item,
                         ItemProperty.Weapon.StatFactor.SPREAD
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     hipFireSpread = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.HIP_SPREAD
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     verticalRecoil = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.RECOIL
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     horizontalRecoil = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.HORIZONTAL_RECOIL
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     drawTime = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.DRAW_TIME
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     aimingTime = getValuesForKey(
                         item,
                         ItemProperty.Weapon.ToolTip.WeaponInfo.AIM_SWITCH
                     ).mapValues { entry ->
-                        entry.value?.ru?.toDouble() ?: 0.0
+                        entry.value?.ru?.replace(",", ".")?.toDouble() ?: 0.0
                     },
                     damageModifier = mapOf(null to null),
                     features = mapOf(null to null),

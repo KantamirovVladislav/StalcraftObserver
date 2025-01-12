@@ -43,7 +43,7 @@ class ItemViewModel @Inject constructor(
     val globalExtendFilters: StateFlow<Set<FilterItem>> = _globalExtendFilters
     val selectedCategoryFilter = _selectedCategoryFilters
 
-    private val currentSortFilters = mutableListOf("nameEng ASC")
+    private val currentSortFilters = mutableListOf("A-z")
 
     val selectedRarityFilters = _selectedRarityFilters
 
@@ -176,9 +176,15 @@ class ItemViewModel @Inject constructor(
         _selectedFilters.value = _selectedFilters.value.toMutableSet().apply { removeAll(filter) }
     }
 
-    fun updateSortFilters(filters: List<String>) {
+    fun updateSortFilters(filters: FilterItem) {
         currentSortFilters.clear()
-        currentSortFilters.addAll(filters)
+        currentSortFilters.add(filters.name)
+        Log.d("YOBANA", currentSortFilters.toString())
+        reloadItems()
+    }
+
+    fun deleteSortFilters(filters: FilterItem) {
+        currentSortFilters.remove(filters.name)
         reloadItems()
     }
 

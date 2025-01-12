@@ -1,6 +1,7 @@
 package com.example.stalcraftobserver.presentation.itemsListing.components
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,7 +51,8 @@ fun FilterSelector(
         onDismissRequest = {
             onCloseSheet()
             onFiltersSelected(selectedFilters.toSet())
-            onFilterDisabled(previouslySelectedFilters.filter { !selectedFilters.contains(it) }.toSet())
+            onFilterDisabled(previouslySelectedFilters.filter { !selectedFilters.contains(it) }
+                .toSet())
         },
         sheetState = sheetState
     ) {
@@ -65,12 +67,17 @@ fun FilterSelector(
 
             var checkedState by remember { mutableStateOf(selectedFilters.contains(filterItem)) }
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                if (isGlobalVisible){
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (isGlobalVisible) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(
                             checked = checkedState,
@@ -109,7 +116,11 @@ fun FilterSelector(
                         if (!sheetState.isVisible) {
                             onCloseSheet()
                             onFiltersSelected(selectedFilters)
-                            onFilterDisabled(previouslySelectedFilters.filter { !selectedFilters.contains(it) }.toSet())
+                            onFilterDisabled(previouslySelectedFilters.filter {
+                                !selectedFilters.contains(
+                                    it
+                                )
+                            }.toSet())
                         }
                     }
                 },
@@ -132,12 +143,16 @@ fun extendFilterList(
     extendFilters.forEach { filter ->
         var checkedState by remember { mutableStateOf(selectedFilters.contains(filter)) }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
                     checked = checkedState,
