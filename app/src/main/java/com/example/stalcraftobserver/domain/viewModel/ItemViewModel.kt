@@ -34,6 +34,7 @@ class ItemViewModel @Inject constructor(
     private val _globalExtendFilters = MutableStateFlow<Set<FilterItem>>(emptySet())
     private val _selectedCategoryFilters = MutableStateFlow<List<FilterItem>>(mutableListOf())
     private val _selectedRarityFilters = MutableStateFlow<List<FilterItem>>(mutableListOf())
+    private val _searchQuery = MutableStateFlow<String>("")
     private val trigger = MutableStateFlow<FilterItem?>(null)
     val favoritesId: StateFlow<List<Favorite>> = _favoritesId
     val itemsList: StateFlow<Set<Item>> = _itemsList
@@ -41,6 +42,7 @@ class ItemViewModel @Inject constructor(
     val selectedFilters: StateFlow<Set<FilterItem>> = _selectedFilters
     val disabledFilters: StateFlow<Set<FilterItem>> = _disabledFilters
     val globalExtendFilters: StateFlow<Set<FilterItem>> = _globalExtendFilters
+    val searchQuery = _searchQuery.asStateFlow()
     val selectedCategoryFilter = _selectedCategoryFilters
 
     private val currentSortFilters = mutableListOf("A-z")
@@ -52,7 +54,6 @@ class ItemViewModel @Inject constructor(
     private val itemsPerPage = 20
     private var isLoading = false
 
-    private var searchQuery: String = ""
 
     init {
         loadMoreItems()
@@ -124,7 +125,7 @@ class ItemViewModel @Inject constructor(
             val offset = currentPage * itemsPerPage
 
             when (val result = itemsRoomService.getItemsWithDynamicSort(
-                query = searchQuery,
+                query = _searchQuery.value,
                 sortColumns = currentSortFilters,
                 limit = itemsPerPage,
                 offset = offset,
@@ -151,7 +152,7 @@ class ItemViewModel @Inject constructor(
     }
 
     fun searchItems(newQuery: String) {
-        searchQuery = newQuery
+        _searchQuery.value = newQuery
         reloadItems()
     }
 

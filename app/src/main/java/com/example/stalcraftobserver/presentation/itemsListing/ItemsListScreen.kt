@@ -91,9 +91,9 @@ fun ItemsListScreen(
     val globalExpandedFilter by viewModel.globalExtendFilters.collectAsState()
     val selectedCategoryFilter by viewModel.selectedCategoryFilter.collectAsState()
     val selectedRarityFilter by viewModel.selectedRarityFilters.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
     val gridState = rememberLazyGridState()
-    val searchQuery = remember { mutableStateOf("") }
     val triggeringGlobalFilter = remember { mutableStateOf<FilterItem?>(null) }
     val triggerRarityFilter = remember { mutableStateOf<FilterItem?>(null) }
     val filters = listOf(
@@ -221,8 +221,8 @@ fun ItemsListScreen(
                 ),
                 title = {
                     SearchView(
-                        query = searchQuery.value,
-                        onQueryChanged = { viewModel.searchItems(searchQuery.value) }
+                        query = searchQuery,
+                        onQueryChanged = { viewModel.searchItems(it) }
                     )
                 },
                 navigationIcon = {
