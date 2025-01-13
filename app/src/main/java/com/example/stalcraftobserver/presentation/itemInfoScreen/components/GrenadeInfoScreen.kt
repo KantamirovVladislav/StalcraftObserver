@@ -27,17 +27,19 @@ fun GrenadeInfoScreen(
     item: ItemInfo,
     modifier: Modifier = Modifier,
     priceChart: @Composable () -> Unit
-){
-    if (!item.category.contains("grenade")){
+) {
+    if (!item.category.contains("grenade")) {
         return
     }
     val generalParam = remember { mutableStateOf<String>("") }
     val statsParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Grenade.General.generalKeys)
+        generalParam.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Grenade.General.generalKeys)
 
-        statsParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Grenade.Stats.statKeys)
+        statsParam.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Grenade.Stats.statKeys)
 
 
     }
@@ -59,20 +61,18 @@ fun GrenadeInfoScreen(
                     )
                 }
             }
-            item {
-                LazyRow(
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    item {
-                        CustomOutlinedCard(
-                            data = "${statsParam.value} "
-                        )
-                    }
+
+            if (statsParam.value.isNotBlank()) {
+                item {
+
+                    CustomOutlinedCard(
+                        data = "${statsParam.value} "
+                    )
 
                 }
             }
 
-            item{
+            item {
                 priceChart()
             }
         }

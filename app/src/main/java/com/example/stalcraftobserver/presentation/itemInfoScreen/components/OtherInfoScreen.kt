@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Scaffold
@@ -23,26 +24,22 @@ import com.example.stalcraftobserver.util.ItemProperty
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MedicineInfoScreen(
+fun OtherInfoScreen(
     imagePath: String,
     item: ItemInfo,
     modifier: Modifier = Modifier,
     priceChart: @Composable () -> Unit
 ){
-    if (!item.category.contains("medicine")){
+    if (!item.category.contains("other")){
         return
     }
     val generalParam = remember { mutableStateOf<String>("") }
-    val effectParam = remember { mutableStateOf<String>("") }
-    val statsParams = remember { mutableStateOf<String>("") }
+    val toolTipParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Medicine.General.generalKeys)
+        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Other.General.generalKeys)
 
-        effectParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Medicine.Effect.effectKeys)
-
-        statsParams.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Medicine.Stats.statsKeys)
-
+        toolTipParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Other.ToolTip.toolTipStats)
     }
 
     Scaffold {
@@ -57,17 +54,26 @@ fun MedicineInfoScreen(
                         imagePath = imagePath,
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically).scale(3f),
+                            .align(Alignment.CenterVertically)
+                            .scale(3f),
                         contentScale = ContentScale.None
                     )
                 }
             }
-
-            if (effectParam.value.isNotBlank() || statsParams.value.isNotBlank()){
+            if (toolTipParam.value.isNotBlank()){
                 item {
-                    CustomOutlinedCard(
-                        data = "${effectParam.value} \n${statsParams.value}"
-                    )
+                    LazyRow(
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        item {
+                            CustomOutlinedCard(
+                                modifier = Modifier.fillMaxWidth(),
+                                data = "${toolTipParam.value} "
+                            )
+                        }
+
+                    }
                 }
             }
 

@@ -28,8 +28,8 @@ fun FoodInfoScreen(
     item: ItemInfo,
     modifier: Modifier = Modifier,
     priceChart: @Composable () -> Unit
-){
-    if (!item.category.contains("food")){
+) {
+    if (!item.category.contains("food")) {
         return
     }
     val generalParam = remember { mutableStateOf<String>("") }
@@ -38,13 +38,16 @@ fun FoodInfoScreen(
     val toolTipParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Food.General.generalKeys)
+        generalParam.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Food.General.generalKeys)
 
         statsParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Food.Stats.statKeys)
 
-        effectParams.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Food.Effect.effectKeys)
+        effectParams.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Food.Effect.effectKeys)
 
-        toolTipParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Food.ToolTips.toolTipsKeys)
+        toolTipParam.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Food.ToolTips.toolTipsKeys)
 
     }
 
@@ -60,25 +63,24 @@ fun FoodInfoScreen(
                         imagePath = imagePath,
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically).scale(3f),
+                            .align(Alignment.CenterVertically)
+                            .scale(3f),
                         contentScale = ContentScale.None
                     )
                 }
             }
-            item {
-                LazyRow(
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    item {
-                        CustomOutlinedCard(
-                            data = "${statsParam.value} \n${effectParams.value}\n${toolTipParam.value}"
-                        )
-                    }
+
+            if (statsParam.value.isNotBlank() || effectParams.value.isNotBlank() || toolTipParam.value.isNotBlank()) {
+                item {
+
+                    CustomOutlinedCard(
+                        data = "${statsParam.value} \n${effectParams.value}\n${toolTipParam.value}"
+                    )
 
                 }
             }
 
-            item{
+            item {
                 priceChart()
             }
         }

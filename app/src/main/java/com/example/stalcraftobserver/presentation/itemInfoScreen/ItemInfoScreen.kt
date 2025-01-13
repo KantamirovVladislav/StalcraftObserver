@@ -52,6 +52,7 @@ import com.example.stalcraftobserver.presentation.itemInfoScreen.components.Food
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.GrenadeInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.MedicineInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.MiscInfoScreen
+import com.example.stalcraftobserver.presentation.itemInfoScreen.components.OtherInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.WeaponInfoScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.NavigationItem
@@ -476,6 +477,43 @@ fun ItemInfoScreen(
                     }
 
                     it.category.contains("misc") -> MiscInfoScreen(
+                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                        item = it
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                            IconButton(
+                                onClick = {
+                                    isPriceHistory = !isPriceHistory
+                                }, modifier = Modifier
+                                    .scale(0.5f)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .clip(RoundedCornerShape(12.dp))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PriceChange,
+                                    contentDescription = "Изменить тип гарфика",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                        LotsPricesStates(
+                            modifier = Modifier.fillMaxWidth(),
+                            isPriceHistory = isPriceHistory,
+                            priceHistoryResponse = priceHistory,
+                            activeLotsResponse = activeLots
+                        )
+                    }
+
+                    it.category.contains("other") -> OtherInfoScreen(
                         imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
                         item = it
                     ) {

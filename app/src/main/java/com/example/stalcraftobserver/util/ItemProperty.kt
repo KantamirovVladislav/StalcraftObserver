@@ -967,4 +967,37 @@ object ItemProperty {
             )
         }
     }
+
+    object Other {
+        object General {
+            const val NAME = "item.name"
+            const val RANK = "core.tooltip.info.rank"
+            const val CATEGORY = "core.tooltip.info.category"
+            const val WEIGHT = "core.tooltip.info.weight"
+            const val DURABILITY = "core.tooltip.info.durability"
+            const val DESCRIPTION = "item.description"
+            const val BASE_PRICE = "core.tooltip.info.base_price"
+
+            val generalKeys = listOf(
+                NAME,
+                RANK,
+                CATEGORY,
+                WEIGHT,
+                DURABILITY,
+                BASE_PRICE
+            )
+        }
+
+        object ToolTip {
+            const val ADDITIONAL_STATS = "stalker.tooltip.armor_plate.stat_name.damage_absorption"
+            const val ADDITIONAL_STATS_1 = "go.hideout_kitchen_kitchen_items.additional_stats_tip"
+            const val ADDITIONAL_STATS_2 = "go.hideout_laboratory_chemical_reactor.additional_stats_tip"
+
+            val toolTipStats = listOf(
+                ADDITIONAL_STATS,
+                ADDITIONAL_STATS_1,
+                ADDITIONAL_STATS_2
+            )
+        }
+    }
 }

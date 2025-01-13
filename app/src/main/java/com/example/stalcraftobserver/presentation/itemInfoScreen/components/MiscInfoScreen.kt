@@ -55,21 +55,18 @@ fun MiscInfoScreen(
                         imagePath = imagePath,
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically).scale(3f),
+                            .align(Alignment.CenterVertically)
+                            .scale(3f),
                         contentScale = ContentScale.None
                     )
                 }
             }
-            item {
-                LazyRow(
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    item {
-                        CustomOutlinedCard(
-                            data = "${tootTipParam.value} "
-                        )
-                    }
 
+            if (tootTipParam.value.isNotBlank()){
+                item {
+                    CustomOutlinedCard(
+                        data = "${tootTipParam.value} "
+                    )
                 }
             }
 

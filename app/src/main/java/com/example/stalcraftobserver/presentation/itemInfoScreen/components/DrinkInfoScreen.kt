@@ -28,8 +28,8 @@ fun DrinkInfoScreen(
     item: ItemInfo,
     modifier: Modifier = Modifier,
     priceChart: @Composable () -> Unit
-){
-    if (!item.category.contains("drink")){
+) {
+    if (!item.category.contains("drink")) {
         return
     }
     val generalParam = remember { mutableStateOf<String>("") }
@@ -38,13 +38,17 @@ fun DrinkInfoScreen(
     val effectParam = remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-        generalParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.General.generalKeys)
+        generalParam.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.General.generalKeys)
 
-        statModifierParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.Stats.statKeys)
+        statModifierParam.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.Stats.statKeys)
 
-        toolTipParams.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.ToolTips.toolTipKeys)
+        toolTipParams.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.ToolTips.toolTipKeys)
 
-        effectParam.value = ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.Effect.effectKeys)
+        effectParam.value =
+            ItemInfoHelper.getStringFromKeys(item, ItemProperty.Drink.Effect.effectKeys)
 
     }
 
@@ -60,25 +64,23 @@ fun DrinkInfoScreen(
                         imagePath = imagePath,
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically).scale(3f),
+                            .align(Alignment.CenterVertically)
+                            .scale(3f),
                         contentScale = ContentScale.None
                     )
                 }
             }
-            item {
-                LazyRow(
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    item {
-                        CustomOutlinedCard(
-                            data = "${statModifierParam.value} \n${toolTipParams.value}\n${effectParam.value}"
-                        )
-                    }
 
+            if (statModifierParam.value.isNotBlank() || toolTipParams.value.isNotBlank() || effectParam.value.isNotBlank()) {
+                item {
+                    CustomOutlinedCard(
+                        data = "${statModifierParam.value} \n${toolTipParams.value}\n${effectParam.value}"
+                    )
                 }
             }
 
-            item{
+
+            item {
                 priceChart()
             }
         }

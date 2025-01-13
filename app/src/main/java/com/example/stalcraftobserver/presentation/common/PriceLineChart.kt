@@ -124,7 +124,7 @@ fun PriceLineChart(
                     val xIndex = targets[0].x.toInt()
                     if (xIndex in yValues.indices) {
                         val price = yValues[xIndex]
-                        String.format("${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]}")
+                        String.format("${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]} ")
                     } else {
                         "N/A"
                     }
