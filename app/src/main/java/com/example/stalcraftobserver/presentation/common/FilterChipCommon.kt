@@ -13,25 +13,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.stalcraftobserver.domain.model.FilterItem
 
 @Composable
 fun FilterChipCommon(
-    filter: String,
-    callback: (choosedFilter: String) -> Unit,
+    filter: FilterItem,
+    isSelected: Boolean = false,
+    onSelected: (FilterItem) -> Unit,
+    onDisabled: (FilterItem) -> Unit,
+    isEnabled: Boolean = true,
     modifier: Modifier = Modifier
-){
-    var selected by remember { mutableStateOf(false) }
+) {
     FilterChip(
         modifier = modifier,
+        enabled = isEnabled,
         onClick = {
-            selected = !selected
-            if (selected){
-                callback(filter)
+            if (isSelected) {
+                onDisabled(filter)
+            } else {
+                onSelected(filter)
             }
         },
-        selected = selected,
-        label = { Text(filter) },
-        leadingIcon = if (selected) {
+        selected = isSelected,
+        label = { Text(filter.name) },
+        leadingIcon = if (isSelected) {
             {
                 Icon(
                     imageVector = Icons.Filled.Done,

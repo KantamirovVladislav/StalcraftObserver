@@ -62,13 +62,10 @@ fun SettingsPanel(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Радиокнопки для выбора региона
             RegionSelection(
                 selectedRegion = selectedRegion,
                 onRegionSelected = { region ->
                     selectedRegion = region
-                    // Вы можете обновить данные в StalcraftApplication, если нужно
-                    // application.selectedRegion = region
                 }
             )
 

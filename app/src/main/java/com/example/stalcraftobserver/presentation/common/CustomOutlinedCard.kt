@@ -32,8 +32,7 @@ fun CustomOutlinedCard(
             modifier = Modifier.padding(10.dp)
         ) {
             Text(
-                text = data,
-                //style = MaterialTheme.typography.subtitle1
+                text = data
             )
         }
     }

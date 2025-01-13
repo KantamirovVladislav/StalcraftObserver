@@ -3,7 +3,7 @@ package com.example.stalcraftobserver.data.manager
 import android.app.Application
 import android.util.Log
 import com.example.stalcraftobserver.domain.model.FunctionResult
-import com.example.stalcraftobserver.domain.model.Item
+import com.example.stalcraftobserver.domain.model.entities.Item
 import com.example.stalcraftobserver.domain.model.StalcraftApplication
 import com.example.stalcraftobserver.ClientSecret
 import com.example.stalcraftobserver.util.Constants
@@ -43,11 +43,11 @@ class ItemDataService @Inject constructor(
         }
     }
 
-    suspend fun getItemPriceHistory(item: Item): FunctionResult<PriceHistoryResponse> {
+    suspend fun getItemPriceHistory(item: String): FunctionResult<PriceHistoryResponse> {
         return try {
             val response = stalcraftApi.getItemPriceHistory(
                 app.localRegion.value,
-                item.id,
+                item,
                 ClientSecret.X_API_ID,
                 ClientSecret.X_API_SECRET
             ).awaitResponse()
@@ -67,11 +67,11 @@ class ItemDataService @Inject constructor(
         }
     }
 
-    suspend fun getItemActiveLots(item: Item): FunctionResult<AuctionResponse> {
+    suspend fun getItemActiveLots(item: String): FunctionResult<AuctionResponse> {
         return try {
             val response = stalcraftApi.getItemActiveLots(
                 app.localRegion.value,
-                item.id,
+                item,
                 ClientSecret.X_API_ID,
                 ClientSecret.X_API_SECRET
             ).awaitResponse()
@@ -90,8 +90,4 @@ class ItemDataService @Inject constructor(
             FunctionResult.Error("Error message: ${e.message}")
         }
     }
-
-//    fun getAllElementFromItem(item: ItemInfo): List<Element> {
-//
-//    }
 }

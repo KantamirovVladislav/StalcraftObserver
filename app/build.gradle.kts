@@ -2,14 +2,14 @@ plugins {
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-
+    alias(libs.plugins.compose.compiler)
     id("kotlinx-serialization")
     id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.example.stalcraftobserver"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.stalcraftobserver"
@@ -21,8 +21,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf(
+                    "room.schemaLocation" to "$projectDir/schemas"
+                )
+            }
         }
     }
+
 
     buildTypes {
         release {
@@ -34,29 +43,30 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+}
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
-    val room_version = "2.6.1"
+
     implementation(libs.androidx.core.ktx)
-    implementation (libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -73,7 +83,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    implementation (libs.androidx.runtime.livedata)
+    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     annotationProcessor(libs.androidx.room.room.compiler)
     ksp(libs.androidx.room.room.compiler)
@@ -99,6 +109,9 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     // Coil for async images
     implementation(libs.coil.compose)
+
+    implementation(libs.kotlin.reflect)
+
     implementation(libs.coil.network.okhttp)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.navigation.compose)
@@ -107,4 +120,12 @@ dependencies {
     implementation(libs.kotlinx.serialization.json.v163)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
+    implementation(libs.vico.views)
+    implementation(libs.vico.core)
 }

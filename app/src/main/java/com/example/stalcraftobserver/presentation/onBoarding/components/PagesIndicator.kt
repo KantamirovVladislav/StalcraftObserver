@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -26,17 +27,27 @@ fun PagesIndicator(
     pageSize: Int,
     selectedPage: Int
 ) {
-    val selectedColor = MaterialTheme.colorScheme.primary;
-    val unselectedColor = MaterialTheme.colorScheme.secondary;
+    val selectedColor = MaterialTheme.colorScheme.primary
+    val unselectedColor = MaterialTheme.colorScheme.secondary
 
-    Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.Bottom) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.Bottom
+    ) {
         repeat(pageSize) { page ->
-            Box(modifier = Modifier.height(10.dp)//if (page == selectedPage) 40.dp else 30.dp)
-                .width(10.dp)
-                .clip(shape = RoundedCornerShape(size = 5.dp))
-                .background(color = if (page == selectedPage) selectedColor else unselectedColor)) {
+            val targetHeight = if (page == selectedPage) 40.dp else 30.dp
+            val animatedHeight = animateDpAsState(targetValue = targetHeight)
 
-            }
+            Box(
+                modifier = Modifier
+                    .padding(2.dp)
+                    .height(animatedHeight.value)
+                    .width(10.dp)
+                    .clip(shape = RoundedCornerShape(size = 5.dp))
+                    .background(color = if (page == selectedPage) selectedColor else unselectedColor)
+
+            )
         }
     }
 }

@@ -10,4 +10,13 @@ object Constants {
     const val USER_SETTINGS = "userSettings"
     const val APP_ENTRY = "appEntry"
     const val USER_REGION = "userRegion"
+
+    object DataConstants{
+        const val ARTEFACT_1 = "artefact1"
+        const val ARTEFACT_2 = "artefact2"
+        const val ARTEFACT_3 = "artefact3"
+        const val ARTEFACT_4 = "artefact4"
+        const val ARTEFACT_5 = "artefact5"
+        const val ARTEFACT_6 = "artefact6"
+    }
 }

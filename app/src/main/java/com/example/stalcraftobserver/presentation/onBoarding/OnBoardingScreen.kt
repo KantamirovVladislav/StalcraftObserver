@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.stalcraftobserver.domain.model.viewModel.OnBoardingViewModel
+import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
 import com.example.stalcraftobserver.presentation.common.ContinueButton
 import com.example.stalcraftobserver.presentation.common.ContinueTextButton
 import com.example.stalcraftobserver.presentation.onBoarding.components.OnBoardingPage

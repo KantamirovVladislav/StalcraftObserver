@@ -1,16 +1,19 @@
 package com.example.stalcraftobserver.presentation.itemsListing.components
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -22,23 +25,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import com.example.stalcraftobserver.domain.model.Item
+import com.example.stalcraftobserver.domain.model.entities.Item
 import com.example.stalcraftobserver.presentation.common.CustomImage
 
 @Composable
-fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
+fun ItemCell(
+    modifier: Modifier = Modifier,
+    item: Item,
+    region: String,
+    onHeartClick: (Boolean) -> Unit,
+    isHearted: Boolean = false
+) {
     var imagePath by remember { mutableStateOf<String?>(null) }
-
-    var isLoading by remember { mutableStateOf(true) }
-
+    
+    var hearted by remember { mutableStateOf(false) }
+    hearted = isHearted
+    
     LaunchedEffect(item.id, region) {
         imagePath = item.createImagePath(region)
     }
@@ -51,25 +59,56 @@ fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
             defaultElevation = 12.dp
         ),
         border = BorderStroke(1.dp, Color.Black),
-        modifier = modifier,
-
-        ) {
+        modifier = modifier
+    ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.then(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp)
-            )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(6.dp)
         ) {
-            imagePath?.let { CustomImage(imagePath = it,modifier = Modifier.weight(1.5f) ) }
+            Box(
+                modifier = Modifier
+                    .weight(1.5f)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                contentAlignment = Alignment.Center
+            ) {
+                imagePath?.let {
+                    CustomImage(
+                        imagePath = it,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .align(Alignment.Center),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+
+                Icon(
+                    imageVector = if (hearted) Icons.Outlined.Star else Icons.Outlined.StarOutline,
+                    contentDescription = "Favorite Icon",
+                    tint = if (hearted) Color.Yellow else Color.Gray,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .scale(1.2f)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            hearted = !hearted
+                            onHeartClick(hearted)
+                        }
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .align(Alignment.CenterHorizontally)
-            ){
+            ) {
                 Text(
                     textAlign = TextAlign.Center,
                     text = item.titleRus.trim(),
@@ -83,3 +122,4 @@ fun ItemCell(modifier: Modifier = Modifier, item: Item, region: String) {
         }
     }
 }
+

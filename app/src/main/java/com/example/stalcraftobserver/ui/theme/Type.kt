@@ -24,6 +24,8 @@ val Roboto = FontFamily(
     Font(R.font.roboto_thin_italic, FontWeight.Thin, FontStyle.Italic)
 )
 
+val AppTypography = Typography()
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(

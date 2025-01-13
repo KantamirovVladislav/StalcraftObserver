@@ -46,17 +46,17 @@ interface GitHubApi {
 data class ItemInfo(
     val id: String,
     val category: String,
-    val name: TranslationItem,
-    val color: String,
-    val status: Status,
-    val infoBlocks: List<InfoBlock>?
+    val name: TranslationItem?,
+    val color: String?,
+    val status: Status?,
+    val infoBlocks: List<InfoBlock?>?
 )
 
 
 data class TranslationItem(
     val type: String?,
     val key: String?,
-    val args: Map<String, String>?,
+    val args: Map<String?, String?>?,
     val lines: Lines?
 )
 
@@ -74,14 +74,14 @@ data class Status(
 sealed class InfoBlock {
     data class Text(
         val type: String?,
-        val title: TextItem?,
+        val title: TranslationItem?,
         val text: TranslationItem?
     ) : InfoBlock()
 
     data class List(
         val type: String?,
         val title: TextItem?,
-        val elements: kotlin.collections.List<Element>?
+        val elements: kotlin.collections.List<Element?>?
     ) : InfoBlock()
 
     data class Damage(
@@ -116,6 +116,7 @@ sealed class Element {
 
     data class TextElement(
         val type: String?,
+        val title: TranslationItem?,
         val text: TranslationItem?
     ) : Element()
 
@@ -157,12 +158,12 @@ class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
         context: JsonDeserializationContext
     ): InfoBlock {
         val jsonObject = json.asJsonObject
-        val type = jsonObject.get("type").asString
+        val type = jsonObject.get("type")?.asString
 
         return when (type) {
             "text" -> {
                 val title = jsonObject.get("title")?.let {
-                    context.deserialize<TextItem>(it, TextItem::class.java)
+                    context.deserialize<TranslationItem>(it, TranslationItem::class.java)
                 }
                 val text = jsonObject.get("text")?.let {
                     context.deserialize<TranslationItem>(it, TranslationItem::class.java)
@@ -188,7 +189,7 @@ class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
                 InfoBlock.Damage::class.java
             )
 
-            else -> throw JsonParseException("Unknown InfoBlock type: $type")
+            else -> InfoBlock.List(type, TextItem(" ", " "), emptyList())
         }
     }
 }
@@ -200,7 +201,7 @@ class ListElementDeserializer : JsonDeserializer<Element> {
         context: JsonDeserializationContext
     ): Element {
         val jsonObject = json.asJsonObject
-        val type = jsonObject.get("type").asString
+        val type = jsonObject.get("type")?.asString
 
         return when (type) {
             "key-value" -> context.deserialize(
@@ -217,7 +218,9 @@ class ListElementDeserializer : JsonDeserializer<Element> {
             "range" -> context.deserialize(json, Element.RangeElement::class.java)
             "item" -> context.deserialize(json, Element.ItemElement::class.java)
             "usage" -> context.deserialize(json, Element.UsageElement::class.java)
-            else -> throw JsonParseException("Unknown type in ListElementDeserializer: $type")
+            else -> Element.TextElement(
+                type, TranslationItem(null, null, null, null), TranslationItem(null, null, null, null)
+            )
         }
     }
 }
