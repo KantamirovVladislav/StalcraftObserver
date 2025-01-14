@@ -72,7 +72,7 @@ fun OnBoardingScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PagesIndicator(
-                    modifier = Modifier.width(70.dp),
+                    modifier = Modifier.width(40.dp),
                     pageSize = viewModel.pages.size,
                     selectedPage = currentPage
                 )

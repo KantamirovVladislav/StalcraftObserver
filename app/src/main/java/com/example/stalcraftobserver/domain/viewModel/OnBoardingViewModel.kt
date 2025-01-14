@@ -25,25 +25,26 @@ class OnBoardingViewModel @Inject constructor(
 
     val pages = listOf(
         Page(
-            title = "Lorem",
-            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            image = R.drawable.ic_launcher_background
+            title = "История аукционных лотов",
+            description = "Просматривайте историю аукционных лотов",
+            image = R.drawable.auctionimage
         ),
         Page(
-            title = "Finibus",
-            description = "Sed ut perspiciatis unde omnis iste natus error.",
-            image = R.drawable.ic_launcher_background
-        ),
-        Page(
-            title = "Neque",
-            description = "Neque porro quisquam est qui dolorem ipsum.",
-            image = R.drawable.ic_launcher_background
-        ),
-        Page(
-            title = "Ut Enim",
-            description = "Ut enim ad minima veniam, quis nostrum exercitationem.",
-            image = R.drawable.ic_launcher_background
+            title = "Активные аукционные лоты",
+            description = "Просматривайте активные аукционные лоты",
+            image = R.drawable.auctionimage
         )
+//        ),
+//        Page(
+//            title = "Neque",
+//            description = "Neque porro quisquam est qui dolorem ipsum.",
+//            image = R.drawable.ic_launcher_background
+//        ),
+//        Page(
+//            title = "Ut Enim",
+//            description = "Ut enim ad minima veniam, quis nostrum exercitationem.",
+//            image = R.drawable.ic_launcher_background
+//        )
     )
 
     fun onPageChanged(page: Int) {
@@ -51,12 +52,11 @@ class OnBoardingViewModel @Inject constructor(
         _buttonState.value =
             when (page) {
                 0 -> listOf("", "Next")
-                1, 2 -> listOf("Back", "Next")
-                3 -> listOf("Back", "Get Started")
+                1 -> listOf("Back", "Get Started")
                 else -> listOf("", "")
             }
 
-        if (_currentPage.value == 3){
+        if (_currentPage.value == 1){
             viewModelScope.launch {
                 userManager.saveAppEntry()
             }
