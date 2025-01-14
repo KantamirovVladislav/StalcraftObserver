@@ -97,72 +97,72 @@ fun ItemsListScreen(
     val triggeringGlobalFilter = remember { mutableStateOf<FilterItem?>(null) }
     val triggerRarityFilter = remember { mutableStateOf<FilterItem?>(null) }
     val filters = listOf(
-        FilterItem(name = "A-z", group = "alphabetSort"),
-        FilterItem(name = "Z-a", group = "alphabetSort"),
+        FilterItem(name = "A-z", rusName = "А-я", group = "alphabetSort"),
+        FilterItem(name = "Z-a",rusName = "Я-a", group = "alphabetSort"),
         FilterItem(
-            name = "Category", group = "categorySort", extendFilters = listOf(
+            name = "Category",rusName = "Категория", group = "categorySort", extendFilters = listOf(
                 FilterItem(
-                    name = "armor", group = "armor", extendFilters = listOf(
-                        FilterItem(name = "clothes", group = "armor"),
-                        FilterItem(name = "combat", group = "armor"),
-                        FilterItem(name = "combined", group = "armor"),
-                        FilterItem(name = "device", group = "armor"),
-                        FilterItem(name = "scientist", group = "armor"),
+                    name = "armor",rusName = "броня", group = "armor", extendFilters = listOf(
+                        FilterItem(name = "clothes",rusName = "куртки", group = "armor"),
+                        FilterItem(name = "combat",rusName = "боевая", group = "armor"),
+                        FilterItem(name = "combined",rusName = "комбинированная", group = "armor"),
+                        FilterItem(name = "device",rusName = "устройства", group = "armor"),
+                        FilterItem(name = "scientist",rusName = "научная", group = "armor"),
                     )
                 ),
                 FilterItem(
-                    name = "artefact", group = "artefact", extendFilters = listOf(
-                        FilterItem(name = "biochemical", group = "artefact"),
-                        FilterItem(name = "electrophysical", group = "artefact"),
-                        FilterItem(name = "gravity", group = "artefact"),
-                        FilterItem(name = "other_arts", group = "artefact"),
-                        FilterItem(name = "thermal", group = "artefact"),
+                    name = "artefact",rusName = "артефакты", group = "artefact", extendFilters = listOf(
+                        FilterItem(name = "biochemical",rusName = "биохимические", group = "artefact"),
+                        FilterItem(name = "electrophysical",rusName = "електрофизические", group = "artefact"),
+                        FilterItem(name = "gravity",rusName = "гравитационные", group = "artefact"),
+                        FilterItem(name = "other_arts",rusName = "прочие", group = "artefact"),
+                        FilterItem(name = "thermal",rusName = "термические", group = "artefact"),
                     )
                 ),
                 FilterItem(
-                    name = "attachment", group = "attachment", extendFilters = listOf(
-                        FilterItem(name = "barrel", group = "attachment"),
-                        FilterItem(name = "collimator_sights", group = "attachment"),
-                        FilterItem(name = "forend", group = "attachment"),
-                        FilterItem(name = "mag", group = "attachment"),
-                        FilterItem(name = "other", group = "attachment"),
-                        FilterItem(name = "pistol_handle", group = "attachment"),
+                    name = "attachment",rusName = "обвесы", group = "attachment", extendFilters = listOf(
+                        FilterItem(name = "barrel",rusName = "надульники", group = "attachment"),
+                        FilterItem(name = "collimator_sights",rusName = "прицелы", group = "attachment"),
+                        FilterItem(name = "forend",rusName = "ручки", group = "attachment"),
+                        FilterItem(name = "mag",rusName = "магазины", group = "attachment"),
+                        FilterItem(name = "other",rusName = "прочее", group = "attachment"),
+                        FilterItem(name = "pistol_handle",rusName = "пистолетные надульники", group = "attachment"),
                     )
                 ),
                 FilterItem(
-                    name = "weapon", group = "weapon", extendFilters = listOf(
-                        FilterItem(name = "assault_rifle", group = "weapon"),
-                        FilterItem(name = "device", group = "weapon"),
-                        FilterItem(name = "heavy", group = "weapon"),
-                        FilterItem(name = "machine_gun", group = "weapon"),
-                        FilterItem(name = "melee", group = "weapon"),
-                        FilterItem(name = "pistol", group = "weapon"),
-                        FilterItem(name = "shotgun_rifle", group = "weapon"),
-                        FilterItem(name = "sniper_rifle", group = "weapon"),
-                        FilterItem(name = "submachine_gun", group = "weapon"),
+                    name = "weapon",rusName = "оружие", group = "weapon", extendFilters = listOf(
+                        FilterItem(name = "assault_rifle",rusName = "винтовки", group = "weapon"),
+                        FilterItem(name = "device",rusName = "устройства", group = "weapon"),
+                        FilterItem(name = "heavy",rusName = "тяжелые", group = "weapon"),
+                        FilterItem(name = "machine_gun",rusName = "пулеметы", group = "weapon"),
+                        FilterItem(name = "melee",rusName = "ближнее", group = "weapon"),
+                        FilterItem(name = "pistol",rusName = "пистолеты", group = "weapon"),
+                        FilterItem(name = "shotgun_rifle",rusName = "дробовики", group = "weapon"),
+                        FilterItem(name = "sniper_rifle",rusName = "снайперская винтовка", group = "weapon"),
+                        FilterItem(name = "submachine_gun",rusName = "пистолет-пулемет", group = "weapon"),
                     )
                 ),
-                FilterItem(name = "backpack", group = "backpack"),
-                FilterItem(name = "bullet", group = "bullet"),
-                FilterItem(name = "containers", group = "containers"),
-                FilterItem(name = "drink", group = "drink"),
-                FilterItem(name = "food", group = "food"),
-                FilterItem(name = "grenade", group = "grenade"),
-                FilterItem(name = "medicine", group = "medicine"),
-                FilterItem(name = "misc", group = "misc"),
-                FilterItem(name = "other", group = "other")
+                FilterItem(name = "backpack",rusName = "рюкзаки", group = "backpack"),
+                FilterItem(name = "bullet",rusName = "патроны", group = "bullet"),
+                FilterItem(name = "containers",rusName = "контейнеры", group = "containers"),
+                FilterItem(name = "drink",rusName = "напитки", group = "drink"),
+                FilterItem(name = "food",rusName = "еда", group = "food"),
+                FilterItem(name = "grenade",rusName = "гранаты", group = "grenade"),
+                FilterItem(name = "medicine",rusName = "медицина", group = "medicine"),
+                FilterItem(name = "misc",rusName = "разное", group = "misc"),
+                FilterItem(name = "other",rusName = "прочее", group = "other")
             )
         ),
         FilterItem(
-            name = "Rarity", group = "raritySort", extendFilters = listOf(
-                FilterItem(name = "None", group = "raritySort"),
-                FilterItem(name = "Common", group = "raritySort"),
-                FilterItem(name = "Picklock", group = "raritySort"),
-                FilterItem(name = "Newbie", group = "raritySort"),
-                FilterItem(name = "Stalker", group = "raritySort"),
-                FilterItem(name = "Veteran", group = "raritySort"),
-                FilterItem(name = "Master", group = "raritySort"),
-                FilterItem(name = "Legend", group = "raritySort"),
+            name = "Rarity",rusName = "Редкость", group = "raritySort", extendFilters = listOf(
+                FilterItem(name = "None",rusName = "нет", group = "raritySort"),
+                FilterItem(name = "Common",rusName = "обычное", group = "raritySort"),
+                FilterItem(name = "Picklock",rusName = "отмычка", group = "raritySort"),
+                FilterItem(name = "Newbie",rusName = "новичек", group = "raritySort"),
+                FilterItem(name = "Stalker",rusName = "сталкер", group = "raritySort"),
+                FilterItem(name = "Veteran",rusName = "ветеран", group = "raritySort"),
+                FilterItem(name = "Master",rusName = "мастер", group = "raritySort"),
+                FilterItem(name = "Legend",rusName = "легенд", group = "raritySort"),
             )
         )
     )

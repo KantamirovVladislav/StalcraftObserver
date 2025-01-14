@@ -124,7 +124,7 @@ fun PriceLineChart(
                     val xIndex = targets[0].x.toInt()
                     if (xIndex in yValues.indices) {
                         val price = yValues[xIndex]
-                        String.format("${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]} ")
+                        String.format("${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]}, Кол-во ${sortedPrices[xIndex].amount}")
                     } else {
                         "N/A"
                     }
@@ -291,7 +291,7 @@ fun AuctionChart(
                     val xIndex = targets[0].x.toInt()
                     if (xIndex in yValues.indices) {
                         val price = yValues[xIndex]
-                        "${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]}"
+                        "${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]}, Кол-во ${sortedLots[xIndex].amount}"
                     } else {
                         "N/A"
                     }

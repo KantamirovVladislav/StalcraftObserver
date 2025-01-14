@@ -35,7 +35,7 @@ fun FilterChipCommon(
             }
         },
         selected = isSelected,
-        label = { Text(filter.name) },
+        label = { Text(filter.rusName) },
         leadingIcon = if (isSelected) {
             {
                 Icon(
