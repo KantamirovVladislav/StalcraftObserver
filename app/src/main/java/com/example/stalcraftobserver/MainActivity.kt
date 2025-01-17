@@ -1,5 +1,3 @@
-// package com.example.stalcraftobserver
-
 package com.example.stalcraftobserver
 
 import android.content.res.Configuration
@@ -23,6 +21,7 @@ import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
 import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.ContainerSelectScreen
+import com.example.stalcraftobserver.presentation.common.MinimalDialog
 import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
 import com.example.stalcraftobserver.presentation.compareItems.item1
 import com.example.stalcraftobserver.presentation.compareItems.item2
@@ -34,6 +33,7 @@ import com.example.stalcraftobserver.presentation.loadoutScreen.weapon
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.NavigationItem
+import com.example.stalcraftobserver.util.NetworkStateMonitor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -51,6 +51,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     @Named("LocalUserManager")
     lateinit var localUserManager: LocalUserManagerRel
+
+    @Inject
+    lateinit var networkStateMonitor: NetworkStateMonitor
 
     override fun onDestroy() {
         super.onDestroy()
@@ -77,6 +80,11 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             var isAppInitialized by remember { mutableStateOf(false) }
             var appEntry by remember { mutableStateOf(false) }
+            var isInternetConnected by remember { mutableStateOf(true) }
+
+            networkStateMonitor.startMonitoring {
+                isInternetConnected = it
+            }
 
             LaunchedEffect(Unit) {
                 appEntry = localUserManager.readAppEntry().first()
@@ -205,6 +213,13 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+                }
+
+                if (!isInternetConnected){
+                    MinimalDialog(label = "Интернет соединение потеряно", onDismissRequest = {isInternetConnected = true})
+                }
+                else {
+                    Log.d("InternetState", "Internet connect is enabled")
                 }
             }
         }

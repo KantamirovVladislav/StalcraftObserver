@@ -58,6 +58,8 @@ import com.example.stalcraftobserver.presentation.common.SettingsPanel
 import com.example.stalcraftobserver.presentation.itemsListing.components.FilterSelector
 import com.example.stalcraftobserver.presentation.itemsListing.components.ItemCell
 import com.example.stalcraftobserver.util.NavigationItem
+import com.example.stalcraftobserver.util.RarityItem
+import com.example.stalcraftobserver.util.getRarityColorFromString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -382,6 +384,7 @@ fun ItemsListScreen(
                             },
                         item = item,
                         region = "ru",
+                        shadowColor = getRarityColorFromString(item.rarity),
                         isHearted = favoritesState.any { it.favoriteId == item.id },
                         onHeartClick = { hearted ->
                             if (hearted) viewModel.setFavorite(item.id) else viewModel.removeFavorite(

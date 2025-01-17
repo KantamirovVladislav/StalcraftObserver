@@ -12,6 +12,7 @@ import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
 import com.example.stalcraftobserver.data.manager.RetrofitClientItem
 import com.example.stalcraftobserver.data.manager.RetrofitClientItemInfo
 import com.example.stalcraftobserver.data.manager.StalcraftApi
+import com.example.stalcraftobserver.util.NetworkStateMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +32,10 @@ object ViewModelModule {
         @ApplicationContext context: Context
     ) = ItemsRoomService(context)
 
+
+    @Singleton
+    @Provides
+    fun provideNetworkStateMonitor(application: StalcraftApplication) = NetworkStateMonitor(application)
 
     @Singleton
     @Provides
