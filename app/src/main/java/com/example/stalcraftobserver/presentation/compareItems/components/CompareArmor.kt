@@ -1,6 +1,8 @@
 package com.example.stalcraftobserver.presentation.compareItems.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -145,6 +147,10 @@ fun CompareArmor(
                     value2 = modifier2?.values?.firstOrNull()
                 )
             }
+        }
+
+        item{
+            Spacer(Modifier.height(60.dp))
         }
     }
 }

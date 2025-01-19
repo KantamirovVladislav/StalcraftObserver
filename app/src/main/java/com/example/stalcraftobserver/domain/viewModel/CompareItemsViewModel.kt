@@ -12,6 +12,7 @@ import com.example.stalcraftobserver.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -26,6 +27,15 @@ class CompareItemsViewModel @Inject constructor(
 
     val item1 = MutableStateFlow<ItemInfo?>(null)
     val item2 = MutableStateFlow<ItemInfo?>(null)
+
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    private var _isError = MutableStateFlow<Boolean>(false)
+    private var _errorMessage = MutableStateFlow<String>("")
+
+    val isLoading = _isLoading.asStateFlow()
+    var isError = _isError.asStateFlow()
+    var errorMessage = _errorMessage.asStateFlow()
+
 
     fun setItem1Id(id: String?) {
         if (id == null) {
@@ -45,25 +55,39 @@ class CompareItemsViewModel @Inject constructor(
         Log.d("CompareItemsViewModel", "Item2 updated: $id")
     }
 
+    fun updateErrorStatus(status: Boolean) {
+        _isError.value = false
+    }
 
     private fun fetchItemWithId(id: String, onResult: (ItemInfo?) -> Unit) {
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             val result = when (val itemResult = itemsRoomService.getItemWithId(id)) {
                 is FunctionResult.Success -> {
                     val item = itemResult.data
+
                     when (val itemData = itemDataService.getItemData(item)) {
                         is FunctionResult.Success -> itemData.data
                         is FunctionResult.Error -> {
                             Log.e(Constants.ERROR_DATABASE_TAG, itemData.message)
+                            _isError.value = true
+                            _errorMessage.value =
+                                "Не удолось получить данные (Проверьте подключение к интернету)"
                             null
                         }
                     }
                 }
+
                 is FunctionResult.Error -> {
+                    _isError.value = true
+                    _errorMessage.value =
+                        "Не удолось получить данные из локального хранилища"
+                    Log.d("ErrorMessage", "$_isError $_errorMessage")
                     Log.e(Constants.ERROR_DATABASE_TAG, itemResult.message)
                     null
                 }
             }
+            _isLoading.value = false
             onResult(result)
         }
     }

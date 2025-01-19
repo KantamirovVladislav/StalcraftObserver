@@ -60,17 +60,14 @@ fun ItemCell(
 
     OutlinedCard(
         modifier = modifier.shadow(
-            elevation = 4.dp,
+            elevation = 6.dp,
             shape = RoundedCornerShape(12.dp),
             clip = false,
-            ambientColor = shadowColor.copy(alpha = 1f),
-            spotColor = shadowColor.copy(alpha = 1f)
+            ambientColor = shadowColor,
+            spotColor = shadowColor
         ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
         ),
         border = BorderStroke(1.dp, Color.Black)
     ) {

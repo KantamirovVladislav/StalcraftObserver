@@ -23,6 +23,7 @@ import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.ContainerSelectScreen
 import com.example.stalcraftobserver.presentation.common.MinimalDialog
 import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
+import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreenV2
 import com.example.stalcraftobserver.presentation.compareItems.item1
 import com.example.stalcraftobserver.presentation.compareItems.item2
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
@@ -170,7 +171,7 @@ class MainActivity : ComponentActivity() {
                                 sharedItemIdViewModel.setItem(item2, id2)
                             }
                             Log.d("CompareItems", "Navigate to CompareItemsScreen")
-                            CompareItemsScreen(
+                            CompareItemsScreenV2(
                                 navController = navController,
                                 viewModel = hiltViewModel(),
                                 sharedItemIdViewModel = sharedItemIdViewModel
