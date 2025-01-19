@@ -64,9 +64,11 @@ fun CompareItemsScreenV2(
     val item1Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item1)) }
     val item2Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item2)) }
 
-    val isLoading by viewModel.isLoading.collectAsState()
-    val isError by viewModel.isError.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
+    val errors by viewModel.errorQueue.collectAsState()
+
+    viewModel.onCriticalError = {
+        navController.navigate(NavigationItem.ListItems.route)
+    }
 
     LaunchedEffect(item1Id) {
         viewModel.setItem1Id(item1Id)
@@ -191,16 +193,8 @@ fun CompareItemsScreenV2(
             }
         }
     }
-    if (isLoading) {
-        LoadingDialog(onDismissRequest = {}, label = "Идет загрузка, подождите")
-    }
-    if (isError) {
-        WarningDialog(
-            label = errorMessage,
-            onDismissRequest = {
-                viewModel.updateErrorStatus(false)
-                navController.navigate(NavigationItem.ListItems.route)
-            })
+    errors.let {
+        errors.forEach { error -> error.ShowDialog() }
     }
 }
 

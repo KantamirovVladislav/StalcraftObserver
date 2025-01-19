@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.stalcraftobserver.data.manager.ItemDataService
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.ItemsRoomService
+import com.example.stalcraftobserver.domain.model.DialogEntity
+import com.example.stalcraftobserver.domain.model.ErrorsType
 import com.example.stalcraftobserver.domain.model.FunctionResult
 import com.example.stalcraftobserver.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,14 +30,39 @@ class CompareItemsViewModel @Inject constructor(
     val item1 = MutableStateFlow<ItemInfo?>(null)
     val item2 = MutableStateFlow<ItemInfo?>(null)
 
-    private val _isLoading = MutableStateFlow<Boolean>(false)
-    private var _isError = MutableStateFlow<Boolean>(false)
-    private var _errorMessage = MutableStateFlow<String>("")
+    private val _errorQueue = MutableStateFlow<List<DialogEntity>>(emptyList())
+    val errorQueue = _errorQueue.asStateFlow()
+    var onCriticalError: () -> Unit = {}
 
-    val isLoading = _isLoading.asStateFlow()
-    var isError = _isError.asStateFlow()
-    var errorMessage = _errorMessage.asStateFlow()
+    fun handleCriticalError() {
+        removeAllErrorFromQueue()
+        onCriticalError()
+    }
 
+    fun addErrorToQueue(error: DialogEntity) {
+        if (_errorQueue.value.none { it.label == error.label }) {
+            _errorQueue.value = _errorQueue.value.toMutableList().apply { add(error) }
+        }
+        Log.d("ErrorQueue", _errorQueue.value.toString())
+    }
+
+    fun removeErrorFromQueue() {
+        if (_errorQueue.value.isNotEmpty()) {
+            _errorQueue.value = _errorQueue.value.toMutableList().apply { removeLastOrNull() }
+        }
+    }
+
+    fun removeErrorFromQueue(error: DialogEntity) {
+        if (_errorQueue.value.isNotEmpty()) {
+            _errorQueue.value = _errorQueue.value.toMutableList().apply { remove(error) }
+        }
+    }
+
+    fun removeAllErrorFromQueue() {
+        if (_errorQueue.value.isNotEmpty()) {
+            _errorQueue.value = emptyList()
+        }
+    }
 
     fun setItem1Id(id: String?) {
         if (id == null) {
@@ -55,39 +82,52 @@ class CompareItemsViewModel @Inject constructor(
         Log.d("CompareItemsViewModel", "Item2 updated: $id")
     }
 
-    fun updateErrorStatus(status: Boolean) {
-        _isError.value = false
-    }
-
     private fun fetchItemWithId(id: String, onResult: (ItemInfo?) -> Unit) {
-        _isLoading.value = true
+        val loadingDialog = DialogEntity(
+            errorType = ErrorsType.LOADING,
+            label = "Идёт загрузка, подождите",
+            onDismissRequest = { }
+        )
+        addErrorToQueue(
+            loadingDialog
+        )
         viewModelScope.launch(Dispatchers.IO) {
             val result = when (val itemResult = itemsRoomService.getItemWithId(id)) {
                 is FunctionResult.Success -> {
                     val item = itemResult.data
 
                     when (val itemData = itemDataService.getItemData(item)) {
-                        is FunctionResult.Success -> itemData.data
+                        is FunctionResult.Success -> {
+                            removeErrorFromQueue(loadingDialog)
+                            itemData.data
+                        }
+
                         is FunctionResult.Error -> {
                             Log.e(Constants.ERROR_DATABASE_TAG, itemData.message)
-                            _isError.value = true
-                            _errorMessage.value =
-                                "Не удолось получить данные (Проверьте подключение к интернету)"
+                            addErrorToQueue(
+                                DialogEntity(
+                                    errorType = ErrorsType.ERROR,
+                                    label = "Не удолось получить данные (Проверьте подключение к интернету)",
+                                    onDismissRequest = ::handleCriticalError
+                                )
+                            )
                             null
                         }
                     }
                 }
 
                 is FunctionResult.Error -> {
-                    _isError.value = true
-                    _errorMessage.value =
-                        "Не удолось получить данные из локального хранилища"
-                    Log.d("ErrorMessage", "$_isError $_errorMessage")
+                    addErrorToQueue(
+                        DialogEntity(
+                            errorType = ErrorsType.ERROR,
+                            label = "Не удолось получить данные из локального хранилища",
+                            onDismissRequest = ::handleCriticalError
+                        )
+                    )
                     Log.e(Constants.ERROR_DATABASE_TAG, itemResult.message)
                     null
                 }
             }
-            _isLoading.value = false
             onResult(result)
         }
     }

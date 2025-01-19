@@ -7,7 +7,7 @@ import com.example.stalcraftobserver.presentation.common.LoadingDialog
 import com.example.stalcraftobserver.presentation.common.MinimalDialog
 
 
-data class ErrorEntity (
+data class DialogEntity (
     val errorType: ErrorsType = ErrorsType.NONE,
     val label: String,
     val onDismissRequest: () -> Unit = {}

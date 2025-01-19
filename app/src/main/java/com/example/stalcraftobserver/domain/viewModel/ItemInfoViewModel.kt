@@ -9,7 +9,7 @@ import com.example.stalcraftobserver.data.manager.ItemDataService
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.ItemsRoomService
 import com.example.stalcraftobserver.data.manager.PriceHistoryResponse
-import com.example.stalcraftobserver.domain.model.ErrorEntity
+import com.example.stalcraftobserver.domain.model.DialogEntity
 import com.example.stalcraftobserver.domain.model.ErrorsType
 import com.example.stalcraftobserver.domain.model.FunctionResult
 import com.example.stalcraftobserver.domain.model.entities.Item
@@ -33,7 +33,7 @@ class ItemInfoViewModel @Inject constructor(
     private var _info = MutableStateFlow<ItemInfo?>(null)
     private var _priceHistory = MutableStateFlow<PriceHistoryResponse?>(null)
     private var _activeLots = MutableStateFlow<AuctionResponse?>(null)
-    private val _errorQueue = MutableStateFlow<List<ErrorEntity>>(emptyList())
+    private val _errorQueue = MutableStateFlow<List<DialogEntity>>(emptyList())
 
     val errorQueue = _errorQueue.asStateFlow()
 
@@ -49,7 +49,7 @@ class ItemInfoViewModel @Inject constructor(
         onCriticalError()
     }
 
-    fun addErrorToQueue(error: ErrorEntity) {
+    fun addErrorToQueue(error: DialogEntity) {
         if (_errorQueue.value.none { it.label == error.label }) {
             _errorQueue.value = _errorQueue.value.toMutableList().apply { add(error) }
         }
@@ -75,7 +75,7 @@ class ItemInfoViewModel @Inject constructor(
 
             is FunctionResult.Error -> {
                 addErrorToQueue(
-                    ErrorEntity(
+                    DialogEntity(
                         errorType = ErrorsType.ERROR,
                         label = "Не удалось получить данные из локального хранилища",
                         onDismissRequest = ::handleCriticalError
@@ -90,7 +90,7 @@ class ItemInfoViewModel @Inject constructor(
         if (item == null) {
             Log.e(Constants.ERROR_DATABASE_TAG, "Item is null in getItemData")
             addErrorToQueue(
-                ErrorEntity(
+                DialogEntity(
                     errorType = ErrorsType.ERROR,
                     label = "Произошла непредвиденная ошибка",
                     onDismissRequest = ::handleCriticalError
@@ -106,7 +106,7 @@ class ItemInfoViewModel @Inject constructor(
 
             is FunctionResult.Error -> {
                 addErrorToQueue(
-                    ErrorEntity(
+                    DialogEntity(
                         errorType = ErrorsType.ERROR,
                         label = "Не получилось получить данные об предмете, проверьте подключение к интернету",
                         onDismissRequest = ::handleCriticalError
@@ -121,7 +121,7 @@ class ItemInfoViewModel @Inject constructor(
         if (item == null) {
             Log.e(Constants.ERROR_DATABASE_TAG, "Item is null in getItemData")
             addErrorToQueue(
-                ErrorEntity(
+                DialogEntity(
                     errorType = ErrorsType.ERROR,
                     label = "Произошла непредвиденная ошибка",
                     onDismissRequest = ::handleCriticalError
@@ -137,7 +137,7 @@ class ItemInfoViewModel @Inject constructor(
 
             is FunctionResult.Error -> {
                 addErrorToQueue(
-                    ErrorEntity(
+                    DialogEntity(
                         errorType = ErrorsType.WARNING,
                         label = "Не удалось получить данные Stalcraft",
                         onDismissRequest = ::removeErrorFromQueue
@@ -152,7 +152,7 @@ class ItemInfoViewModel @Inject constructor(
         if (item == null) {
             Log.e(Constants.ERROR_DATABASE_TAG, "Item is null in getItemData")
             addErrorToQueue(
-                ErrorEntity(
+                DialogEntity(
                     errorType = ErrorsType.ERROR,
                     label = "Произошла непредвиденная ошибка",
                     onDismissRequest = ::handleCriticalError
@@ -168,7 +168,7 @@ class ItemInfoViewModel @Inject constructor(
 
             is FunctionResult.Error -> {
                 addErrorToQueue(
-                    ErrorEntity(
+                    DialogEntity(
                         errorType = ErrorsType.WARNING,
                         label = "Не удалось получить данные Stalcraft",
                         onDismissRequest = ::removeErrorFromQueue
