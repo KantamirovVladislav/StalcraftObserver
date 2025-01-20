@@ -2,6 +2,7 @@ package com.example.stalcraftobserver.presentation.compareItems
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -70,6 +71,10 @@ fun CompareItemsScreenV2(
         navController.navigate(NavigationItem.ListItems.route)
     }
 
+    errors.let {
+        errors.forEach { error -> error.ShowDialog() }
+    }
+
     LaunchedEffect(item1Id) {
         viewModel.setItem1Id(item1Id)
     }
@@ -124,11 +129,13 @@ fun CompareItemsScreenV2(
             if (item1Id == null && item2Id == null) {
                 NullTargetItems(
                     firstItemClick = {
+                        Log.d("Compare:NullTargetButton1", "Click!")
                         navController.navigate(
                             NavigationItem.SelectItem.createRoute(item1, categories)
                         )
                     },
                     secondItemClick = {
+                        Log.d("Compare:NullTargetButton2", "Click!")
                         navController.navigate(
                             NavigationItem.SelectItem.createRoute(item2, categories)
                         )
@@ -151,6 +158,7 @@ fun CompareItemsScreenV2(
                                 icon = Icons.Filled.SwapVert,
                                 contentDescription = "Swap button",
                                 onClick = {
+                                    Log.d("Compare:SwapButton1", "Click!")
                                     navController.navigate(
                                         NavigationItem.SelectItem.createRoute(item1, categories)
                                     )
@@ -161,6 +169,7 @@ fun CompareItemsScreenV2(
                                 icon = Icons.Filled.Add,
                                 contentDescription = "Add button",
                                 onClick = {
+                                    Log.d("Compare:AddButton1", "Click!")
                                     navController.navigate(
                                         NavigationItem.SelectItem.createRoute(item1, categories)
                                     )
@@ -172,6 +181,7 @@ fun CompareItemsScreenV2(
                                 icon = Icons.Filled.SwapVert,
                                 contentDescription = "Swap button",
                                 onClick = {
+                                    Log.d("Compare:SwapButton2", "Click!")
                                     navController.navigate(
                                         NavigationItem.SelectItem.createRoute(item2, categories)
                                     )
@@ -182,6 +192,7 @@ fun CompareItemsScreenV2(
                                 icon = Icons.Filled.Add,
                                 contentDescription = "Remove button",
                                 onClick = {
+                                    Log.d("Compare:AddButton2", "Click!")
                                     navController.navigate(
                                         NavigationItem.SelectItem.createRoute(item2, categories)
                                     )
@@ -193,9 +204,7 @@ fun CompareItemsScreenV2(
             }
         }
     }
-    errors.let {
-        errors.forEach { error -> error.ShowDialog() }
-    }
+
 }
 
 @Composable
