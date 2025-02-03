@@ -96,8 +96,6 @@ fun PriceLineChart(
             }
         }
 
-        Log.d("KEKWDATA", "$yValues  -  $xLabels")
-
         val modelProducer = remember { CartesianChartModelProducer() }
 
         LaunchedEffect(sortedPrices) {
@@ -109,7 +107,7 @@ fun PriceLineChart(
                 }
             } else {
                 Log.e(
-                    "KEKW",
+                    "PriceChart",
                     "Data size mismatch: yValues=${yValues.size}, xLabels=${xLabels.size}"
                 )
             }
@@ -276,7 +274,7 @@ fun AuctionChart(
                 }
             } else {
                 Log.e(
-                    "KEKW",
+                    "PriceChart",
                     "Data size mismatch: yValues=${yValues.size}, xLabels=${xLabels.size}"
                 )
             }

@@ -66,6 +66,7 @@ class ItemInfoHelper {
             itemInfo.name?.key?.let {
                 if (containsParts(key, it)) {
                     resultMap[Lines(ru = "Название", en = "Name")] = itemInfo.name.lines
+                    return resultMap
                 }
             }
 

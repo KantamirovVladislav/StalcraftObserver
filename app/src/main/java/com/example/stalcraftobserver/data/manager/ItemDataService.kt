@@ -51,6 +51,7 @@ class ItemDataService @Inject constructor(
                 ClientSecret.X_API_ID,
                 ClientSecret.X_API_SECRET
             ).awaitResponse()
+            Log.d("KAKAK", response.toString())
             if (response.isSuccessful) {
                 val itemHistory = response.body()
                 if (itemHistory != null) {

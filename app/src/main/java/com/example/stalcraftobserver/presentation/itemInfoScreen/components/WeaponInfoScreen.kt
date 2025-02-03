@@ -86,12 +86,6 @@ fun WeaponInfoScreen(
             item {
                 priceChart()
             }
-
-            item {
-                Row {
-                    CustomOutlinedCard(data = magazineParam.value)
-                }
-            }
         }
     }
 }
