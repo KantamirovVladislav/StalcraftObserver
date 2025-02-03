@@ -1,5 +1,7 @@
 package com.example.stalcraftobserver.presentation.compareItems.components
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -149,6 +151,10 @@ fun CompareWeapon(
             item {
                 CompareRow(label, values.first, values.second)
             }
+        }
+
+        item{
+            Spacer(Modifier.height(60.dp))
         }
     }
 }

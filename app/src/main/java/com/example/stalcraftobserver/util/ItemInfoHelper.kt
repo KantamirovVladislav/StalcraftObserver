@@ -5,6 +5,8 @@ import com.example.stalcraftobserver.data.manager.InfoBlock
 import com.example.stalcraftobserver.data.manager.ItemInfo
 import com.example.stalcraftobserver.data.manager.Lines
 import com.example.stalcraftobserver.util.itemSupportModel.Armor
+import com.example.stalcraftobserver.util.itemSupportModel.Artefact
+import com.example.stalcraftobserver.util.itemSupportModel.ArtefactStat
 import com.example.stalcraftobserver.util.itemSupportModel.Weapon
 
 class ItemInfoHelper {
@@ -80,16 +82,19 @@ class ItemInfoHelper {
                                     mapOf(element.key?.lines to element.value?.lines)
                                 )
 
-                                is Element.NumericElement -> checkKeyMatch(
-                                    element.name?.key,
-                                    mapOf(element.name?.lines to element.value.let {
-                                        val formattedValue = String.format("%.2f", it)
-                                        Lines(
-                                            en = formattedValue,
-                                            ru = formattedValue
-                                        )
-                                    })
-                                )
+                                is Element.NumericElement -> {
+                                    checkKeyMatch(
+                                        element.name?.key,
+                                        mapOf(element.name?.lines to element.value.let {
+                                            val formattedValue = String.format("%.2f", it)
+                                            Lines(
+                                                en = formattedValue,
+                                                ru = formattedValue
+                                            )
+                                        })
+                                    )?.let { return mapOf(it.first to it.second) }
+
+                                }
 
                                 is Element.TextElement -> checkKeyMatch(
                                     element.text?.key,
@@ -169,6 +174,42 @@ class ItemInfoHelper {
             } else null
         }
 
+
+        fun getArtefactClassFromItemInfo(item: ItemInfo): Artefact? {
+            if (item.category.contains("artefact")) {
+                return Artefact(
+                    id = item.id,
+                    imageUrl = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${item.category}/${item.id}.png",
+                    stats = ItemProperty.Artefact.AllKeys.keys.mapNotNull { key ->
+                        getValuesForKey(
+                            item,
+                            key
+                        ).takeIf { it.keys.isNotEmpty() || it.values.isNotEmpty() }?.let { it ->
+                            ArtefactStat(
+                                id = "asdad",
+                                startStat = it.values.firstOrNull()?.ru?.replace("%", "")
+                                    ?.toDouble() ?: 0.0,
+                                endStat = it.values.firstOrNull()?.en?.replace("%", "")?.toDouble()
+                                    ?: 0.0,
+                                isAdditionalStat = false,
+                                typeStat = it.values.firstOrNull()?.ru?.let { kekw ->
+                                    if (kekw.contains(
+                                            "%"
+                                        )
+                                    ) "%" else "число"
+                                } ?: "%",
+                                isPositiveStat = (it.values.firstOrNull()?.ru?.replace("%", "")
+                                    ?.toDouble()
+                                    ?: 0.0).let { number -> if (number > 0) true else false },
+                                keyStat = it.keys.firstOrNull()?.ru.toString()
+                            )
+                        }
+                    }
+                )
+            } else {
+                return null
+            }
+        }
 
         fun getArmorClassFromItemInfo(item: ItemInfo): Armor? {
             if (item.category.contains("armor")) {

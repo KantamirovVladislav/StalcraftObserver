@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,9 @@ import com.example.stalcraftobserver.presentation.common.SettingsPanel
 import com.example.stalcraftobserver.presentation.itemsListing.components.FilterSelector
 import com.example.stalcraftobserver.presentation.itemsListing.components.ItemCell
 import com.example.stalcraftobserver.util.NavigationItem
+import com.example.stalcraftobserver.util.RarityItem
+import com.example.stalcraftobserver.util.getRarityColorFromString
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,6 +81,7 @@ fun ItemsListScreen(
     var isMenuExpanded by remember { mutableStateOf(false) }
     var isCategoryFilterVisible by remember { mutableStateOf(false) }
     var isRarityFilterVisible by remember { mutableStateOf(false) }
+    var isClickEnabled by remember { mutableStateOf(true) }
 
     val sheetState = rememberModalBottomSheetState()
     val categorySheetState = rememberModalBottomSheetState()
@@ -171,6 +176,11 @@ fun ItemsListScreen(
 
     }
 
+    LaunchedEffect(!isClickEnabled) {
+        delay(300)
+        isClickEnabled = true
+    }
+
     LaunchedEffect(selectedCategoryFilter) {
         val shouldBeSelected = globalExpandedFilter.filter { filter ->
             selectedCategoryFilter.any { it.group.toString() == filter.group.toString() }
@@ -199,8 +209,6 @@ fun ItemsListScreen(
             viewModel.disableFilter(filters[3])
         }
     }
-
-
 
     LaunchedEffect(Unit) {
         viewModel.selectFilter(filters[0])
@@ -365,23 +373,28 @@ fun ItemsListScreen(
                             .height(currentHeightCell)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
-                                indication = null
+                                indication = null,
+                                enabled = isClickEnabled
                             ) {
-                                when (mode) {
-                                    "view" -> navController.navigate(
-                                        NavigationItem.ItemInfo.createRoute(
-                                            item.id
-                                        )
-                                    )
+                                if (isClickEnabled) {
+                                    isClickEnabled = false
 
-                                    "selection" -> {
-                                        itemSlot?.let { sharedItemIdViewModel.setItem(it, item.id) }
-                                        navController.popBackStack()
+                                    when (mode) {
+                                        "view" -> {
+                                            navController.navigate(
+                                                NavigationItem.ItemInfo.createRoute(item.id)
+                                            )
+                                        }
+                                        "selection" -> {
+                                            itemSlot?.let { sharedItemIdViewModel.setItem(it, item.id) }
+                                            navController.popBackStack()
+                                        }
                                     }
                                 }
                             },
                         item = item,
                         region = "ru",
+                        shadowColor = getRarityColorFromString(item.rarity),
                         isHearted = favoritesState.any { it.favoriteId == item.id },
                         onHeartClick = { hearted ->
                             if (hearted) viewModel.setFavorite(item.id) else viewModel.removeFavorite(

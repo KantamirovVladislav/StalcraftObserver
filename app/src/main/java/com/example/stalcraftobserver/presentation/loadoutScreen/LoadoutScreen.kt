@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -75,6 +76,17 @@ fun LoadoutScreen(
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val currentPage = pagerState.currentPage
     val totalPages = pages.size
+
+    var upgradeLevel by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(upgradeLevel) {
+        Log.d("CurrentLevel", upgradeLevel.toString())
+        if (upgradeLevel > 0){
+            viewModel.setItem2Id(item2Id, upgradeLevel)
+        } else if (upgradeLevel == 0){
+            viewModel.setItem2Id(item2Id)
+        }
+    }
 
     Scaffold {
         TopAppBarWithoutSearch(navController = navController, title = "Loadout", scrollBehavior = scrollBehavior) {
@@ -153,7 +165,11 @@ fun LoadoutScreen(
                                     item = armorInfo!!,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 0.dp)
+                                        .padding(horizontal = 0.dp),
+                                    upgradeLevel = upgradeLevel,
+                                    onLevelChanged = {level ->
+                                        upgradeLevel = level
+                                    }
                                 )
                             }
                         }

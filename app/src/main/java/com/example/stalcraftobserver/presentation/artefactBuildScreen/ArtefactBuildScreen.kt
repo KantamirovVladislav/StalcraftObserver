@@ -1,61 +1,98 @@
 package com.example.stalcraftobserver.presentation.artefactBuildScreen
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import android.util.Log
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.stalcraftobserver.data.manager.ItemInfo
-import com.example.stalcraftobserver.domain.model.ArtefactAssembly
+import com.example.stalcraftobserver.domain.viewModel.ArtefactBuildViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.components.CustomArtefactGrid
-import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
+import com.example.stalcraftobserver.presentation.common.TripleAttributeRow
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
-import com.example.stalcraftobserver.util.Artefacts
 import com.example.stalcraftobserver.util.NavigationItem
+import com.example.stalcraftobserver.util.itemSupportModel.Artefact
 
 @Composable
 fun ArtefactBuildScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    sharedItemIdViewModel: SharedItemIdViewModel
+    sharedItemIdViewModel: SharedItemIdViewModel,
+    artefactBuildViewModel: ArtefactBuildViewModel
 ) {
+    LaunchedEffect(Unit) {
+        artefactBuildViewModel.clearArtefacts()
+    }
+
     val artefacts by sharedItemIdViewModel.items.collectAsState()
+    val stats by artefactBuildViewModel.statsList.collectAsState()
+    val artefactsList by artefactBuildViewModel.artefactsList.collectAsState()
+    val maxCell by artefactBuildViewModel.cellMaxGlobal.collectAsState()
 
-    val kekw = ArtefactAssembly()
-    kekw.addArtefact(Artefacts.ARTEFACT_1)
-    kekw.addArtefact(Artefacts.ARTEFACT_2)
-    kekw.addArtefact(Artefacts.ARTEFACT_3)
+    var isChanged by remember { mutableStateOf(false) }
+    var selectedArtefactIndex by remember { mutableStateOf<Int?>(null) }
 
-    Column {
-        CustomArtefactGrid(
-            modifier = Modifier.padding(6.dp),
-            maxCountCell = 6,
-            itemIds = (0 until 6).map { index ->
-                artefacts["artefact$index"]
-            },
-            onCellClick = { cellIndex ->
-                val itemSlot = "artefact$cellIndex"
-                navController.navigate(
-                    NavigationItem.SelectItem.createRoute(itemSlot, listOf("artefact"))
-                )
+    LaunchedEffect(isChanged) {
+        artefacts.forEach { (slot, id) ->
+            val cellIndex = slot.removePrefix("artefact").toIntOrNull() ?: -1
+            if (cellIndex in 0 until maxCell && !artefactBuildViewModel.checkArtefact(id, slot)) {
+                artefactBuildViewModel.addArtefact(id, slot)
             }
-        )
+        }
+        isChanged = false
+    }
 
-        Text(text = "Текущие артефакты: ${artefacts.filter { it.key.contains("artefact") }}")
-        Text(text = "${kekw.buildStatsString()}")
+    LazyColumn {
+        item {
+            CustomArtefactGrid(
+                modifier = Modifier.padding(6.dp),
+                maxCountCell = maxCell,
+                artefacts = (0 until maxCell).map { index ->
+                    artefactsList["artefact$index"]
+                },
+                onCellClick = { cellIndex ->
+                    if (selectedArtefactIndex != null) {
+                        Log.d("Copy", "Copy Artefact $selectedArtefactIndex to $cellIndex")
+                        artefactBuildViewModel.copyArtefact(selectedArtefactIndex!!, cellIndex)
+                        sharedItemIdViewModel.getItem("artefact$selectedArtefactIndex")
+                            ?.let { sharedItemIdViewModel.setItem("artefact$cellIndex", it) }
+                        selectedArtefactIndex = null
+                    } else {
+                        val itemSlot = "artefact$cellIndex"
+                        navController.navigate(
+                            NavigationItem.SelectItem.createRoute(itemSlot, listOf("artefact"))
+                        )
+                        isChanged = true
+                    }
+                },
+                onDelete = { index ->
+                    artefactBuildViewModel.removeArtefact("artefact$index")
+                    sharedItemIdViewModel.clearItems("artefact$index")
+                },
+                onCopy = { index ->
+                    selectedArtefactIndex = index
+                }
+            )
+        }
+
+        item {
+            stats.let {
+                it.forEach { (key, value, type) ->
+                    TripleAttributeRow(label = key, value = value, type = type)
+                }
+            }
+        }
+
     }
 }
 
