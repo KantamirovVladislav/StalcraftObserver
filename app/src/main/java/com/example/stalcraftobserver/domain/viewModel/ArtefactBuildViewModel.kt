@@ -96,7 +96,7 @@ class ArtefactBuildViewModel @Inject constructor(
                             cellMax.value = ItemInfoHelper.getValuesForKey(
                                 itemData.data,
                                 ItemProperty.Container.Stats.SIZE
-                            ).values.firstOrNull()?.ru?.toDouble()?.toInt() ?: 0
+                            ).values.firstOrNull()?.ru?.replace(",",".")?.toDouble()?.toInt() ?: 0
                             Log.d("Cells", cellMax.toString())
                             _artefactController = ArtefactAssembly(cellMax.value)
                             _isContainerChoosed.value = true
