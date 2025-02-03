@@ -27,8 +27,11 @@ class CompareItemsViewModel @Inject constructor(
     @Named("ItemDataService") private val itemDataService: ItemDataService
 ) : ViewModel() {
 
-    val item1 = MutableStateFlow<ItemInfo?>(null)
-    val item2 = MutableStateFlow<ItemInfo?>(null)
+    private val _item1 = MutableStateFlow<ItemInfo?>(null)
+    private val _item2 = MutableStateFlow<ItemInfo?>(null)
+    
+    val item1 = _item1.asStateFlow()
+    val item2 = _item2.asStateFlow()
 
     private val _errorQueue = MutableStateFlow<List<DialogEntity>>(emptyList())
     val errorQueue = _errorQueue.asStateFlow()
@@ -37,6 +40,18 @@ class CompareItemsViewModel @Inject constructor(
     fun handleCriticalError() {
         removeAllErrorFromQueue()
         onCriticalError()
+    }
+
+    private var lastClickTime = 0L
+
+    fun isClickable(): Boolean {
+        Log.d("Click!", "$lastClickTime - click")
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime > 500) {
+            lastClickTime = currentTime
+            return true
+        }
+        return false
     }
 
     fun addErrorToQueue(error: DialogEntity) {
@@ -66,20 +81,81 @@ class CompareItemsViewModel @Inject constructor(
 
     fun setItem1Id(id: String?) {
         if (id == null) {
-            item1.value = null
+            _item1.value = null
         } else {
-            fetchItemWithId(id) { item1.value = it }
+            fetchItemWithId(id) { _item1.value = it }
         }
-        Log.d("CompareItemsViewModel", "Item1 updated: $id")
+        Log.d("CompareItemsViewModel", "_item1 updated: $id")
     }
 
     fun setItem2Id(id: String?) {
         if (id == null) {
-            item2.value = null
+            _item2.value = null
         } else {
-            fetchItemWithId(id) { item2.value = it }
+            fetchItemWithId(id) { _item2.value = it }
         }
-        Log.d("CompareItemsViewModel", "Item2 updated: $id")
+        Log.d("CompareItemsViewModel", "_item2 updated: $id")
+    }
+
+    fun setItem2Id(id: String?, level: Int){
+        if (id == null) {
+            _item2.value = null
+        } else {
+            Log.d("FetchItem", "FetchItem with level")
+            fetchItemWithId(id, level) { _item2.value = it }
+            Log.d("FetchItem", _item2.value.toString())
+        }
+        Log.d("CompareItemsViewModel", "_item2 updated: $id")
+    }
+
+    private fun fetchItemWithId(id: String, level: Int, onResult: (ItemInfo?) -> Unit) {
+        val loadingDialog = DialogEntity(
+            errorType = ErrorsType.LOADING,
+            label = "Идёт загрузка, подождите",
+            onDismissRequest = { }
+        )
+        addErrorToQueue(
+            loadingDialog
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = when (val itemResult = itemsRoomService.getItemWithId(id)) {
+                is FunctionResult.Success -> {
+                    val item = itemResult.data
+
+                    when (val itemData = itemDataService.getItemDataWithLevel(item, level)) {
+                        is FunctionResult.Success -> {
+                            removeErrorFromQueue(loadingDialog)
+                            itemData.data
+                        }
+
+                        is FunctionResult.Error -> {
+                            Log.e(Constants.ERROR_DATABASE_TAG, itemData.message)
+                            addErrorToQueue(
+                                DialogEntity(
+                                    errorType = ErrorsType.ERROR,
+                                    label = "Не удолось получить данные (Проверьте подключение к интернету)",
+                                    onDismissRequest = ::handleCriticalError
+                                )
+                            )
+                            null
+                        }
+                    }
+                }
+
+                is FunctionResult.Error -> {
+                    addErrorToQueue(
+                        DialogEntity(
+                            errorType = ErrorsType.ERROR,
+                            label = "Не удолось получить данные из локального хранилища",
+                            onDismissRequest = ::handleCriticalError
+                        )
+                    )
+                    Log.e(Constants.ERROR_DATABASE_TAG, itemResult.message)
+                    null
+                }
+            }
+            onResult(result)
+        }
     }
 
     private fun fetchItemWithId(id: String, onResult: (ItemInfo?) -> Unit) {

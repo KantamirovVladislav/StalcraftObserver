@@ -191,6 +191,8 @@ object ItemProperty {
             )
         }
 
+
+
         object Resistance {
             // Ключи для сопротивлений
             const val BULLET_RESISTANCE =
@@ -222,6 +224,8 @@ object ItemProperty {
             )
         }
 
+
+
         object Accumulation {
             // Ключи для накоплений (негативные эффекты)
             const val RADIATION_ACCUMULATION =
@@ -241,6 +245,31 @@ object ItemProperty {
                 BIOLOGICAL_ACCUMULATION,
                 PSYCHO_ACCUMULATION,
                 BLEEDING_ACCUMULATION
+            )
+        }
+
+        object AllKeys{
+            val keys = listOf(
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.bullet_dmg_factor",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.tear_dmg_factor",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.explosion_dmg_factor",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.radiation_dmg_factor",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.thermal_dmg_factor",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.biological_dmg_factor",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_dmg_factor",
+                "artefact_properties.factor.biological_protection",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.radiation_accumulation",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.thermal_accumulation",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.biological_accumulation",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.psycho_accumulation",
+                "stalker.artefact_properties.factor.bleeding_accumulation",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.speed_modifier",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.stamina_bonus",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.stamina_regeneration_bonus",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.health_bonus",
+                "${ItemsKey.STALKER_ARTEFACT_PROPERTIES_FACTOR}.heal_efficiency",
+                "stalker.artefact_properties.factor.regeneration_bonus",
+                "stalker.artefact_properties.factor.reaction_to_tear"
             )
         }
 

@@ -12,10 +12,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
+import com.example.stalcraftobserver.domain.viewModel.ArtefactBuildViewModel
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
 import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
     private val itemViewModel: ItemViewModel by viewModels()
     private val onBoardingViewModel: OnBoardingViewModel by viewModels()
     private val sharedItemIdViewModel: SharedItemIdViewModel by viewModels()
+    private val artefactBuildViewModel: ArtefactBuildViewModel by viewModels()
 
     @Inject
     @Named("LocalUserManager")
@@ -161,8 +164,8 @@ class MainActivity : ComponentActivity() {
                                 navArgument(item2) { type = NavType.StringType; defaultValue = "" }
                             )
                         ) { backStackEntry ->
-                            val id1 = backStackEntry.arguments?.getString(item1)
-                            val id2 = backStackEntry.arguments?.getString(item2)
+                            var id1 = backStackEntry.arguments?.getString(item1)
+                            var id2 = backStackEntry.arguments?.getString(item2)
 
                             if (id1?.isNotEmpty() == true){
                                 sharedItemIdViewModel.setItem(item1, id1)
@@ -170,11 +173,16 @@ class MainActivity : ComponentActivity() {
                             if (id2?.isNotEmpty() == true){
                                 sharedItemIdViewModel.setItem(item2, id2)
                             }
+
+                            id1 = sharedItemIdViewModel.getItem(item1)
+                            id2 = sharedItemIdViewModel.getItem(item2)
+
                             Log.d("CompareItems", "Navigate to CompareItemsScreen")
                             CompareItemsScreenV2(
                                 navController = navController,
                                 viewModel = hiltViewModel(),
-                                sharedItemIdViewModel = sharedItemIdViewModel
+                                id1 = id1,
+                                id2 = id2
                             )
                         }
                         composable(
@@ -205,12 +213,12 @@ class MainActivity : ComponentActivity() {
                                 navArgument("container") {type = NavType.StringType; defaultValue = ""}
                             )
                         ) { backStackEntry ->
-                            //TODO change strict id
-                            val containerId = "49dj"
+                            val containerId = backStackEntry.arguments?.getString("container")
                             ContainerSelectScreen(
                                 navController = navController,
                                 containerId = containerId,
-                                sharedItemIdViewModel = sharedItemIdViewModel
+                                sharedItemIdViewModel = sharedItemIdViewModel,
+                                artefactBuildViewModel = artefactBuildViewModel
                             )
                         }
                     }
@@ -225,6 +233,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 
     @Preview(showBackground = true)
     @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

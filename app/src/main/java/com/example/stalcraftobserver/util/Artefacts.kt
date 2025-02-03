@@ -18,6 +18,7 @@ object Artefacts {
             )
         )
     )
+
     val ARTEFACT_2 = Artefact(
         id = "gy06",
         stats = listOf(

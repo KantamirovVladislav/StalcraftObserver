@@ -1,5 +1,6 @@
 package com.example.stalcraftobserver.domain.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,7 @@ class SharedItemIdViewModel: ViewModel() {
         val currentMap = _items.value
         currentMap[slot] = artefactId
         _items.value = HashMap(currentMap)
+        Log.d("SharedItems", _items.value.toString())
     }
 
     fun clearItems(slot: String) {

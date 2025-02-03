@@ -176,7 +176,7 @@ fun ItemsListScreen(
 
     }
 
-    LaunchedEffect(isClickEnabled == false) {
+    LaunchedEffect(!isClickEnabled) {
         delay(300)
         isClickEnabled = true
     }
@@ -209,8 +209,6 @@ fun ItemsListScreen(
             viewModel.disableFilter(filters[3])
         }
     }
-
-
 
     LaunchedEffect(Unit) {
         viewModel.selectFilter(filters[0])

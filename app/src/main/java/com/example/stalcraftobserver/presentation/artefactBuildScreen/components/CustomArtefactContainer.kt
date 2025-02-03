@@ -1,8 +1,10 @@
 package com.example.stalcraftobserver.presentation.artefactBuildScreen.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -17,9 +19,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,17 +37,19 @@ import androidx.compose.ui.unit.sp
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.ArtefactBuildScreen
 import com.example.stalcraftobserver.presentation.common.CustomImage
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
+import com.example.stalcraftobserver.util.itemSupportModel.Artefact
 
 @Composable
 fun CustomArtefactGrid(
     modifier: Modifier = Modifier,
     maxCountCell: Int = 6,
-    itemIds: List<String?> = emptyList(),
-    onCellClick: (Int) -> Unit = {}
+    artefacts: List<Artefact?> = emptyList(),
+    onCellClick: (Int) -> Unit = {},
+    onDelete: (Int) -> Unit = {},
+    onCopy: (Int) -> Unit = {}
 ) {
-    // Генерируем список ячеек по количеству maxCountCell
     val cells = (0 until maxCountCell).map { index ->
-        itemIds.getOrNull(index)
+        artefacts.getOrNull(index)
     }
 
     LazyVerticalGrid(
@@ -53,19 +63,26 @@ fun CustomArtefactGrid(
         items(cells.size) { index ->
             ArtefactCell(
                 modifier = Modifier,
-                itemId = cells[index],
-                onClick = { onCellClick(index) }
+                artefact = cells[index],
+                onClick = { onCellClick(index) },
+                onDelete = { onDelete(index) },
+                onCopy = { onCopy(index) }
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ArtefactCell(
     modifier: Modifier = Modifier,
-    itemId: String?,
-    onClick: () -> Unit
+    artefact: Artefact?,
+    onClick: () -> Unit,
+    onDelete: () -> Unit,
+    onCopy: () -> Unit
 ) {
+    var isMenuExpanded by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
@@ -73,11 +90,13 @@ fun ArtefactCell(
                 color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
-            .clickable { onClick() },
+            .combinedClickable(
+                onClick = { onClick() },
+                onLongClick = { isMenuExpanded = true }
+            ),
         contentAlignment = Alignment.Center
     ) {
-        if (itemId == null) {
-            // Если артефакта нет, выводим заглушку
+        if (artefact == null) {
             Text(
                 text = "Пусто",
                 color = Color.White,
@@ -85,8 +104,7 @@ fun ArtefactCell(
                 style = MaterialTheme.typography.bodyMedium
             )
         } else {
-            // Формируем URL для картинки
-            val imageUrl = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/artefact/biochemical/$itemId.png"
+            val imageUrl = artefact.imageUrl
 
             CustomImage(
                 imagePath = imageUrl,
@@ -95,8 +113,29 @@ fun ArtefactCell(
                     .padding(5.dp)
             )
         }
+
+        DropdownMenu(
+            expanded = isMenuExpanded,
+            onDismissRequest = { isMenuExpanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Удалить") },
+                onClick = {
+                    onDelete()
+                    isMenuExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Копировать") },
+                onClick = {
+                    onCopy()
+                    isMenuExpanded = false
+                }
+            )
+        }
     }
 }
+
 
 
 

@@ -49,7 +49,7 @@ fun CustomImage(
                     onError = { _, err ->
                         isLoading = false
                         isErrorLoading = true
-                        Log.d("ImageError", err.throwable.message.toString())
+                        Log.d("ImageError", err.toString())
                     },
                     onSuccess = { _, _ -> isLoading = false }
                 )

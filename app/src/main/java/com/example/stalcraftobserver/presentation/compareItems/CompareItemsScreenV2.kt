@@ -58,13 +58,21 @@ const val item2 = "Item2Id"
 fun CompareItemsScreenV2(
     navController: NavController,
     viewModel: CompareItemsViewModel,
-    sharedItemIdViewModel: SharedItemIdViewModel
+    id1: String?,
+    id2: String?
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val item1Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item1)) }
-    val item2Id by remember { mutableStateOf(sharedItemIdViewModel.getItem(item2)) }
 
+    Log.d("Launched", "Launched")
+    LaunchedEffect(Unit) {
+        viewModel.setItem1Id(id1)
+        viewModel.setItem2Id(id2)
+        Log.d("Launched", "LaunchedStart")
+    }
+
+    val item1Id by viewModel.item1.collectAsState()
+    val item2Id by viewModel.item2.collectAsState()
     val errors by viewModel.errorQueue.collectAsState()
 
     viewModel.onCriticalError = {
@@ -75,15 +83,6 @@ fun CompareItemsScreenV2(
         errors.forEach { error -> error.ShowDialog() }
     }
 
-    LaunchedEffect(item1Id) {
-        viewModel.setItem1Id(item1Id)
-    }
-    LaunchedEffect(item2Id) {
-        viewModel.setItem2Id(item2Id)
-    }
-
-    val item1Info by viewModel.item1.collectAsState()
-    val item2Info by viewModel.item2.collectAsState()
     val listState = rememberLazyListState()
 
 
@@ -96,8 +95,8 @@ fun CompareItemsScreenV2(
     }
 
     val categories = listOfNotNull(
-        item1Info?.category?.substringBefore("/"),
-        item2Info?.category?.substringBefore("/")
+        item1Id?.category?.substringBefore("/"),
+        item2Id?.category?.substringBefore("/")
     ).ifEmpty { listOf("weapon", "armor") }
 
     TopAppBarWithoutSearch(
@@ -107,20 +106,20 @@ fun CompareItemsScreenV2(
     ) {
         Scaffold(modifier = Modifier.fillMaxSize()) {
             when {
-                item1Info?.category?.contains("armor") == true ||
-                        item2Info?.category?.contains("armor") == true -> {
+                item1Id?.category?.contains("armor") == true ||
+                        item2Id?.category?.contains("armor") == true -> {
                     CompareArmor(
-                        item1 = item1Info,
-                        item2 = item2Info,
+                        item1 = item1Id,
+                        item2 = item2Id,
                         modifier = Modifier.padding(vertical = 10.dp)
                     )
                 }
 
-                item1Info?.category?.contains("weapon") == true ||
-                        item2Info?.category?.contains("weapon") == true -> {
+                item1Id?.category?.contains("weapon") == true ||
+                        item2Id?.category?.contains("weapon") == true -> {
                     CompareWeapon(
-                        item1 = item1Info,
-                        item2 = item2Info,
+                        item1 = item1Id,
+                        item2 = item2Id,
                         modifier = Modifier.padding(vertical = 10.dp)
                     )
                 }
@@ -129,16 +128,19 @@ fun CompareItemsScreenV2(
             if (item1Id == null && item2Id == null) {
                 NullTargetItems(
                     firstItemClick = {
-                        Log.d("Compare:NullTargetButton1", "Click!")
-                        navController.navigate(
-                            NavigationItem.SelectItem.createRoute(item1, categories)
-                        )
+                        if (viewModel.isClickable()){
+                            navController.navigate(
+                                NavigationItem.SelectItem.createRoute(item1, categories)
+                            )
+                        }
+
                     },
                     secondItemClick = {
-                        Log.d("Compare:NullTargetButton2", "Click!")
-                        navController.navigate(
-                            NavigationItem.SelectItem.createRoute(item2, categories)
-                        )
+                        if (viewModel.isClickable()){
+                            navController.navigate(
+                                NavigationItem.SelectItem.createRoute(item2, categories)
+                            )
+                        }
                     }
                 )
             } else {
@@ -159,9 +161,11 @@ fun CompareItemsScreenV2(
                                 contentDescription = "Swap button",
                                 onClick = {
                                     Log.d("Compare:SwapButton1", "Click!")
-                                    navController.navigate(
-                                        NavigationItem.SelectItem.createRoute(item1, categories)
-                                    )
+                                    if (viewModel.isClickable()){
+                                        navController.navigate(
+                                            NavigationItem.SelectItem.createRoute(item1, categories)
+                                        )
+                                    }
                                 }
                             )
                         } else {
@@ -169,10 +173,11 @@ fun CompareItemsScreenV2(
                                 icon = Icons.Filled.Add,
                                 contentDescription = "Add button",
                                 onClick = {
-                                    Log.d("Compare:AddButton1", "Click!")
-                                    navController.navigate(
-                                        NavigationItem.SelectItem.createRoute(item1, categories)
-                                    )
+                                    if (viewModel.isClickable()){
+                                        navController.navigate(
+                                            NavigationItem.SelectItem.createRoute(item1, categories)
+                                        )
+                                    }
                                 }
                             )
                         }
@@ -181,10 +186,11 @@ fun CompareItemsScreenV2(
                                 icon = Icons.Filled.SwapVert,
                                 contentDescription = "Swap button",
                                 onClick = {
-                                    Log.d("Compare:SwapButton2", "Click!")
-                                    navController.navigate(
-                                        NavigationItem.SelectItem.createRoute(item2, categories)
-                                    )
+                                    if (viewModel.isClickable()){
+                                        navController.navigate(
+                                            NavigationItem.SelectItem.createRoute(item2, categories)
+                                        )
+                                    }
                                 }
                             )
                         } else {
@@ -192,10 +198,11 @@ fun CompareItemsScreenV2(
                                 icon = Icons.Filled.Add,
                                 contentDescription = "Remove button",
                                 onClick = {
-                                    Log.d("Compare:AddButton2", "Click!")
-                                    navController.navigate(
-                                        NavigationItem.SelectItem.createRoute(item2, categories)
-                                    )
+                                    if (viewModel.isClickable()){
+                                        navController.navigate(
+                                            NavigationItem.SelectItem.createRoute(item2, categories)
+                                        )
+                                    }
                                 }
                             )
                         }

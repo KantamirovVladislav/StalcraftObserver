@@ -102,10 +102,6 @@ fun <T> CompareRow(attribute: String, value1: T?, value2: T?) {
     var cardHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
 
-    LaunchedEffect(cardHeight) {
-        Log.d("CardHeight", cardHeight.toString())
-    }
-
     Box {
         Row(
             modifier = Modifier

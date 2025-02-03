@@ -40,6 +40,14 @@ interface GitHubApi {
         @Path("category") category: String,
         @Path("id") id: String
     ): Call<ItemInfo>
+
+    @GET("{region}/items/{category}/_variants/{id}/{level}.json")
+    fun getItemDataWithLevel(
+        @Path("region") region: String,
+        @Path("category") category: String,
+        @Path("id") id: String,
+        @Path("level") level: Int
+    ): Call<ItemInfo>
 }
 
 
