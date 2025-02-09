@@ -9,7 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.CardDefaults
@@ -26,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
@@ -39,27 +45,31 @@ fun ItemCell(
     modifier: Modifier = Modifier,
     item: Item,
     region: String,
+    shadowColor: Color = Color.Gray,
     onHeartClick: (Boolean) -> Unit,
     isHearted: Boolean = false
 ) {
     var imagePath by remember { mutableStateOf<String?>(null) }
-    
+
     var hearted by remember { mutableStateOf(false) }
     hearted = isHearted
-    
+
     LaunchedEffect(item.id, region) {
         imagePath = item.createImagePath(region)
     }
 
     OutlinedCard(
+        modifier = modifier.shadow(
+            elevation = 6.dp,
+            shape = RoundedCornerShape(12.dp),
+            clip = false,
+            ambientColor = shadowColor,
+            spotColor = shadowColor
+        ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 12.dp
-        ),
-        border = BorderStroke(1.dp, Color.Black),
-        modifier = modifier
+        border = BorderStroke(1.dp, Color.Black)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -86,13 +96,13 @@ fun ItemCell(
                 }
 
                 Icon(
-                    imageVector = if (hearted) Icons.Outlined.Star else Icons.Outlined.StarOutline,
+                    imageVector = if (hearted) Icons.Filled.Star else Icons.Filled.StarOutline,
                     contentDescription = "Favorite Icon",
-                    tint = if (hearted) Color.Yellow else Color.Gray,
+                    tint = MaterialTheme.colorScheme.inversePrimary,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .scale(1.2f)
+                        .padding(4.dp)
+                        .scale(1f)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
@@ -122,4 +132,3 @@ fun ItemCell(
         }
     }
 }
-

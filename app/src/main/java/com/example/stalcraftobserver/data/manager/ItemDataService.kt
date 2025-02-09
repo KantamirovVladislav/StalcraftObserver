@@ -43,6 +43,30 @@ class ItemDataService @Inject constructor(
         }
     }
 
+    suspend fun getItemDataWithLevel(item: Item, level: Int): FunctionResult<ItemInfo> {
+        return try {
+            val response = gitHubApi.getItemDataWithLevel(
+                app.globalRegion.value,
+                category = item.category,
+                id = item.id,
+                level = level
+            ).awaitResponse()
+            if (response.isSuccessful) {
+                val itemData = response.body()
+                if (itemData != null) {
+                    FunctionResult.Success(itemData)
+                } else {
+                    FunctionResult.Error("Data response is null")
+                }
+            } else {
+                FunctionResult.Error("Response error: $response")
+            }
+        } catch (e: Exception) {
+            Log.e(Constants.RETROFIT_CLIENT_GIT_ERROR, "Error message: ${e.message}")
+            FunctionResult.Error("Error message: ${e.toString()}")
+        }
+    }
+
     suspend fun getItemPriceHistory(item: String): FunctionResult<PriceHistoryResponse> {
         return try {
             val response = stalcraftApi.getItemPriceHistory(
@@ -51,6 +75,7 @@ class ItemDataService @Inject constructor(
                 ClientSecret.X_API_ID,
                 ClientSecret.X_API_SECRET
             ).awaitResponse()
+            Log.d("KAKAK", response.toString())
             if (response.isSuccessful) {
                 val itemHistory = response.body()
                 if (itemHistory != null) {

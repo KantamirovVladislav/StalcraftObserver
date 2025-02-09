@@ -1,6 +1,7 @@
 package com.example.stalcraftobserver.presentation.itemInfoScreen.components
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,8 @@ fun ArtefactInfoScreen(
 ){
     if (!item.category.contains("artefact")){
         return
+    }else {
+        Log.d("Artefacts", ItemInfoHelper.getArtefactClassFromItemInfo(item).toString())
     }
     val generalParam = remember { mutableStateOf<String>("") }
     val qualityParam = remember { mutableStateOf<String>("") }

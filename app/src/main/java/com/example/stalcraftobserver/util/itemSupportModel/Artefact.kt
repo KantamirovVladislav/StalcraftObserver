@@ -4,7 +4,7 @@ data class ArtefactStat(
     val id: String,
     val startStat: Double,
     val endStat: Double,
-        val isPositiveStat: Boolean,
+    val isPositiveStat: Boolean,
     val typeStat: String = "%",
     val keyStat: String,
     val isAdditionalStat: Boolean
@@ -12,5 +12,6 @@ data class ArtefactStat(
 
 data class Artefact(
     val id: String,
+    val imageUrl: String = "",
     val stats: List<ArtefactStat>
 )

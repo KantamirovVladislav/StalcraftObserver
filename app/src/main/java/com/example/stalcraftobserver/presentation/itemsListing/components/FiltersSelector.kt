@@ -91,7 +91,7 @@ fun FilterSelector(
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = filterItem.name)
+                        Text(text = filterItem.rusName)
                     }
                 }
 
@@ -169,7 +169,7 @@ fun extendFilterList(
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = filter.name, textAlign = TextAlign.Left)
+                Text(text = filter.rusName, textAlign = TextAlign.Left)
             }
 
             if (filter.extendFilters.isNotEmpty()) {

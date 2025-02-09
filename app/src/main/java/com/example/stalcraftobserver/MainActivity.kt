@@ -1,5 +1,3 @@
-// package com.example.stalcraftobserver
-
 package com.example.stalcraftobserver
 
 import android.content.res.Configuration
@@ -14,16 +12,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.stalcraftobserver.data.manager.LocalUserManagerRel
+import com.example.stalcraftobserver.domain.viewModel.ArtefactBuildViewModel
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
 import com.example.stalcraftobserver.domain.viewModel.ItemViewModel
 import com.example.stalcraftobserver.domain.viewModel.OnBoardingViewModel
 import com.example.stalcraftobserver.domain.viewModel.SharedItemIdViewModel
 import com.example.stalcraftobserver.presentation.artefactBuildScreen.ContainerSelectScreen
+import com.example.stalcraftobserver.presentation.common.MinimalDialog
 import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreen
+import com.example.stalcraftobserver.presentation.compareItems.CompareItemsScreenV2
 import com.example.stalcraftobserver.presentation.compareItems.item1
 import com.example.stalcraftobserver.presentation.compareItems.item2
 import com.example.stalcraftobserver.presentation.itemInfoScreen.ItemInfoScreen
@@ -34,6 +36,7 @@ import com.example.stalcraftobserver.presentation.loadoutScreen.weapon
 import com.example.stalcraftobserver.presentation.onBoarding.OnBoardingScreen
 import com.example.stalcraftobserver.ui.theme.StalcraftObserverTheme
 import com.example.stalcraftobserver.util.NavigationItem
+import com.example.stalcraftobserver.util.NetworkStateMonitor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -47,10 +50,14 @@ class MainActivity : ComponentActivity() {
     private val itemViewModel: ItemViewModel by viewModels()
     private val onBoardingViewModel: OnBoardingViewModel by viewModels()
     private val sharedItemIdViewModel: SharedItemIdViewModel by viewModels()
+    private val artefactBuildViewModel: ArtefactBuildViewModel by viewModels()
 
     @Inject
     @Named("LocalUserManager")
     lateinit var localUserManager: LocalUserManagerRel
+
+    @Inject
+    lateinit var networkStateMonitor: NetworkStateMonitor
 
     override fun onDestroy() {
         super.onDestroy()
@@ -77,6 +84,11 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             var isAppInitialized by remember { mutableStateOf(false) }
             var appEntry by remember { mutableStateOf(false) }
+            var isInternetConnected by remember { mutableStateOf(true) }
+
+            networkStateMonitor.startMonitoring {
+                isInternetConnected = it
+            }
 
             LaunchedEffect(Unit) {
                 appEntry = localUserManager.readAppEntry().first()
@@ -152,8 +164,8 @@ class MainActivity : ComponentActivity() {
                                 navArgument(item2) { type = NavType.StringType; defaultValue = "" }
                             )
                         ) { backStackEntry ->
-                            val id1 = backStackEntry.arguments?.getString(item1)
-                            val id2 = backStackEntry.arguments?.getString(item2)
+                            var id1 = backStackEntry.arguments?.getString(item1)
+                            var id2 = backStackEntry.arguments?.getString(item2)
 
                             if (id1?.isNotEmpty() == true){
                                 sharedItemIdViewModel.setItem(item1, id1)
@@ -161,11 +173,16 @@ class MainActivity : ComponentActivity() {
                             if (id2?.isNotEmpty() == true){
                                 sharedItemIdViewModel.setItem(item2, id2)
                             }
+
+                            id1 = sharedItemIdViewModel.getItem(item1)
+                            id2 = sharedItemIdViewModel.getItem(item2)
+
                             Log.d("CompareItems", "Navigate to CompareItemsScreen")
-                            CompareItemsScreen(
+                            CompareItemsScreenV2(
                                 navController = navController,
                                 viewModel = hiltViewModel(),
-                                sharedItemIdViewModel = sharedItemIdViewModel
+                                id1 = id1,
+                                id2 = id2
                             )
                         }
                         composable(
@@ -196,19 +213,28 @@ class MainActivity : ComponentActivity() {
                                 navArgument("container") {type = NavType.StringType; defaultValue = ""}
                             )
                         ) { backStackEntry ->
-                            //TODO change strict id
-                            val containerId = "49dj"
+                            val containerId = backStackEntry.arguments?.getString("container")
                             ContainerSelectScreen(
                                 navController = navController,
                                 containerId = containerId,
-                                sharedItemIdViewModel = sharedItemIdViewModel
+                                sharedItemIdViewModel = sharedItemIdViewModel,
+                                artefactBuildViewModel = artefactBuildViewModel
                             )
                         }
                     }
                 }
+
+                if (!isInternetConnected){
+                    MinimalDialog(label = "Интернет соединение потеряно", onDismissRequest = {isInternetConnected = true})
+                }
+                else {
+                    Log.d("InternetState", "Internet connect is enabled")
+                }
             }
         }
     }
+
+
 
     @Preview(showBackground = true)
     @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

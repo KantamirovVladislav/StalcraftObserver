@@ -40,7 +40,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.stalcraftobserver.domain.viewModel.ItemInfoViewModel
+import com.example.stalcraftobserver.presentation.common.LoadingDataScreen
 import com.example.stalcraftobserver.presentation.common.LotsPricesStates
+import com.example.stalcraftobserver.presentation.common.MinimalDialog
 import com.example.stalcraftobserver.presentation.common.TopAppBarWithoutSearch
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArmorInfoScreen
 import com.example.stalcraftobserver.presentation.itemInfoScreen.components.ArtefactInfoScreen
@@ -70,8 +72,14 @@ fun ItemInfoScreen(
     val info by viewModel.info.collectAsState()
     val priceHistory by viewModel.priceHistory.collectAsState()
     val activeLots by viewModel.activeLots.collectAsState()
+    val errors by viewModel.errorQueue.collectAsState()
+
+    viewModel.onCriticalError = {
+        navController.navigate(NavigationItem.ListItems.route)
+    }
 
     var isPriceHistory by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         viewModel.getItemWithId(id)
@@ -103,455 +111,466 @@ fun ItemInfoScreen(
             },
             scrollBehavior = scrollBehavior
         ) {
-            info?.let {
-                Log.d("Category", it.category)
-                when {
-                    it.category.contains("armor") -> ArmorInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+            if (isLoading) {
+                LoadingDataScreen()
+            } else {
+                info?.let {
+                    when {
+                        it.category.contains("armor") -> ArmorInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("artefact") -> ArtefactInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("artefact") -> ArtefactInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("weapon") -> WeaponInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("weapon") -> WeaponInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("attachment") -> AttachmentInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("attachment") -> AttachmentInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("bullet") -> BulletInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("bullet") -> BulletInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("container") -> ContainerInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("container") -> ContainerInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("drink") -> DrinkInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("drink") -> DrinkInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("food") -> FoodInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("food") -> FoodInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("grenade") -> GrenadeInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("grenade") -> GrenadeInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("medicine") -> MedicineInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("medicine") -> MedicineInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("misc") -> MiscInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("misc") -> MiscInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
-                    }
 
-                    it.category.contains("other") -> OtherInfoScreen(
-                        imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
-                        item = it
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        it.category.contains("other") -> OtherInfoScreen(
+                            imagePath = "https://github.com/EXBO-Studio/stalcraft-database/raw/main/ru/icons/${it.category}/${it.id}.png",
+                            item = it
                         ) {
-                            Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
-                            IconButton(
-                                onClick = {
-                                    isPriceHistory = !isPriceHistory
-                                }, modifier = Modifier
-                                    .scale(0.5f)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clip(RoundedCornerShape(12.dp))
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.PriceChange,
-                                    contentDescription = "Изменить тип гарфика",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                                Text(text = if (isPriceHistory) "История лотов" else "Актуальные лоты")
+                                IconButton(
+                                    onClick = {
+                                        isPriceHistory = !isPriceHistory
+                                    }, modifier = Modifier
+                                        .scale(0.5f)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PriceChange,
+                                        contentDescription = "Изменить тип гарфика",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
+                            LotsPricesStates(
+                                modifier = Modifier.fillMaxWidth(),
+                                isPriceHistory = isPriceHistory,
+                                priceHistoryResponse = priceHistory,
+                                activeLotsResponse = activeLots
+                            )
                         }
-                        LotsPricesStates(
-                            modifier = Modifier.fillMaxWidth(),
-                            isPriceHistory = isPriceHistory,
-                            priceHistoryResponse = priceHistory,
-                            activeLotsResponse = activeLots
-                        )
                     }
                 }
             }
+            info?.let {
+                Log.d("Category", it.category)
+                isLoading = false
+            }
         }
+    }
+
+    errors.let {
+        errors.forEach { error -> error.ShowDialog() }
     }
 }
 

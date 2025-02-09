@@ -96,8 +96,6 @@ fun PriceLineChart(
             }
         }
 
-        Log.d("KEKWDATA", "$yValues  -  $xLabels")
-
         val modelProducer = remember { CartesianChartModelProducer() }
 
         LaunchedEffect(sortedPrices) {
@@ -109,7 +107,7 @@ fun PriceLineChart(
                 }
             } else {
                 Log.e(
-                    "KEKW",
+                    "PriceChart",
                     "Data size mismatch: yValues=${yValues.size}, xLabels=${xLabels.size}"
                 )
             }
@@ -124,7 +122,7 @@ fun PriceLineChart(
                     val xIndex = targets[0].x.toInt()
                     if (xIndex in yValues.indices) {
                         val price = yValues[xIndex]
-                        String.format("${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]} ")
+                        String.format("${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]}, Кол-во ${sortedPrices[xIndex].amount}")
                     } else {
                         "N/A"
                     }
@@ -276,7 +274,7 @@ fun AuctionChart(
                 }
             } else {
                 Log.e(
-                    "KEKW",
+                    "PriceChart",
                     "Data size mismatch: yValues=${yValues.size}, xLabels=${xLabels.size}"
                 )
             }
@@ -291,7 +289,7 @@ fun AuctionChart(
                     val xIndex = targets[0].x.toInt()
                     if (xIndex in yValues.indices) {
                         val price = yValues[xIndex]
-                        "${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]}"
+                        "${formatDoubleWithDots(price.toDouble())} - ${xLabelsMarker[xIndex]}, Кол-во ${sortedLots[xIndex].amount}"
                     } else {
                         "N/A"
                     }

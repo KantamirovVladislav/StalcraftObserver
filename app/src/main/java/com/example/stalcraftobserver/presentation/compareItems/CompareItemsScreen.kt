@@ -45,9 +45,6 @@ import com.example.stalcraftobserver.presentation.compareItems.components.Compar
 import com.example.stalcraftobserver.util.NavigationItem
 import kotlinx.coroutines.flow.MutableStateFlow
 
-const val item1 = "Item1Id"
-const val item2 = "Item2Id"
-
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
